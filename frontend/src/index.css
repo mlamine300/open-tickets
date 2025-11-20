@@ -1,0 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+@theme inline {
+  --breakpoint-3xl: 1920px;
+
+  --font-display: "Poppins", sans-serif;
+
+  /* Light theme */
+  --color-background-base: var(--background-base);
+  --color-background-screen: var(--background-screen);
+  --color-background: var(--background);
+  --color-primary: var(--primary);
+  --color-text-primary: var(--text-primary);
+  --color-text-accent: var(--text-accent);
+  --color-cold: var(--cold);
+  --color-hot: var(--hot);
+
+  /* Neutrals */
+  --color-gray-cold: var(--gray-cold);
+  --color-gray-hot: var(--gray-hot);
+  --color-gray-too-cold: var(--gray-too-cold);
+
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+}
+
+:root {
+  /* Light theme */
+  --background-base: #ffffff;
+  --background-screen: #f8f8fa;
+  --background: #f0faff;
+  --primary: #64b5f6;
+  --text-primary: #12161d;
+  --text-accent: #f0fbff;
+  --cold: #346ca8;
+  --hot: #bae5ff;
+  /* Neutrals */
+  --gray-cold: #6b7a8f;
+  --gray-hot: #dce3eb;
+  --gray-too-cold: #627189;
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+}
+
+[data-theme="dark"] {
+  --background-base: #212429; /* main body background (slightly warmer dark) */
+  --background-screen: #161b22; /* panels and cards (soft contrast) */
+  --background: #010409; /* sidebar and header background */
+
+  --primary: #567df4; /* modern blue accent */
+  --text-primary: #e5e9f0;
+  --text-secondary: #9badc8;
+  --text-accent: #6e7c95; /* secondary text (muted gray-blue) */
+
+  --cold: #3fa9fc; /* vibrant cold accent (blue for info elements) */
+  --hot: #a011ff;
+  --gray-cold: #dce3eb;
+  --gray-hot: #6b7a8f;
+  --gray-too-cold: #f1ebf2;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+  }
+
+  body {
+    background-color: var(--color-background-screen);
+    overflow-x: hidden;
+    color: var(--color-text-primary);
+  }
+
+  .layout {
+    @apply max-w-[1440px] w-full h-full  min-h-lvh  flex justify-center items-center m-auto;
+  }
+  button {
+    @apply cursor-pointer px-2 py-1 disabled:cursor-not-allowed;
+  }
+  h3 {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700; /* font-bold */
+    color: var(--color-text-primary);
+  }
+
+  p {
+    @apply text-lg;
+  }
+
+  h4 {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    font-size: 1.125rem;
+    color: color-mix(in srgb, var(--color-text-primary) 70%, transparent);
+  }
+
+  .primary-button {
+    @apply px-4 py-2 rounded-xl font-semibold;
+    background-color: var(--color-primary);
+    color: var(--color-text-accent);
+    transition: background-color 0.3s var(--ease-fluid);
+  }
+}
