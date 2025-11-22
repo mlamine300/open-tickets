@@ -11,6 +11,7 @@ import { API_PATH } from "../../utils/apiPaths";
 import { useUserContext } from "../../context/user/userContext";
 import { AxiosError } from "axios";
 import { tokenService } from "../../utils/tokenService";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("lamine@gmail.com");
@@ -117,6 +118,7 @@ const Login = () => {
             variant="primary"
             onClick={handleLogin}
           />
+        
           {error?.login && (
             <p className="text-sm text-red-500">{error.login}</p>
           )}
@@ -125,7 +127,7 @@ const Login = () => {
           Don't have an account?{" "}
           <Link
             className="cursor-pointer text-primary underline hover:font-semibold"
-            to={"/signup"}
+            to={"/signup"} 
           >
             SignUp
           </Link>

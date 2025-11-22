@@ -8,6 +8,10 @@ import authRouter from "./routes/authRoutes.ts";
 
 import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
+import organisationModel from "./models/Organisation.ts";
+import { ObjectId } from "mongodb";
+import userModel from "./models/User.ts";
+import ticketModel from "./models/Ticket.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +32,9 @@ app.use(
 );
 
 connectToDB();
+
+
+
 
 app.use("/api/auth", authRouter);
 
