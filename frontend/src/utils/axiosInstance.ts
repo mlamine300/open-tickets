@@ -40,7 +40,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (err: AxiosError) => {
-    console.error("naela ", err.status);
+    console.error("axios error response intercepter ", err.status);
     if (err.response) {
       // if ((err.response.data as any)?.message === "Access token expired")
       if (err.status === 461) {

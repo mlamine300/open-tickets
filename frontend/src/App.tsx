@@ -4,6 +4,9 @@ import { Route, Routes } from 'react-router'
 import Login from './page/auth/Login'
 import SignUp from './page/auth/SignUp'
 import { Toaster } from "react-hot-toast";
+import PrivateRoute from './routes/PrivateRoute';
+import NotFound from './components/NotFound';
+import Dashboard from './page/Dashboard';
 function App() {
  
 
@@ -13,7 +16,12 @@ function App() {
     <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+<Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
+       <Route path="/" element={<Dashboard />} />
+       </Route>
+         <Route path="*" element={<NotFound />} />
       </Routes>  
+       
       <Toaster position="top-center" reverseOrder={false} />
      </div>)
 }

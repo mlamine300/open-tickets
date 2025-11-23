@@ -10,11 +10,12 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPaths";
 import { useUserContext } from "../../context/user/userContext";
 import { AxiosError } from "axios";
-import { tokenService } from "../../utils/tokenService";
+
 import toast from "react-hot-toast";
+import { tokenService } from "@/utils/tokenService";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("lamine@gmail.com");
+  const [email, setEmail] = useState<string>("user2@example.com");
   const [password, setPassword] = useState<string>("lamine123");
   const [error, setError] = useState<any>({});
   const [pending, setpending] = useState(false);
@@ -48,7 +49,7 @@ const Login = () => {
         console.log(response.data);
         const token = response.data.token;
         // localStorage.setItem("token", token);
-        tokenService.setToken(token);
+       tokenService.setToken(token);
         localStorage.setItem("role", response.data.role);
 
         updateUser(response.data);

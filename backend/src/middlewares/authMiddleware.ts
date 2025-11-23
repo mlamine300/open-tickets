@@ -58,3 +58,19 @@ export const checkAdmin = (req: Request, res: Response, next: NextFunction) => {
   }
   next();
 };
+
+export const checkSupervisor=(req:Request,res:Response,next:NextFunction)=>{
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "you don't have permission" });
+  }
+  const { role } = jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET as string
+  ) as TokenPayload;
+
+  if (!role ||role !=="standard") {
+    return res.status(401).json({ message: "you don't have asmin permission" });
+  }
+  next();
+}
