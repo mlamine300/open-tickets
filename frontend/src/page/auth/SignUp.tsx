@@ -77,9 +77,9 @@ const SignUp = () => {
         if (updateUser) updateUser(response.data);
         //
         if (role === "admin") {
-          navigate("/");
+          navigate("/form");
         } else {
-          navigate("/");
+          navigate("/form");
         }
       }
     } catch (error: any) {

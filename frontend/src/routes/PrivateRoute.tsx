@@ -18,7 +18,7 @@ const PrivateRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
 
   if (role && allowedRoles.includes(role))
     return (
-      <div className="w-full h-full">
+      <div className="w-full h-full ">
         <Header />
         <Outlet />
         <Fouter />

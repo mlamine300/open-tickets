@@ -1,0 +1,59 @@
+import { z } from "zod";
+import type { FormType, FormFieldType } from "../../../types";
+import { PRIORITY_DATA, STATUS_DATA } from "./data";
+import { getAllorganisations } from "./helper";
+
+export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
+  let schema: z.ZodTypeAny;
+
+  switch (field.type) {
+    case "text":
+      schema = z.string();
+      break;
+
+    case "number":
+      schema = z.number().refine(
+        (val) => typeof val === "number" && !isNaN(val),
+        { message: `${field.label} must be a number` }
+      );
+      break;
+
+    case "date":
+      schema = z.coerce.date(); // coercion from string → Date
+      break;
+
+    case "select":
+      if (!field.possibleValues || field.possibleValues.length === 0) {
+        schema = z.string(); // fallback
+      } else {
+        schema = z.enum(field.possibleValues as [string, ...string[]]);
+      }
+      break;
+
+    default:
+      schema = z.any();
+  }
+
+  if (field.required) {
+    return schema;
+  }
+
+  return schema.optional();
+}
+
+export  function buildZodFormSchema(formFromDb:FormType) {
+   
+  const shape: Record<string, z.ZodTypeAny> = {
+    // priority: z.enum(PRIORITY_DATA.map(x => x.value as string) as [string, ...string[]]).default("low"),
+    // status:z.enum(STATUS_DATA.map(x => x.value as string) as [string, ...string[]]).default("open"),
+    // organisationsTag:z.array(z.string()),
+    // organisationDesinataire:z.string(),
+    // message:z.string().min(3,"message should contain more then 3 charactars")
+  };
+
+  formFromDb.fields.forEach((field) => {
+    shape[field.name] = fieldToZod(field);
+  });
+
+  return z.object(shape);
+}

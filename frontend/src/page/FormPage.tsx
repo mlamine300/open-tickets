@@ -1,0 +1,58 @@
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import type { FormType } from '../../../types';
+import axiosInstance from '@/utils/axiosInstance';
+import { API_PATH } from '@/utils/apiPaths';
+import { standardForm, StandartFierlds } from '@/utils/data';
+import Formulaire from '@/components/Formulaire';
+import { buildZodFormSchema, fieldToZod } from '@/utils/zod';
+import Spinner from '@/components/Spinner';
+import { getAllorganisations } from '@/utils/helper';
+import DashboardLayout from '@/layouts/DashboardLayout';
+
+
+const FormPage = () => {
+     const [form,setForm]=useState<FormType|null>(null)
+    const { id } = useParams();
+      const[organisations,setOrganisations]=useState(null);
+      useEffect(()=>{
+        const setOrganisation=async()=>{
+          const theorganisations=await getAllorganisations();
+          setOrganisations(theorganisations)
+        }
+        setOrganisation();
+      },[])
+   
+    useEffect(()=>{
+        const getForm=async()=>{
+        if(!id||id==="standard"){
+        setForm(standardForm)
+         }else{
+            const res=await axiosInstance.get(API_PATH.FORMS.GET_FORM_BY_ID(id))
+            setForm(res.data.data)
+           
+             }
+           
+        }
+        getForm();
+    },[])
+    if(!form || !organisations) return <Spinner size='xl'/>;
+    console.log(form)
+    const schema=buildZodFormSchema(form);
+    if(!form.fields.map(f=>f.name).includes("priority"))
+    form.fields.push(...StandartFierlds(organisations));
+    return (
+      <DashboardLayout >
+        <div className='w-full flex flex-col items-center'>
+
+        <h1>FormPage</h1>
+       
+<Formulaire form={form} schema={schema}/>
+        </div>
+        
+        
+      </DashboardLayout>
+    );
+};
+
+export default FormPage;

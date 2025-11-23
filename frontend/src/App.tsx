@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import PrivateRoute from './routes/PrivateRoute';
 import NotFound from './components/NotFound';
 import Dashboard from './page/Dashboard';
+import FormPage from './page/FormPage';
 function App() {
  
 
@@ -17,7 +18,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 <Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
-       <Route path="/" element={<Dashboard />} />
+       <Route path="/form" element={<Dashboard />} />
+       
+        <Route path="/form/:id" element={<FormPage />} />
        </Route>
          <Route path="*" element={<NotFound />} />
       </Routes>  

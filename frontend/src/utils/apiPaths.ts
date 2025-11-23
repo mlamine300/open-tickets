@@ -13,6 +13,15 @@ export const API_PATH = {
     UPDATE_USER: (userID: string) => `/api/users/${userID}`,
     DELETE_USER: (userID: string) => `/api/users/${userID}`,
   },
+  FORMS:{
+    GET_FORM_BY_ID:(id:string)=>`/api/forms/${id}`,
+     ADD_FORM:"/api/forms",
+     UPDATE_FORM_BY_ID:(id:string)=>`/api/forms/${id}`
+  },
+  ORGANISATIONS:{
+    GET_ALL_ORGANISATIONS:'/api/organisations',
+    GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`
+  },
   // TASK: {
   //   GET_DASHBOARD_DATA: "/api/tasks/dashboard-data",
   //   GET_USER_DASHBOARD_DATA: "/api/tasks/user-dashboard-data",

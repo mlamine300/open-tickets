@@ -55,9 +55,9 @@ const Login = () => {
         updateUser(response.data);
 
         if (user?.role === "admin") {
-          navigate("/");
+          navigate("/form");
         } else {
-          navigate("/");
+          navigate("/form");
         }
       }
     } catch (error: any) {

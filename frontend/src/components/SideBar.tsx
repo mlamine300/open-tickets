@@ -22,7 +22,7 @@ const SideBar = () => {
     <>
       {/* <button onClick={setShowed((s) => !s)}> */}
       <HiBars3
-        className="fixed z-20 left-2 top-5 rounded-full bg-background-base text-primary md:hidden w-5 h-5 active:rotate-30 transition"
+        className="fixed z-20 left-10  top-5 rounded-full bg-gray-hot/20 p-2 text-primary md:hidden w-8 h-8 active:rotate-30 transition"
         onClick={() => setShowed((b) => !b)}
       />
       {/* </button> */}
