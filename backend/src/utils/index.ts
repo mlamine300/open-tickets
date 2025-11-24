@@ -1,3 +1,8 @@
+import { Types } from "mongoose";
+import organisationModel from "../models/Organisation.ts";
+import formulaireModel from "../models/Formulaire.ts";
+import { FormFieldType } from "../../../types/index.ts";
+
 export const validateFieldSchema=(input:any)=> {
   const errors = [];
 
@@ -30,4 +35,43 @@ export const validateFieldSchema=(input:any)=> {
     valid: errors.length === 0,
     errors
   };
+}
+export const getOrganisationId:(t:string)=>Promise<Types.ObjectId|null>=async(name:string)=>{
+try {
+  const found=await organisationModel.findOne({name}).lean().exec();
+  if(found)return found._id;
+  return null;
+} catch (error) {
+  console.log(error);
+  return null;
+}
+  
+
+}
+
+export const getOrganisationsId:(t:string[])=>Promise<Types.ObjectId[]|null>=async(t:string[])=>{
+  try {
+    const list=await organisationModel.find({name:{ $in:[...t] } }).lean().exec();
+    if(list&&list.length){
+      return list.map(l=>l._id);
+    }
+
+    return null;
+
+  } catch (error) {
+    console.log(error)
+    return null;
+  }
+}
+
+export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=async(name:string)=>{
+  try {
+      const form=await formulaireModel.findOne({name}).lean().exec();
+      if(!form||!form.fields||!Array.isArray(form.fields)||form.fields.length<1)return null;
+      else return form.fields;
+
+  } catch (error) {
+    console.log(error)
+    return null;
+  }
 }

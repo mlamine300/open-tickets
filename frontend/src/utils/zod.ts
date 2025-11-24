@@ -13,7 +13,7 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
 
     case "number":
       schema = z.number().refine(
-        (val) => typeof val === "number" && !isNaN(val),
+        (val) => typeof Number(val) === "number" && !isNaN(val),
         { message: `${field.label} must be a number` }
       );
       break;
@@ -25,7 +25,11 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
     case "select":
       if (!field.possibleValues || field.possibleValues.length === 0) {
         schema = z.string(); // fallback
-      } else {
+      }
+      else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"){
+      schema = z.string();
+      }
+      else {
         schema = z.enum(field.possibleValues as [string, ...string[]]);
       }
       break;

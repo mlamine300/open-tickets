@@ -21,39 +21,49 @@ export interface User {
   createdAt?: Date;
   activeStatus?: boolean;
 }
-export interface Form{_id:string;
-  name:string;
-  description:string;
-    fields:{
+export interface FormFieldType{
       name:string;
       label:string;
-      type:string;
-      possibleValue?:[]}}
+      type:"text"|"number"|"select"|"date"|"select-multiple"|"area";
+      possibleValues?:string[];
+    required:boolean;}
+export interface FormType{_id:string;
+  name:string;
+  description:string;
+    fields:FormFieldType[]}
 export type priorityLevel = "Low" | "Medium" | "High";
 export type statusType = "Pending" | "In Progress" | "Completed";
 
+export interface Organisation{
+  _id?:string;
+  name:string;
+   head?:string;
+    address?:string;
+     description?:string;
+   
+}
 
-// export interface TaskLine {
-//   _id: string;
-//   status: statusType;
-//   title: string;
-//   priority: priorityLevel;
-//   createdAt: Date;
-// }
-// export interface TodoType {
-//   text: string;
-//   completed?: boolean | true;
-// }
-// export interface Task {
-//   _id?: string;
-//   title: string;
-//   description: string;
-//   priority?: "Low" | "Medium" | "High";
-//   status?: "Pending" | "In Progress" | "Completed";
-//   dueDate: Date;
-//   assignedTo: User[];
-//   createdBy?: string;
-//   attachments?: string[];
-//   todoChecklist: TodoType[];
-//   progress?: number;
-// }
+export interface ticket{
+
+  creator:string;
+  emitterOrganizationId:string;
+  recipientOrganizationId:string;
+    associatedOrganizations?:string[];
+    type:string;
+    status?:string;
+    priority?:string;
+    pj?:any;
+    message:string;
+    commentsId:string[];
+    specialFeilds?:{name:string;value:any}[]
+    updatedAt?:Date;
+}
+
+export interface Comment{
+  ticketId:string;
+  authorId:string;
+  message:string;
+
+}
+
+

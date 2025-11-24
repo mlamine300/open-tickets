@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import type { FormType } from '../../../types';
+import type { FormType, Organisation } from '../../../types';
 import axiosInstance from '@/utils/axiosInstance';
 import { API_PATH } from '@/utils/apiPaths';
 import { standardForm, StandartFierlds } from '@/utils/data';
@@ -14,7 +14,7 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 const FormPage = () => {
      const [form,setForm]=useState<FormType|null>(null)
     const { id } = useParams();
-      const[organisations,setOrganisations]=useState(null);
+      const[organisations,setOrganisations]=useState<Organisation[]>([]);
       useEffect(()=>{
         const setOrganisation=async()=>{
           const theorganisations=await getAllorganisations();
@@ -26,7 +26,7 @@ const FormPage = () => {
     useEffect(()=>{
         const getForm=async()=>{
         if(!id||id==="standard"){
-        setForm(standardForm)
+        setForm(standardForm(organisations))
          }else{
             const res=await axiosInstance.get(API_PATH.FORMS.GET_FORM_BY_ID(id))
             setForm(res.data.data)
@@ -36,7 +36,12 @@ const FormPage = () => {
         }
         getForm();
     },[])
-    if(!form || !organisations) return <Spinner size='xl'/>;
+    if(!form || !organisations) return  <DashboardLayout  >
+      <div className='w-full h-screen pb-20 flex items-center justify-center '>
+
+      <Spinner size='xl'/>
+      </div>
+    </DashboardLayout> ;
     console.log(form)
     const schema=buildZodFormSchema(form);
     if(!form.fields.map(f=>f.name).includes("priority"))

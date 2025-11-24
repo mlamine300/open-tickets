@@ -1,5 +1,6 @@
 
 
+import type { Organisation } from "../../../types";
 import { API_PATH } from "./apiPaths";
 import axiosInstance from "./axiosInstance";
 
@@ -19,7 +20,7 @@ export const getColorFromName = (name: string): string => {
   return `hsl(${hue}, 65%, 55%)`;
 };
 
-export const getAllorganisations=async()=>{
+export const getAllorganisations:()=>Promise<Organisation[]> =async()=>{
 const localOrganisationsString=localStorage.getItem("organisations")||"{}";
 
 const data=JSON.parse(localOrganisationsString)
@@ -48,6 +49,13 @@ return null;
 }
 
 return localOrganisations;
+}
+
+export const getOrganisationId=async(name:string)=>{
+  const organisations=await getAllorganisations();
+  const foundOne=organisations.filter(x=>x.name===name);
+  if(!foundOne||foundOne.length<1)return null;
+  return foundOne.at(0)
 }
 
 

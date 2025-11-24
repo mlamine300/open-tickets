@@ -15,6 +15,8 @@ import ticketModel from "./models/Ticket.ts";
 import organisationRouter from "./routes/organisationRoute.ts";
 import formRouter from "./routes/formRoutes.ts";
 import formulaireModel from "./models/Formulaire.ts";
+import { protect } from "./middlewares/authMiddleware.ts";
+import ticketRouter from "./routes/ticketRoutes.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,8 +81,9 @@ connectToDB();
 
 
 app.use("/api/auth", authRouter);
-app.use("/api/organisations", organisationRouter);
-app.use("/api/forms", formRouter);
+app.use("/api/organisations",protect, organisationRouter);
+app.use("/api/forms",protect, formRouter);
+app.use("/api/tickets",protect, ticketRouter);
 
 
 

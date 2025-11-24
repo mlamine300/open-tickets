@@ -84,6 +84,9 @@ export const loginUser = async (req: Request, res: Response) => {
 
   if (!foundUser || !foundUser.password)
     return res.status(409).json({ message: "incorrect email or password" });
+  if(!foundUser.activeStatus){
+     return res.status(409).json({ message: "account is non active" });
+  }
   const compare = await bcrypt.compare(password, foundUser.password);
   if (!compare)
     return res.status(409).json({ message: "incorrect email or password" });
@@ -209,6 +212,7 @@ export const updateUserProfile = async (
 
 export const refreshToken = async (req: Request, res: Response) => {
   try {
+    console.log("refreshing")
     if (!req.cookies)
       return res.status(462).json({ messsage: "there is no cookies" });
     const token = req.cookies.refreshToken;
@@ -227,7 +231,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       console.log(r.token, " | ", hashedtoken, " = ", r.token === hashedtoken)
     );
     const idx = user.refreshTokens.findIndex((rt) => rt.token === hashedtoken);
-    if (idx === -1) {
+    if (idx !== -1) {
       user.refreshTokens.splice(0, user.refreshTokens.length);
       await user.save();
       return res.status(403).json({ msg: "Reuse detected" });

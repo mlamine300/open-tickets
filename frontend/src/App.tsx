@@ -8,6 +8,7 @@ import PrivateRoute from './routes/PrivateRoute';
 import NotFound from './components/NotFound';
 import Dashboard from './page/Dashboard';
 import FormPage from './page/FormPage';
+import TicketPage from './page/TicketPage';
 function App() {
  
 
@@ -21,6 +22,7 @@ function App() {
        <Route path="/form" element={<Dashboard />} />
        
         <Route path="/form/:id" element={<FormPage />} />
+        <Route path="/tickets" element={<TicketPage />} />
        </Route>
          <Route path="*" element={<NotFound />} />
       </Routes>  

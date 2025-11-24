@@ -22,6 +22,11 @@ export const API_PATH = {
     GET_ALL_ORGANISATIONS:'/api/organisations',
     GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`
   },
+  TICKETS:{
+    GET_ALL_TICKETS:"/api/tickets",
+     ADD_TICKET:"/api/tickets",
+     ADD_COMMENT:(id:string)=>`/${id}/comment`
+  },
   // TASK: {
   //   GET_DASHBOARD_DATA: "/api/tasks/dashboard-data",
   //   GET_USER_DASHBOARD_DATA: "/api/tasks/user-dashboard-data",

@@ -5,7 +5,7 @@ import {
   LuSquarePlus,
   LuUser,
 } from "react-icons/lu";
-import type { Form, FormFieldType, Organisation } from "../../../types";
+import type { FormType, FormFieldType, Organisation } from "../../../types";
 
 export const SIDE_MENU_ADMIN_DATA = [
   {
@@ -90,17 +90,12 @@ export const STATUS_DATA = [
   { label: "Completed", value: "Completed" },
 ];
 
-export const standardForm:Form={
+export const standardForm=(organisations:Organisation[]):FormType=>({
         _id:"standard",
         name:"standard",
         description:"reclamation standard",
-        fields:[
-        { name:"message",
-        label:"Message",
-        type:"text",
-        possibleValues:[],
-      required:true}]
-    }
+        fields:StandartFierlds(organisations),
+    })
 
 // name:string;
 //       label:string;
@@ -109,8 +104,10 @@ export const standardForm:Form={
 //     required:boolean;
 
     export const StandartFierlds=(organisations:Organisation[]):FormFieldType[]=>[
-      {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
-      {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:true},
-        {name:"organisationDest",label:"organisation Destinataire",type:"select",possibleValues:organisations.map(o=>o.name),required:true},
-        {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:organisations.map(o=>o.name),required:false},
+      {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false},
+      {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
+      // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
+        {name:"organisationDest",label:"organisation Destinataire",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
+        {name:"organisationTag",label:"organisation Taguée",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
     ]
+    
