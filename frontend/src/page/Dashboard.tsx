@@ -3,16 +3,19 @@ import axiosInstance from '@/utils/axiosInstance';
 import React, { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormType } from '../../../types';
+import type { FormType, Organisation } from '../../../types';
 import { standardForm } from '@/utils/data';
 import DynamicForm from '@/components/Formulaire';
 import { buildZodFormSchema } from '@/utils/zod';
 import { getAllorganisations } from '@/utils/helper';
+import { API_PATH } from '@/utils/apiPaths';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
     
-    const[organisations,setOrganisation]=useState<FormType[]>([]);
+    const[organisations,setOrganisation]=useState<Organisation[]>([]);
     const[forms,setForms]=useState<FormType[]|null>(null);
+    
     useEffect(()=>{
         const getForms=async()=>{
             try {
@@ -34,6 +37,7 @@ const Dashboard = () => {
         }
         getForms();
         getOrganisations();
+       
     },[])
     const myStandardForm=standardForm(organisations);
 const standardSchema=buildZodFormSchema(myStandardForm);

@@ -17,6 +17,7 @@ import formRouter from "./routes/formRoutes.ts";
 import formulaireModel from "./models/Formulaire.ts";
 import { protect } from "./middlewares/authMiddleware.ts";
 import ticketRouter from "./routes/ticketRoutes.ts";
+import commentRouter from "./routes/commentRoutes.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,6 +85,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/organisations",protect, organisationRouter);
 app.use("/api/forms",protect, formRouter);
 app.use("/api/tickets",protect, ticketRouter);
+app.use("/api/comment",protect, commentRouter);
 
 
 

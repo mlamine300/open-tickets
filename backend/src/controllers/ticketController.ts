@@ -54,32 +54,7 @@ export const addTicket=async(req:Request,res:Response)=>{
         return res.status(500).json({message:"server error"})
     }
 }
-export const addComment=async(req:Request,res:Response)=>{
-    try {
-         //checking auth
-        const token = req.headers.authorization?.split(" ")[1];
-        if (!token) return res.status(409).json({ message: "not autorized" });
-        const { userId:authorId,organisation:emitterOrganizationId,activeStatus } = (await jwt.decode(token)) as TokenPayload;
-        if (!authorId||!activeStatus) return res.status(400).json({message:"not authorized"})
-          const ticketId=req.params.id;
-         const message=req.body.message;
-         if(!ticketId||!message)return res.status(400).json({message:"fields (message, ticketID) are required"})
-            const ticket=await ticketModel.findById(ticketId);
-        if(!ticket)return res.status(404).json({message:"tickets not found"});
-            const comment=await commentsModel.create({authorId,ticketId,message});
-        if(!comment||!comment._id){
-            return res.status(400).json({message:"error adding comment"});
-        }
-         ticket.comments.push(comment._id);
-         await ticket.save();
-         return ticket;
-        
 
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({message:"server error: adding comment to ticket"})
-    }
-}
 export const getTickets=async(req:Request,res:Response)=>{
 const token = req.headers.authorization?.split(" ")[1];
 if (!token) return res.status(409).json({ message: "not autorized" });
