@@ -14,30 +14,94 @@ export const SIDE_MENU_ADMIN_DATA = [
     icon: LuLayoutDashboard,
     path: "/",
   },
+   {
+    id: "01",
+    label: "DashBoard",
+    icon: LuLayoutDashboard,
+    path: "/",
+    hasChilds:false
+  },
   {
     id: "02",
-    label: "Manage Tickets",
+    label: "My Tickets",
     icon: LuClipboardCheck,
     path: "/tickets",
+    hasChilds:true,
+    childs:[
+      {
+      id:"21",
+      label: "Tickets en attente",
+      icon: LuClipboardCheck,
+      path: "/tickets/pending",
+
+    },
+     {
+      id:"22",
+      label: "Prêt en charge par moi ",
+      icon: LuClipboardCheck,
+      path: "/tickets/open_me",
+
+    },
+        {
+      id:"23",
+      label: "Ticket ouvert ",
+      icon: LuClipboardCheck,
+      path: "/tickets/open",
+
+    },
+    {
+      id:"24",
+      label: "Ticket clôturés ",
+      icon: LuClipboardCheck,
+      path: "/tickets/closed",
+
+    },
+    {
+      id:"25",
+      label: "Ticket clôturés ",
+      icon: LuClipboardCheck,
+      path: "/tickets/closed",
+
+    },
+  ],
+  
+
   },
-//   {
-//     id: "03",
-//     label: "Create Task",
-//     icon: LuSquarePlus,
-//     path: "/create-task",
-//   },
-//   {
-//     id: "04",
-//     label: "Team Members",
-//     icon: LuUser,
-//     path: "/users",
-//   },
+   {
+      id:"03",
+      label: "Ticket envoyés",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent",
+      hasChilds:true,
+    childs:[
+      {
+      id:"31",
+      label: "En attente",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/pending",
+      },
+       {
+      id:"32",
+      label: "Ouvert",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/open",
+      },
+       {
+      id:"33",
+      label: "Clôturés",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/closed",
+      },
+    ]
+
+    },
   {
-    id: "05",
+    id: "06",
     label: "Logout",
     icon: LuLogOut,
     path: "/logout",
   },
+
 ];
 export const SIDE_MENU_USER_DATA = [
   {
@@ -45,40 +109,85 @@ export const SIDE_MENU_USER_DATA = [
     label: "DashBoard",
     icon: LuLayoutDashboard,
     path: "/",
+    hasChilds:false
+
   },
   {
     id: "02",
     label: "My Tickets",
     icon: LuClipboardCheck,
     path: "/tickets",
+    hasChilds:true,
+    childs:[
+      {
+      id:"21",
+      label: "Tickets en attente",
+      icon: LuClipboardCheck,
+      path: "/tickets/pending",
+
+    },
+     {
+      id:"22",
+      label: "Prêt en charge par moi ",
+      icon: LuClipboardCheck,
+      path: "/tickets/open_me",
+
+    },
+        {
+      id:"23",
+      label: "Ticket ouvert ",
+      icon: LuClipboardCheck,
+      path: "/tickets/open",
+
+    },
+    {
+      id:"24",
+      label: "Ticket clôturés ",
+      icon: LuClipboardCheck,
+      path: "/tickets/closed",
+
+    },
+   
+  ],
+  
+
   },
+   {
+      id:"03",
+      label: "Ticket envoyés",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent",
+      hasChilds:true,
+    childs:[
+      {
+      id:"31",
+      label: "En attente",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/pending",
+      },
+       {
+      id:"32",
+      label: "Ouvert",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/open",
+      },
+       {
+      id:"33",
+      label: "Clôturés",
+      icon: LuClipboardCheck,
+      path: "/tickets/sent/closed",
+      },
+    ]
+
+    },
   {
-    id: "05",
+    id: "06",
     label: "Logout",
     icon: LuLogOut,
     path: "/logout",
   },
 ];
-export const SIDE_MENU_SUPERVISOR_DATA=  [
-  {
-    id: "01",
-    label: "DashBoard",
-    icon: LuLayoutDashboard,
-    path: "/",
-  },
-  {
-    id: "02",
-    label: "My Tickets",
-    icon: LuClipboardCheck,
-    path: "/tickets",
-  },
-  {
-    id: "05",
-    label: "Logout",
-    icon: LuLogOut,
-    path: "/logout",
-  },
-];
+
 export const PRIORITY_DATA = [
   { label: "Low", value: "Low" },
   { label: "Medium", value: "Medium" },

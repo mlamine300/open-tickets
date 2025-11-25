@@ -5,6 +5,8 @@ import MenuItem from "./MenuItem";
 import { useLocation } from "react-router";
 import { HiBars3 } from "react-icons/hi2";
 import { getColorFromName } from "../utils/helper";
+import PopUpMenuItem from "./PopUpMenuItem";
+import { Accordion } from "./ui/accordion";
 
 const SideBar = () => {
   const { pathname } = useLocation();
@@ -31,7 +33,7 @@ const SideBar = () => {
         className={`min-h-lvh  bg-background-base transition duration-300 ease-in-out  ${
           showed
             ? "fixed h-full  flex flex-col w-full z-10"
-            : "relative  mt-10 hidden md:flex flex-col w-64 border-r-[1px] gap-10 border-gray-hot "
+            : "relative  mt-10 hidden md:flex flex-col w-64 border-r gap-10 border-gray-hot "
         }`}
       >
         <div className="flex  flex-col items-center w-64 gap-1 mt-8">
@@ -52,15 +54,27 @@ const SideBar = () => {
           <p className="font-light text-gray-500 text-[10px]">{user?.email} </p>
         </div>
         <div>
+           <Accordion type="single" collapsible>
           {menuItems.map((item, index) => {
-            return (
+          if(item.hasChilds){
+              return (
+              <PopUpMenuItem
+                item={item}
+                key={index}
+                choosed={isShoosed(item.path)}
+              />
+            );
+          }else{
+              return (
               <MenuItem
                 item={item}
                 key={index}
                 choosed={isShoosed(item.path)}
               />
             );
+          }
           })}
+          </Accordion>
         </div>
       </aside>
     </>

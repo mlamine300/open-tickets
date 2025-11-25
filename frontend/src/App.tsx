@@ -22,7 +22,7 @@ function App() {
        <Route path="/form" element={<Dashboard />} />
        
         <Route path="/form/:id" element={<FormPage />} />
-        <Route path="/tickets" element={<TicketPage />} />
+        <Route path="/tickets/*" element={<TicketPage />} />
        </Route>
          <Route path="*" element={<NotFound />} />
       </Routes>  

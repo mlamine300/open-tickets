@@ -1,23 +1,30 @@
-import { getTickets } from '@/utils/action';
+import DashboardLayout from '@/layouts/DashboardLayout';
+import { getSpecificTicket, getTickets } from '@/utils/action';
 import { API_PATH } from '@/utils/apiPaths';
 import axiosInstance from '@/utils/axiosInstance';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import type { ticket } from '../../../types';
+import { useLocation } from 'react-router';
 
 const TicketPage = () => {
+  const {pathname}=useLocation();
+  
+      const [ticket,setTicket]=useState<ticket[]>([])
     useEffect(()=>{
         const getMyTickets=async()=>{
-            const ticket=await getTickets();
-            console.log("-----");
+            const res=await getSpecificTicket(pathname);
             
-            console.log(ticket);
+            
+            console.log(res);
             
         }
         getMyTickets();
-    },[])
+    },[pathname])
   return (
-    <div>
+    <DashboardLayout>
       <h1>Component</h1>
-    </div>
+    </DashboardLayout>
   );
 };
 

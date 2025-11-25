@@ -75,3 +75,5 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
     return null;
   }
 }
+
+export const COMMENT_ACTIONS=["comment","open","close","en_cours","traite"]

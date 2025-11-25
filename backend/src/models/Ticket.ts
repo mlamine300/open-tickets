@@ -1,5 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-
+const AssignedToSchema=new mongoose.Schema({
+assignedTo:{type: Schema.Types.ObjectId, ref: 'User',required:false},
+assignedToTime:{type:Date,required:false},
+})
 const TicketSchema=new mongoose.Schema({
     creator:{ type: Schema.Types.ObjectId, ref: 'User' },
     emitterOrganizationId:{ type: Schema.Types.ObjectId, ref: 'Organisation',required:true },
@@ -12,7 +15,10 @@ const TicketSchema=new mongoose.Schema({
     message:{type:String,required:true},
     comments:[{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     specialFields : {type:Schema.Types.Mixed,required:false},
-    updatedAt:{type:Date,default:new Date() }
+    updatedAt:{type:Date,default:new Date() },
+    AssignedTo:{type:AssignedToSchema, required:false},
+    AssignementHistory:{type:[AssignedToSchema],required:false}
+
 },{ timestamps: true });
 
 const ticketModel=mongoose.model("Ticket",TicketSchema)

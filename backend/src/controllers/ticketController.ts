@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import jwt from "jsonwebtoken";
 import { TokenPayload } from "../types/index.ts";
 import ticketModel from "../models/Ticket.ts";
-import { ticket } from "../../../types/index.ts";
+import { ticket, User } from "../../../types/index.ts";
 import { getFieldsFromFormName, getOrganisationId, getOrganisationsId } from "../utils/index.ts";
 import { commentsModel } from "../models/Comment.ts";
 export const addTicket=async(req:Request,res:Response)=>{
@@ -58,31 +58,88 @@ export const addTicket=async(req:Request,res:Response)=>{
 export const getTickets=async(req:Request,res:Response)=>{
 const token = req.headers.authorization?.split(" ")[1];
 if (!token) return res.status(409).json({ message: "not autorized" });
-    const { userId,role,organisation,organisationsList,activeStatus } = (await jwt.decode(token)) as TokenPayload;
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId,role,organisation,organisationsList,activeStatus }=user;
     if (!userId) return res.status(409).json({ message: "not autorized" });
 
-    const maxPerPage=req.body?.maxPerPage||10
-    const page=req.body?.page||1;
-    let tickets:ticket[]=[];
+    const maxPerPage:number=Number(req.body?.maxPerPage)||10
+    const page:number=Number( req.body?.page)||1;
+    const type=req.body?.type||"pending";
+    const arggFromAcount=getResponsablitiesFilterFromRole(user)
+    const arrgToAdd=getFilterFromType(type);
+    let tickets=[];
+    
+    tickets=await ticketModel.find({...arggFromAcount,...arggFromAcount}).skip((page-1)*maxPerPage).limit(maxPerPage).lean().exec();
+    
+
+    return res.status(200).json({message:"success",data:tickets})
+}
+
+export const getTicketByid=async(req:Request,res:Response)=>{
+   try {
+     const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId,role,organisation,organisationsList,activeStatus }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+
+    const ticket=await ticketModel.findById(id);
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+        return res.status(200).json({message:"success",data:ticket})
+   } catch (error) {
+    console.log(error);
+    return res.status(500).json({message:"server error",error})
+    
+   }
+}
+
+export const getMytickets=async(req:Request,res:Response)=>{
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId,role,organisation,organisationsList,activeStatus }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+
+    const maxPerPage:number=Number(req.body?.maxPerPage)||10
+    const page:number=Number(req.body?.page)||1;
+    const type=req.body?.type||"pending";
+    const tickets=await ticketModel.find({creator:userId}).skip((page-1) * 10).limit(maxPerPage).lean().exec();
+    if(!tickets||!Array.isArray(tickets)||!tickets.length){
+        return res.status(200).json({message:"there are no ticket",data:[]})
+    }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:"server error",error})
+        
+    }
+}
+
+const getFilterFromType=(type:string)=>{
+
+}
+
+const getResponsablitiesFilterFromRole=(user:TokenPayload)=>{
+    const {role,organisation}=user;
+    const organisationsList=user.organisationsList||[];
     if(role==="standard"){
-        tickets=await ticketModel.find({$or: [
+return{$or: [
     { emitterOrganizationId: organisation },
     { recipientOrganizationId: organisation }
   ]
-})
+}
     }
-    else if(role==="supervisor") {
- tickets=await ticketModel.find({$or: [
+    else if(role==="supervisor"){
+     return {$or: [
     { emitterOrganizationId:{ $in: [organisation,...organisationsList] } },
     { recipientOrganizationId: { $in: [organisation,...organisationsList] }  },
     { associatedOrganizations: { $in: [organisation,...organisationsList] } },
   ]
-}
-)
+}   
     }
-    else{
-        tickets=await ticketModel.find({})
-    }
+    else return {}
 
-    return res.status(200).json({message:"success",data:tickets})
 }
+

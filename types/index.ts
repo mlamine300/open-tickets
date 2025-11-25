@@ -1,13 +1,20 @@
-/*
- name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    organisation:{type:Schema.Types.ObjectId,ref:"Organisation" , required:true},
-    organisationsList:[{type:Schema.Types.ObjectId,ref:"Organisation"}],
-    role: { type: String, enum: ["admin", "standard","supervisor"], default: "standard" },
-    refreshTokens: [RefreshTokenSchema],
-    activeStatus: { type: Boolean, default: true },
-*/
+export interface SimpleMenuItemType {
+    id: string;
+    label: string;
+    icon: any;
+    path: string;
+}
+
+export interface MenuItemType{
+  
+    id: string;
+    label: string;
+    icon: any;
+    path: string;
+    hasChilds:boolean;
+    childs?:SimpleMenuItemType[];
+  
+}
 
 export interface User {
   _id?: string;

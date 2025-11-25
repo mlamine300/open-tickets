@@ -26,17 +26,7 @@ const MenuItem = ({
     }
   };
   const Icon = item.icon;
-  // if (item.path === "/logout") {
-  //   const LogOut=()=>{
-
-  //   }
-  //   return (
-  //     <Link  onClick={()=>LogOut()} className="flex flex-row p-2 items-center gap-4 text-lg my-1 cursor-pointer text-text-primary/90">
-  //       <Icon className={""} />
-  //       <p className="text-sm">{item.label} </p>
-  //     </Link>
-  //   );
-  // }
+  
   return (
     <Link
       onClick={() => {

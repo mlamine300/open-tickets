@@ -23,8 +23,11 @@ export const API_PATH = {
     GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`
   },
   TICKETS:{
-    GET_ALL_TICKETS:"/api/tickets",
+    //GET_ALL_TICKETS:"/api/tickets",
+    GET_SPECIFIC_TICKETS:(type:string)=>`/api/tickets/list/${type}`,
      ADD_TICKET:"/api/tickets",
+      GET_TICKET:"/api/tickets",
+      GET_MY_TICKETS:"/api/tickets/me"
      
   },
   COMMENT:{ADD_COMMENT:(id:string)=>`/api/comment/${id}`},
