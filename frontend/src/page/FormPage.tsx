@@ -50,7 +50,7 @@ const FormPage = () => {
       <DashboardLayout >
         <div className='w-full flex flex-col items-center'>
 
-        <h1>FormPage</h1>
+       
        
 <Formulaire form={form} schema={schema}/>
         </div>

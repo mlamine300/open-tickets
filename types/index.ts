@@ -51,8 +51,9 @@ export interface Organisation{
 }
 
 export interface ticket{
-
+  _id:string;
   creator:string;
+  ref:string;
   emitterOrganizationId:string;
   recipientOrganizationId:string;
     associatedOrganizations?:string[];
@@ -63,6 +64,8 @@ export interface ticket{
     message:string;
     commentsId:string[];
     specialFeilds?:{name:string;value:any}[]
+    assignedTo?:{name:string;date:Date}
+    AssignementHistory?:{name:string;date:Date}[]
     updatedAt?:Date;
 }
 

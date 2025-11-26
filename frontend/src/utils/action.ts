@@ -50,7 +50,7 @@ export const getOpenTicket:()=>Promise<ticket[]>=async()=>{
 }
 export const getClosedTicket:()=>Promise<ticket[]>=async()=>{
      console.log("closed");
-    const res=await axiosInstance.get(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("closed"));
+    const res=await axiosInstance.get(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("close"));
     if(res.status===200)return res.data.data as ticket[];
    return [];
     

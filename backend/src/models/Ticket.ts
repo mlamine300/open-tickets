@@ -1,10 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 const AssignedToSchema=new mongoose.Schema({
-assignedTo:{type: Schema.Types.ObjectId, ref: 'User',required:false},
-assignedToTime:{type:Date,required:false},
+name:{type: Schema.Types.ObjectId, ref: 'User',required:false},
+date:{type:Date,required:false},
 })
 const TicketSchema=new mongoose.Schema({
     creator:{ type: Schema.Types.ObjectId, ref: 'User' },
+    ref:{type:String,required:false},
     emitterOrganizationId:{ type: Schema.Types.ObjectId, ref: 'Organisation',required:true },
     recipientOrganizationId:{ type: Schema.Types.ObjectId, ref: 'Organisation',required:true },
     associatedOrganizations: [{ type: Schema.Types.ObjectId, ref: 'Organisation' }],

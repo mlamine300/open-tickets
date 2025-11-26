@@ -5,6 +5,7 @@ import ticketModel from "../models/Ticket.ts";
 import { ticket, User } from "../../../types/index.ts";
 import { getFieldsFromFormName, getOrganisationId, getOrganisationsId } from "../utils/index.ts";
 import { commentsModel } from "../models/Comment.ts";
+import { populate } from "dotenv";
 export const addTicket=async(req:Request,res:Response)=>{
    
 
@@ -64,14 +65,22 @@ if (!token) return res.status(409).json({ message: "not autorized" });
 
     const maxPerPage:number=Number(req.body?.maxPerPage)||10
     const page:number=Number( req.body?.page)||1;
-    const type=req.body?.type||"pending";
+    const type=req.params.type||"pending";
     const arggFromAcount=getResponsablitiesFilterFromRole(user)
-    const arrgToAdd=getFilterFromType(type);
+    const arrgToAdd=getFilterFromType(type,userId);
     let tickets=[];
+    console.log(type)
+    console.log({...arggFromAcount,...arrgToAdd});
     
-    tickets=await ticketModel.find({...arggFromAcount,...arggFromAcount}).skip((page-1)*maxPerPage).limit(maxPerPage).lean().exec();
+    tickets=await ticketModel.find({...arggFromAcount,...arrgToAdd})  
+    .skip((page-1)*maxPerPage).limit(maxPerPage).populate("creator", ["name","email"]) 
+      .populate("emitterOrganizationId", "name")
+        .populate("recipientOrganizationId", "name")
+        .populate("associatedOrganizations", "name")
+      .lean().exec();
     
-
+    //console.log(tickets);
+    
     return res.status(200).json({message:"success",data:tickets})
 }
 
@@ -117,8 +126,23 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     }
 }
 
-const getFilterFromType=(type:string)=>{
+const getFilterFromType=(type:string,userId:string)=>{
+switch(type){
+    case "pending":{
+        return {status:"pending"}
+    }
 
+    case "open":{
+        return {status:"open"}
+    }
+    case "open_me":{
+        return {status:"open",assignedTo:{$elemMatch:{"name":userId}}}
+    }
+    case "close":{
+        return {status:"close"}
+    }
+    default: return {};
+}
 }
 
 const getResponsablitiesFilterFromRole=(user:TokenPayload)=>{
