@@ -44,14 +44,14 @@ export const columns: ColumnDef<ticket>[] = [
     accessorKey: "emitterOrganizationId",
     header: "from / to",
      cell: ({ row }) => {
+        const original=row.original;
         
-        
-      const emitterOrganizationId = (row.getValue("emitterOrganizationId")as any).name as string
-      const recipientOrganizationId = row.getValue("recipientOrganizationId")?(row.getValue("recipientOrganizationId")as any).name as string :"not yet"
+      const emitterOrganization = (original.emitterOrganization as any).name as string
+      const recipientOrganization = original.recipientOrganization?(original.recipientOrganization as any).name as string :"not yet"
       return <div className="flex flex-col justify-around items-center gap-1 w-fit">
-        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">from:</span> {emitterOrganizationId} </p>
+        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">from:</span> {emitterOrganization} </p>
         <ArrowUpDown/>
-         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">to:</span> {recipientOrganizationId} </p>
+         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">to:</span> {recipientOrganization} </p>
       </div>;
      }
   },
@@ -86,10 +86,10 @@ export const columns: ColumnDef<ticket>[] = [
     header: "Assigned To",
      cell: ({ row }) => {
         
-        const obj=row.getValue("assignedTo");
+        const obj=row.original.assignedTo?.user;
         
       const assignedTo =obj? (obj as any).name:"no one" as string
-      return assignedTo;
+      return assignedTo||"no one";
      },
     },
 {

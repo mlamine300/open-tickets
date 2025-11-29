@@ -56,6 +56,8 @@ export interface ticket{
   ref:string;
   emitterOrganizationId:string;
   recipientOrganizationId:string;
+  emitterOrganization?:string;
+  recipientOrganization?:string;
     associatedOrganizations?:string[];
     type:string;
     status?:string;
@@ -64,7 +66,7 @@ export interface ticket{
     message:string;
     commentsId:string[];
     specialFeilds?:{name:string;value:any}[]
-    assignedTo?:{name:string;date:Date}
+    assignedTo?:{user:{name:string;email:string};date:Date}
     AssignementHistory?:{name:string;date:Date}[]
     updatedAt?:Date;
 }

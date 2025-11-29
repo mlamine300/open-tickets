@@ -11,7 +11,7 @@ import { API_PATH } from "../../utils/apiPaths";
 import { useUserContext } from "../../context/user/userContext";
 import { AxiosError } from "axios";
 
-import toast from "react-hot-toast";
+
 import { tokenService } from "@/utils/tokenService";
 
 const Login = () => {
@@ -54,11 +54,9 @@ const Login = () => {
 
         updateUser(response.data);
 
-        if (user?.role === "admin") {
-          navigate("/form");
-        } else {
-          navigate("/form");
-        }
+        
+          navigate("/");
+        
       }
     } catch (error: any) {
       console.log(error);

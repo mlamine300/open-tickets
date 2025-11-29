@@ -3,9 +3,9 @@ import {  addTicket, getMytickets, getTicketByid, getTickets } from "../controll
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);
-ticketRouter.get("/:id",getTicketByid);
-ticketRouter.get("/list/:type",getTickets)
-ticketRouter.get("/me",getMytickets);
+//ticketRouter.get("/:id",getTicketByid);
+ticketRouter.post("/list/:type",getTickets)
+ticketRouter.post("/me/:status",getMytickets);
 ticketRouter.post("/",addTicket);
 
 

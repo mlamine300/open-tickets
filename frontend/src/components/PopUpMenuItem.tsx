@@ -28,15 +28,17 @@ const PopUpMenuItem = ({
      
   return (
   
-  <AccordionItem value={item.id}>
-    <AccordionTrigger className={`flex flex-row p-2 items-center gap-4 text-lg my-1 cursor-pointer border-none ${
+  <AccordionItem className="border-gray-hot/50" value={item.id}>
+    <AccordionTrigger className={`flex p-2 items-center  text-lg my-1 cursor-pointer border-none ${
         choosed
           ? "text-primary bg-primary/10 border-r-2 border-primary "
           : "text-text-primary/90"
       }`}>
-       
+       <div className="flex  gap-4">
+
       <Icon className={""} />
-      <p className="text-sm">{item.label} </p>
+      <p className="text-sm font-normal">{item.label} </p>
+       </div>
     
     </AccordionTrigger>
     <AccordionContent className="ml-4">

@@ -11,8 +11,9 @@ import { Accordion } from "./ui/accordion";
 const SideBar = () => {
   const { pathname } = useLocation();
   const isShoosed = (link: string) => {
-    if (link === "/") return link === pathname;
-    return pathname.includes(link);
+    return link === pathname;
+    // if (link === "/") return link === pathname;
+    // return pathname.includes(link);
   };
   const type = localStorage.getItem("role");
 
@@ -54,7 +55,7 @@ const SideBar = () => {
           <p className="font-light text-gray-500 text-[10px]">{user?.email} </p>
         </div>
         <div>
-           <Accordion type="single" collapsible>
+           <Accordion  type="single" collapsible>
           {menuItems.map((item, index) => {
           if(item.hasChilds){
               return (

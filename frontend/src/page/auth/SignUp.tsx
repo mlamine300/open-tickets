@@ -76,11 +76,9 @@ const SignUp = () => {
         localStorage.setItem("role", role);
         if (updateUser) updateUser(response.data);
         //
-        if (role === "admin") {
-          navigate("/form");
-        } else {
-          navigate("/form");
-        }
+       
+          navigate("/");
+        
       }
     } catch (error: any) {
       seterror((err: any) => {

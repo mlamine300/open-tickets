@@ -10,7 +10,8 @@ import Dashboard from './page/Dashboard';
 import FormPage from './page/FormPage';
 
 import TicketsPage from './page/TicketsPage';
-import TicketPage from './page/TicketPage';
+import TicketOverViewPage from './page/TicketOverViewPage';
+import AddTicket from './page/AddTicket';
 function App() {
  
 
@@ -21,11 +22,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 <Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
-       <Route path="/form" element={<Dashboard />} />
-       
+       <Route path="/" element={<Dashboard />} />
+        <Route path="/form" element={<AddTicket />} />
         <Route path="/form/:id" element={<FormPage />} />
         <Route path="/tickets/*" element={<TicketsPage />} />
-        <Route path="/ticket/:id" element={<TicketPage />} />
+        <Route path="/ticket/:id" element={<TicketOverViewPage />} />
        </Route>
          <Route path="*" element={<NotFound />} />
       </Routes>  

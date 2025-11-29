@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 const AssignedToSchema=new mongoose.Schema({
-name:{type: Schema.Types.ObjectId, ref: 'User',required:false},
+userId:{type: Schema.Types.ObjectId, ref: 'User',required:false},
 date:{type:Date,required:false},
 })
 const TicketSchema=new mongoose.Schema({
@@ -10,15 +10,15 @@ const TicketSchema=new mongoose.Schema({
     recipientOrganizationId:{ type: Schema.Types.ObjectId, ref: 'Organisation',required:true },
     associatedOrganizations: [{ type: Schema.Types.ObjectId, ref: 'Organisation' }],
     formName:{type:String,required:true},
-    status:{type:String,enum:["open","pending","complete"],default:"open"},
+    status:{type:String,enum:["open","pending","complete"],default:"pending"},
     priority:{type:String,enum:["low","medium","high"],default:"low"},
     pj:{type:String,required:false},
     message:{type:String,required:true},
     comments:[{ type: Schema.Types.ObjectId, ref: 'Comment' }],
     specialFields : {type:Schema.Types.Mixed,required:false},
     updatedAt:{type:Date,default:new Date() },
-    AssignedTo:{type:AssignedToSchema, required:false},
-    AssignementHistory:{type:[AssignedToSchema],required:false}
+    assignedTo:{type:AssignedToSchema, required:false},
+    assignementHistory:{type:[AssignedToSchema],required:false}
 
 },{ timestamps: true });
 

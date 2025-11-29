@@ -1,7 +1,7 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { useParams } from 'react-router';
 
-const TicketPage = () => {
+const TicketOverViewPage = () => {
     const params=useParams();
 
   return (
@@ -11,4 +11,4 @@ const TicketPage = () => {
   );
 };
 
-export default TicketPage;
+export default TicketOverViewPage;

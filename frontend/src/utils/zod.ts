@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { FormType, FormFieldType } from "../../../types";
 import { PRIORITY_DATA, STATUS_DATA } from "./data";
-import { getAllorganisations } from "./helper";
+import { getAllorganisations } from "./action";
 
 export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
   let schema: z.ZodTypeAny;

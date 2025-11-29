@@ -16,7 +16,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   },
    {
     id: "01",
-    label: "DashBoard",
+    label: "Add ticket",
     icon: LuLayoutDashboard,
     path: "/form",
     hasChilds:false
@@ -53,16 +53,10 @@ export const SIDE_MENU_ADMIN_DATA = [
       id:"24",
       label: "Ticket clôturés ",
       icon: LuClipboardCheck,
-      path: "/tickets/closed",
+      path: "/tickets/close",
 
     },
-    {
-      id:"25",
-      label: "Ticket clôturés ",
-      icon: LuClipboardCheck,
-      path: "/tickets/closed",
-
-    },
+   
   ],
   
 
@@ -90,7 +84,7 @@ export const SIDE_MENU_ADMIN_DATA = [
       id:"33",
       label: "Clôturés",
       icon: LuClipboardCheck,
-      path: "/tickets/sent/closed",
+      path: "/tickets/sent/close",
       },
     ]
 
@@ -107,6 +101,14 @@ export const SIDE_MENU_USER_DATA = [
   {
     id: "01",
     label: "DashBoard",
+    icon: LuLayoutDashboard,
+    path: "/",
+    hasChilds:false
+
+  },
+   {
+    id: "01",
+    label: "Add Ticket",
     icon: LuLayoutDashboard,
     path: "/form",
     hasChilds:false
@@ -144,7 +146,7 @@ export const SIDE_MENU_USER_DATA = [
       id:"24",
       label: "Ticket clôturés ",
       icon: LuClipboardCheck,
-      path: "/tickets/closed",
+      path: "/tickets/close",
 
     },
    
@@ -206,11 +208,7 @@ export const standardForm=(organisations:Organisation[]):FormType=>({
         fields:StandartFierlds(organisations),
     })
 
-// name:string;
-//       label:string;
-//       type:string;
-//       possibleValues?:string[];
-//     required:boolean;
+
 
     export const StandartFierlds=(organisations:Organisation[]):FormFieldType[]=>[
       {name:"ref",label:"Ref/Tracking",type:"text",required:false},

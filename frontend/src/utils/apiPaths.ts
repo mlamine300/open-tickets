@@ -27,7 +27,7 @@ export const API_PATH = {
     GET_SPECIFIC_TICKETS:(type:string)=>`/api/tickets/list/${type}`,
      ADD_TICKET:"/api/tickets",
       GET_TICKET:"/api/tickets",
-      GET_MY_TICKETS:"/api/tickets/me"
+      GET_MY_TICKETS:(status:string)=>`/api/tickets/me/${status}`
      
   },
   COMMENT:{ADD_COMMENT:(id:string)=>`/api/comment/${id}`},

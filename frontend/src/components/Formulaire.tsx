@@ -34,8 +34,8 @@ import Button from "./ui/Button";
 
 import {SelectLabel, Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
-import { getAllorganisations, getOrganisationId } from "@/utils/helper";
+//import { useNavigate } from "react-router";
+import { getAllorganisations, getOrganisationId } from "@/utils/action";
 import { useEffect, useState } from "react";
 import { addTicket } from "@/utils/action";
 
@@ -43,8 +43,10 @@ import { addTicket } from "@/utils/action";
 
 
 export default function DynamicForm({ form, schema }:{form:FormType|null,schema:any}) {
-  const navigate=useNavigate();
+
+ // const navigate=useNavigate();
   const[allOrganisations,setAllORganisations]=useState<string[]>([]);
+  const [pending,setPending]=useState<boolean>(false);
   useEffect(()=>{
     const getOrganisations=async()=>{
       const organisations=await getAllorganisations() as Organisation[];
@@ -57,14 +59,13 @@ export default function DynamicForm({ form, schema }:{form:FormType|null,schema:
   });
   const { errors } = myForm.formState;
 const onSubmit = async(data: z.infer<typeof schema>) => {
-  //recipientOrganizationId,associatedOrganizations,type,message
-  //recipientOrganizationId,associatedOrganizations,type,message
-    //organisationTag
-    //organisationDest
+  setPending(true)
     
   const ticket=await addTicket({formName:form?.name,...data});
   if(ticket){
 toast.success("ticket créé!!!!")
+myForm.reset();
+setPending(false);
   //navigate("/form")
   }
   
@@ -109,15 +110,16 @@ if (!form) return <p>Form is null </p>;
               labelClassName={"w-full flex text-xs italic "}
               containerClassName="w-full "
               type={field.type}
-              onChange={(e:any)=>{
+              value={myForm.watch(field.name) ?? ""}
+                // {...myForm.register(field.name)}
+                placeHolder={`please enter ${field.name}`}
+                label={field.label}
+                {...myForm.register(field.name)}
+                onChange={(e:any)=>{
                  myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
                // myForm.setValue(field.name,e.target.value||"")
                 myForm.register(field.name)
               }}
-                // {...myForm.register(field.name)}
-                placeHolder={`please enter ${field.name}`}
-                label={field.label}
-                value={myForm.getValues(field.name)}
                 key={field.name}
               />
             )}
@@ -159,7 +161,7 @@ if (!form) return <p>Form is null </p>;
               <div className={"bg-white flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
               <Select 
-                
+                value={myForm.watch(field.name) ?? ""}
                 onValueChange={(value) => myForm.setValue(field.name, value)}
               >
                 
@@ -195,7 +197,7 @@ if (!form) return <p>Form is null </p>;
       })}
 
       <div  className="flex items-center w-full justify-center lg:col-span-2">
-        <Button text="Submit" variant="primary" type="submit" className="px-4 min-w-36">
+        <Button disabled={pending} text="Submit" variant="primary" type="submit" className="px-4 min-w-36 disabled:bg-gray-cold/20">
         
       </Button>
       </div>

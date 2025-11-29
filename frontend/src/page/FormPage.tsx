@@ -7,7 +7,7 @@ import { standardForm, StandartFierlds } from '@/utils/data';
 import Formulaire from '@/components/Formulaire';
 import { buildZodFormSchema, fieldToZod } from '@/utils/zod';
 import Spinner from '@/components/Spinner';
-import { getAllorganisations } from '@/utils/helper';
+import { getAllorganisations } from '@/utils/action';
 import DashboardLayout from '@/layouts/DashboardLayout';
 
 
@@ -16,17 +16,12 @@ const FormPage = () => {
     const { id } = useParams();
       const[organisations,setOrganisations]=useState<Organisation[]>([]);
       useEffect(()=>{
-        const setOrganisation=async()=>{
+      
+          const getForm=async()=>{
           const theorganisations=await getAllorganisations();
-          setOrganisations(theorganisations)
-        }
-        setOrganisation();
-      },[])
-   
-    useEffect(()=>{
-        const getForm=async()=>{
+          setOrganisations(theorganisations);
         if(!id||id==="standard"){
-        setForm(standardForm(organisations))
+        setForm(standardForm(theorganisations))
          }else{
             const res=await axiosInstance.get(API_PATH.FORMS.GET_FORM_BY_ID(id))
             setForm(res.data.data)
@@ -34,8 +29,12 @@ const FormPage = () => {
              }
            
         }
+        
         getForm();
-    },[])
+      
+      },[])
+   
+   
     if(!form || !organisations) return  <DashboardLayout  >
       <div className='w-full h-screen pb-20 flex items-center justify-center '>
 
