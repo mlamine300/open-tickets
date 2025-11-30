@@ -6,12 +6,33 @@ import { Link } from "react-router";
 import { ArrowUpDown, ExternalLink, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import Button from "../ui/Button";
+import { format } from 'date-fns'
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
-export const columns: ColumnDef<ticket>[] = [
+export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
+  {accessorKey:"createdAt",
+   header: ({ column }) => {
+      return (
+        <div
+        className="flex gap-1 items-center mx-4 cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <p>Date</p>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+    cell:({row})=>{
+      const date=row.getValue("createdAt") as string;
+
+      return format(date,"dd/MM/yyyy")
+    }
+
+  }
+  ,
   {
     accessorKey: "ref",
     header: "Ref / Tracking",
@@ -117,7 +138,7 @@ export const columns: ColumnDef<ticket>[] = [
             <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >
             <Link to={`/ticket/${id}`}>Voir Ticket</Link>
             </DropdownMenuItem>
-            {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer">prendre en charge</DropdownMenuItem>}
+            {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>action.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
                  <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

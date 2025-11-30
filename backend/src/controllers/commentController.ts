@@ -13,10 +13,11 @@ export const addComment=async(req:Request,res:Response)=>{
         if (!authorId||!activeStatus) return res.status(400).json({message:"not authorized"})
           const ticketId=req.params.id;
          const message=req.body.message;
+         const action=req.body.action||"other";
          if(!ticketId||!message)return res.status(400).json({message:"fields (message, ticketID) are required"})
             const ticket=await ticketModel.findById(ticketId);
         if(!ticket)return res.status(404).json({message:"tickets not found"});
-            const comment=await commentsModel.create({authorId,ticketId,message});
+            const comment=await commentsModel.create({authorId,ticketId,message,action});
         if(!comment||!comment._id){
             return res.status(400).json({message:"error adding comment"});
         }

@@ -2,6 +2,7 @@ import z from "zod";
 import type { Organisation, ticket } from "../../../types";
 import { API_PATH } from "./apiPaths"
 import axiosInstance from "./axiosInstance"
+import toast from "react-hot-toast";
 
 export const addTicket=async(ticket:ticket)=>{
 try {
@@ -140,4 +141,18 @@ export const getOrganisationId=async(name:string)=>{
   const foundOne=organisations.filter(x=>x.name===name);
   if(!foundOne||foundOne.length<1)return null;
   return foundOne.at(0)
+}
+
+export const TakeTicketIncharge=async(ticketId:string)=>{
+try {
+    const res=await axiosInstance.put(API_PATH.TICKETS.TAKE_IN_CHARGE(ticketId));
+     if(res.status!==200){
+    console.log("Error Adding ticket",res.data.message);
+return null; 
+}
+toast.success("Ticket a été Pris en charge")
+} catch (error) {
+    console.log(error);
+    
+}
 }

@@ -6,7 +6,7 @@ import { ticket, User } from "../../../types/index.ts";
 import { getFieldsFromFormName, getOrganisationId, getOrganisationsId } from "../utils/index.ts";
 import { commentsModel } from "../models/Comment.ts";
 import { populate } from "dotenv";
-import { PipelineStage } from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 export const addTicket=async(req:Request,res:Response)=>{
    
 
@@ -70,7 +70,11 @@ export const getTickets = async (req: Request, res: Response) => {
     // Pagination
     const limit = Number(req.body?.maxPerPage) || 10;
     const page = Number(req.body?.page) || 1;
+    const priority=req.body?.priority||null;
+    const emitterOrganizationId=req.body?.emitterOrganizationId||null;
+     const recipientOrganizationId=req.body?.recipientOrganizationId||null;
     const skip = (page - 1) * limit;
+
 
     // Sorting
     const sortField = req.body?.sortField || "createdAt";
@@ -79,26 +83,28 @@ export const getTickets = async (req: Request, res: Response) => {
     // Search
     const search = req.body?.search || "";
 
+
     // Filters
     const type = req.params.type || "pending";
-    const baseFilter = {
+    const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user),
       ...getFilterFromType(type, userId),
-      creator: { $ne: userId }
+      creator: { $ne: new mongoose.Types.ObjectId(userId) }
     };
+if(priority){
+  baseFilter["priority"]=priority;
+}
+if(emitterOrganizationId){
+  baseFilter["emitterOrganizationId"]=new mongoose.Types.ObjectId(emitterOrganizationId);
+}
+if(recipientOrganizationId){
+  baseFilter.recipientOrganizationId=new mongoose.Types.ObjectId(recipientOrganizationId);
+}
+    const searchFilter=getSearchFilter(search)
 
-    // Search conditions
-    // const searchQuery = search
-    //   ? {
-    //       $or: [
-    //         { title: { $regex: search, $options: "i" } },
-    //         { description: { $regex: search, $options: "i" } }
-    //       ]
-    //     }
-    //   : {};
 
     const pipeline: any[] = [
-      { $match: { ...baseFilter,
+      { $match: { ...baseFilter,...searchFilter
         //  ...searchQuery
          } },
 
@@ -297,67 +303,7 @@ export const getTickets = async (req: Request, res: Response) => {
 };
 
 
-// export const getTickets=async(req:Request,res:Response)=>{
-    
-// const token = req.headers.authorization?.split(" ")[1];
-// if (!token) return res.status(409).json({ message: "not autorized" });
-//     const user = (await jwt.decode(token)) as TokenPayload;
-//     const { userId }=user;
-//     if (!userId) return res.status(409).json({ message: "not autorized" });
 
-//     const maxPerPage:number=Number(req.body?.maxPerPage)||10
-//     const page:number=Number( req.body?.page)||1;
-//     const type=req.params.type||"pending";
-//     const arggFromAcount=getResponsablitiesFilterFromRole(user)
-//     const arrgToAdd=getFilterFromType(type,userId);
-//     let tickets=[];
-    
-//     console.log({...arggFromAcount,...arrgToAdd});
-//     /**
-//      * 
-//      * 
-//      * db.collection.aggregate([
-//   { $match: { status: "active" } },
-//   { $facet: {
-//       metadata: [ { $count: "total" } ],
-//       data: [ { $sort: { date: -1 } }, { $skip: 0 }, { $limit: 20 } ]
-//   } }
-// ])
-//      */
-//     const x=await ticketModel.aggregate([
-//       {$match:{...arggFromAcount,...arrgToAdd,creator:{ $ne: userId }}},
-//       { $facet: {
-//       metadata: [ { $count: "total" } ],
-//       data: [  { $skip: (page-1)*maxPerPage }, { $limit: maxPerPage } ]
-//   }
-
-// },{
-//         $lookup: {
-//           from: 'organisation', // The collection to join with (pluralized name of the model)
-//           localField: 'emitterOrganizationId', // Field from the input documents
-//           foreignField: 'name',      // Field from the documents of the "from" collection
-//           as: 'emitterOrganization'      // The name of the new array field to add to the input documents
-//         }
-//       },
-//     ])
-//     console.log("x0");
-    
-//     console.log(x[0]);
-//      console.log("x1");
-//      console.log(x[1]);
-    
-//     tickets=await ticketModel.find({...arggFromAcount,...arrgToAdd,creator:{ $ne: userId }})  
-//     .skip((page-1)*maxPerPage).limit(maxPerPage).populate("creator", ["name","email"]) 
-//       .populate("emitterOrganizationId", "name")
-//         .populate("recipientOrganizationId", "name")
-//         .populate("associatedOrganizations", "name")
-//         .populate("assignedTo.userId","name")
-//       .lean().exec();
-     
-//     //console.log(tickets);
-    
-//     return res.status(200).json({message:"success",data:tickets})
-// }
 
 export const getTicketByid=async(req:Request,res:Response)=>{
    try {
@@ -379,220 +325,419 @@ if (!token) return res.status(409).json({ message: "not autorized" });
    }
 }
 
-// export const getMytickets=async(req:Request,res:Response)=>{
-  
-//     try {
-        
-        
-        
-//     const token = req.headers.authorization?.split(" ")[1];
-// if (!token) return res.status(409).json({ message: "not autorized" });
-//     const user = (await jwt.decode(token)) as TokenPayload;
-//     const { userId }=user;
-//     if (!userId) return res.status(409).json({ message: "not autorized" });
-       
-        
-//     const maxPerPage:number=Number(req.body?.maxPerPage)||10
-//     const page:number=Number(req.body?.page)||1;
-//     const status=req.params.status;
-//     const tickets=await ticketModel.find({creator:userId,status}).skip((page-1) * 10).limit(maxPerPage).populate("creator", ["name","email"]) 
-//       .populate("emitterOrganizationId", "name")
-//         .populate("recipientOrganizationId", "name")
-//         .populate("associatedOrganizations", "name")
-//         .populate("assignedTo.userId","name").lean().exec();
-//     if(!tickets||!Array.isArray(tickets)||!tickets.length){
-//         return res.status(200).json({message:"there are no ticket",data:[]})
-//     }
-//    return res.status(200).json({message:"success",data:tickets})
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).json({message:"server error",error})
-        
-//     }
-// }
+
 
 export const getMytickets = async (req: Request, res: Response) => {
-  try {
 
+    try {
     const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(409).json({ message: "not autorized" });
+    if (!token) return res.status(409).json({ message: "not authorized" });
 
-    const user = (await jwt.decode(token)) as TokenPayload;
-    const { userId } = user;
-    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const user = jwt.decode(token) as TokenPayload;
+    if (!user?.userId) return res.status(409).json({ message: "not authorized" });
 
-    const maxPerPage: number = Number(req.body?.maxPerPage) || 10;
-    const page: number = Number(req.body?.page) || 1;
-    const status = req.params.status;
+    const userId = user.userId;
 
-    const matchStage: any = { creator: userId };
-    if (status) matchStage.status = status;
+    // Pagination
+    const limit = Number(req.body?.maxPerPage) || 10;
+    const page = Number(req.body?.page) || 1;
+    const priority=req.body?.priority||null;
+     const recipientOrganizationId=req.body?.recipientOrganizationId||null;
+    const skip = (page - 1) * limit;
+    const status=req.params.status||"pending"
 
-    // Import PipelineStage from mongoose or mongodb at the top of your file:
-    // import { PipelineStage } from "mongoose";
-    // or
-    // import type { PipelineStage } from "mongodb";
+    // Sorting
+    const sortField = req.body?.sortField || "createdAt";
+    const sortOrder = req.body?.sortOrder === "asc" ? 1 : -1;
 
-    const pipeline: PipelineStage[] = [
-      { $match: matchStage },
+    // Search
+    const search = req.body?.search || "";
+console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user)}));
 
-      // Count documents efficiently
+    // Filters
+    const type = req.params.type || "pending";
+    const baseFilter:any = {
+      ...getResponsablitiesFilterFromRole(user),
+      ...getFilterFromType(type, userId),
+      creator:  new mongoose.Types.ObjectId(userId) 
+    };
+    if(status){
+      baseFilter.status=status;
+    }
+if(priority){
+  baseFilter["priority"]=priority;
+}
+
+if(recipientOrganizationId){
+  baseFilter.recipientOrganizationId=new mongoose.Types.ObjectId(recipientOrganizationId);
+}
+   
+    const searchFilter=getSearchFilter(search)
+    const pipeline: any[] = [
+      { $match: { ...baseFilter,...searchFilter
+        //  ...searchQuery
+         } },
+
+      // Join user (creator)
       {
-        $facet: {
-          metadata: [{ $count: "total" }],
-          data: [
-            { $sort: { createdAt: -1 } },
-            { $skip: (page - 1) * maxPerPage },
-            { $limit: maxPerPage },
+        $lookup: {
+          from: "users",
+          localField: "creator",
+          foreignField: "_id",
+          as: "creator"
+        }
+      },
+      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-            // --- POPULATE creator ---
-            {
-              $lookup: {
-                from: "users",
-                localField: "creator",
-                foreignField: "_id",
-                as: "creator"
-              }
-            },
-            { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+      // emitter organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "emitterOrganizationId",
+          foreignField: "_id",
+          as: "emitterOrganization"
+        }
+      },
+      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
 
-            // --- POPULATE organizations ---
-            {
-              $lookup: {
-                from: "organisations",
-                localField: "emitterOrganizationId",
-                foreignField: "_id",
-                as: "emitterOrganizationId"
-              }
-            },
-            { $unwind: { path: "$emitterOrganizationId", preserveNullAndEmptyArrays: true } },
+      // recipient organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "recipientOrganizationId",
+          foreignField: "_id",
+          as: "recipientOrganization"
+        }
+      },
+      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
 
-            {
-              $lookup: {
-                from: "organisations",
-                localField: "recipientOrganizationId",
-                foreignField: "_id",
-                as: "recipientOrganizationId"
-              }
-            },
-            { $unwind: { path: "$recipientOrganizationId", preserveNullAndEmptyArrays: true } },
-
-            {
-              $lookup: {
-                from: "organisations",
-                localField: "associatedOrganizations",
-                foreignField: "_id",
-                as: "associatedOrganizations"
-              }
-            },
-
-            // --- Handle assignedTo ---
-            {
-              $lookup: {
-                from: "users",
-                localField: "assignedTo.userId",
-                foreignField: "_id",
-                as: "assignedUsers"
-              }
-            },
-
-            {
-              $addFields: {
-                assignedTo: {
-                  $map: {
-                    input: {
-                      $cond: {
-                        if: { $isArray: "$assignedTo" },
-                        then: "$assignedTo",
-                        else: {
-                          $cond: {
-                            if: { $eq: ["$assignedTo", null] },
-                            then: [],
-                            else: ["$assignedTo"]
-                          }
-                        }
-                      }
-                    },
-                    as: "a",
-                    in: {
-                      date: "$$a.date",
-                      user: {
-                        $arrayElemAt: [
-                          {
-                            $filter: {
-                              input: "$assignedUsers",
-                              as: "u",
-                              cond: { $eq: ["$$u._id", "$$a.userId"] }
-                            }
-                          },
-                          0
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            },
-
-            { $project: { assignedUsers: 0 } }
-,
-            // project only necessary fields for creator, organisations and assignedTo
-            {
-              $project: {
-                _id: 1,
-                ref: 1,
-                formName: 1,
-                message: 1,
-                status: 1,
-                priority: 1,
-                createdAt: 1,
-                updatedAt: 1,
-                creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-                emitterOrganizationId: { _id: "$emitterOrganizationId._id", name: "$emitterOrganizationId.name" },
-                recipientOrganizationId: { _id: "$recipientOrganizationId._id", name: "$recipientOrganizationId.name" },
-                associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-                assignedTo: {
-                  $let: {
-                    vars: {
-                      a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
-                    },
-                    in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-                  }
-                }
-              }
-            }
-          ]
+      // associated organizations
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "associatedOrganizations",
+          foreignField: "_id",
+          as: "associatedOrganizations"
         }
       },
 
- 
+      // assignedTo
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo.userId",
+          foreignField: "_id",
+          as: "assignedUsers"
+        }
+      },
 
       {
+        $addFields: {
+          assignedTo: {
+            $map: {
+              input: {
+                $cond: {
+                  if: { $isArray: "$assignedTo" },
+                  then: "$assignedTo",
+                  else: {
+                    $cond: {
+                      if: { $eq: ["$assignedTo", null] },
+                      then: [],
+                      else: ["$assignedTo"]
+                    }
+                  }
+                }
+              },
+              as: "a",
+              in: {
+                date: "$$a.date",
+                user: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$assignedUsers",
+                        as: "u",
+                        cond: { $eq: ["$$u._id", "$$a.userId"] }
+                      }
+                    },
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+
+      { $project: { assignedUsers: 0 } },
+
+      // project only necessary fields for creator, organisations and assignedTo
+      {
         $project: {
-          data: "$data",
-          total: { $ifNull: [{ $arrayElemAt: ["$metadata.total", 0] }, 0] }
+          _id: 1,
+          ref: 1,
+          formName: 1,
+          message: 1,
+          status: 1,
+          priority: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+          assignedTo: {
+            $let: {
+              vars: {
+                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+              },
+              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+            }
+          }
+        }
+      },
+
+
+
+      // Sorting
+      { $sort: { [sortField]: sortOrder } },
+
+      // Pagination + count in one request
+      {
+        $facet: {
+          data: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: "count" }]
         }
       }
     ];
 
-    const result = await ticketModel.aggregate(pipeline);
-    const tickets = result[0].data;
-    const totalCount = result[0].total;
-    console.log(totalCount);
-    
+    const result = await ticketModel.aggregate(pipeline).exec();
+
+    const data = result[0].data;
+    const totalCount = result[0].totalCount[0]?.count || 0;
+
     return res.status(200).json({
       message: "success",
+      data,
       totalCount,
       page,
-      maxPerPage,
-      data: tickets
+      maxPerPage: limit
     });
 
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "server error", error });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "server error" });
   }
+
+//   try {
+
+//     const token = req.headers.authorization?.split(" ")[1];
+//     if (!token) return res.status(409).json({ message: "not autorized" });
+
+//     const user = (await jwt.decode(token)) as TokenPayload;
+//     const { userId } = user;
+//     if (!userId) return res.status(409).json({ message: "not autorized" });
+
+//     const maxPerPage: number = Number(req.body?.maxPerPage) || 10;
+//     const page: number = Number(req.body?.page) || 1;
+//     const status = req.params.status;
+
+//     const matchStage: any = { creator: new mongoose.Types.ObjectId(userId) };
+//     if (status) matchStage.status = status;
+
+//     // Import PipelineStage from mongoose or mongodb at the top of your file:
+//     // import { PipelineStage } from "mongoose";
+//     // or
+//     // import type { PipelineStage } from "mongodb";
+//     console.log(matchStage);
+    
+//     const pipeline: PipelineStage[] = [
+//       { $match: matchStage },
+
+//       // Count documents efficiently
+//       {
+//         $facet: {
+//           metadata: [{ $count: "total" }],
+//           data: [
+//             { $sort: { createdAt: -1 } },
+//             { $skip: (page - 1) * maxPerPage },
+//             { $limit: maxPerPage },
+
+//             // --- POPULATE creator ---
+//             {
+//               $lookup: {
+//                 from: "users",
+//                 localField: "creator",
+//                 foreignField: "_id",
+//                 as: "creator"
+//               }
+//             },
+//             { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+
+//             // --- POPULATE organizations ---
+//             {
+//               $lookup: {
+//                 from: "organisations",
+//                 localField: "emitterOrganizationId",
+//                 foreignField: "_id",
+//                 as: "emitterOrganizationId"
+//               }
+//             },
+//             { $unwind: { path: "$emitterOrganizationId", preserveNullAndEmptyArrays: true } },
+
+//             {
+//               $lookup: {
+//                 from: "organisations",
+//                 localField: "recipientOrganizationId",
+//                 foreignField: "_id",
+//                 as: "recipientOrganizationId"
+//               }
+//             },
+//             { $unwind: { path: "$recipientOrganizationId", preserveNullAndEmptyArrays: true } },
+
+//             {
+//               $lookup: {
+//                 from: "organisations",
+//                 localField: "associatedOrganizations",
+//                 foreignField: "_id",
+//                 as: "associatedOrganizations"
+//               }
+//             },
+
+//             // --- Handle assignedTo ---
+//             {
+//               $lookup: {
+//                 from: "users",
+//                 localField: "assignedTo.userId",
+//                 foreignField: "_id",
+//                 as: "assignedUsers"
+//               }
+//             },
+
+//             {
+//               $addFields: {
+//                 assignedTo: {
+//                   $map: {
+//                     input: {
+//                       $cond: {
+//                         if: { $isArray: "$assignedTo" },
+//                         then: "$assignedTo",
+//                         else: {
+//                           $cond: {
+//                             if: { $eq: ["$assignedTo", null] },
+//                             then: [],
+//                             else: ["$assignedTo"]
+//                           }
+//                         }
+//                       }
+//                     },
+//                     as: "a",
+//                     in: {
+//                       date: "$$a.date",
+//                       user: {
+//                         $arrayElemAt: [
+//                           {
+//                             $filter: {
+//                               input: "$assignedUsers",
+//                               as: "u",
+//                               cond: { $eq: ["$$u._id", "$$a.userId"] }
+//                             }
+//                           },
+//                           0
+//                         ]
+//                       }
+//                     }
+//                   }
+//                 }
+//               }
+//             },
+
+//             { $project: { assignedUsers: 0 } }
+// ,
+//             // project only necessary fields for creator, organisations and assignedTo
+//             {
+//               $project: {
+//                 _id: 1,
+//                 ref: 1,
+//                 formName: 1,
+//                 message: 1,
+//                 status: 1,
+//                 priority: 1,
+//                 createdAt: 1,
+//                 updatedAt: 1,
+//                 creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+//                 emitterOrganizationId: { _id: "$emitterOrganizationId._id", name: "$emitterOrganizationId.name" },
+//                 recipientOrganizationId: { _id: "$recipientOrganizationId._id", name: "$recipientOrganizationId.name" },
+//                 associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+//                 assignedTo: {
+//                   $let: {
+//                     vars: {
+//                       a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+//                     },
+//                     in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+//                   }
+//                 }
+//               }
+//             }
+//           ]
+//         }
+//       },
+
+ 
+
+//       {
+//         $project: {
+//           data: "$data",
+//           total: { $ifNull: [{ $arrayElemAt: ["$metadata.total", 0] }, 0] }
+//         }
+//       }
+//     ];
+
+//     const result = await ticketModel.aggregate(pipeline);
+//     const tickets = result[0].data;
+//     const totalCount = result[0].total;
+//     console.log(totalCount);
+    
+//     return res.status(200).json({
+//       message: "success",
+//       totalCount,
+//       page,
+//       maxPerPage,
+//       data: tickets
+//     });
+
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "server error", error });
+//   }
 };
+
+export const takeTicketInCharge=async(req:Request,res:Response)=>{
+  try {
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId,role,organisation,organisationsList,activeStatus }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      ticket.status="open";
+      ticket.assignedTo={userId:new mongoose.Types.ObjectId(userId),date:new Date()}
+    const history = ticket.assignementHistory
+      ? [...ticket.assignementHistory, { userId: new mongoose.Types.ObjectId(userId), date: new Date() }]
+      : [{ userId: new mongoose.Types.ObjectId(userId), date: new Date() }];
+
+    ticket.set('assignementHistory', history);
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    return res.status(500).json({message:"server error",error})
+  }
+}
 
 const getFilterFromType=(type:string,userId:string)=>{
 switch(type){
@@ -604,7 +749,7 @@ switch(type){
         return {status:"open"}
     }
     case "open_me":{
-        return {status:"open","assignedTo.userId":userId}
+        return {status:"open","assignedTo.userId":new mongoose.Types.ObjectId(userId)}
     }
     case "close":{
         return {status:"close"}
@@ -614,14 +759,11 @@ switch(type){
 }
 
 const getResponsablitiesFilterFromRole=(user:TokenPayload)=>{
-    const {role,organisation}=user;
-    const organisationsList=user.organisationsList||[];
-    if(role==="standard"){
-return{$or: [
-    { emitterOrganizationId: organisation },
-    { recipientOrganizationId: organisation }
-  ]
-}
+   const role=user.role;
+   const organisation=new mongoose.Types.ObjectId(user.organisation);
+    const organisationsList=user.organisationsList.map(o=>new mongoose.Types.ObjectId(o))||[];
+    if(role==="admin"){
+return {}
     }
     else if(role==="supervisor"){
      return {$or: [
@@ -631,7 +773,20 @@ return{$or: [
   ]
 }   
     }
-    else return {}
+    else return{$or: [
+    { emitterOrganizationId: organisation },
+    { recipientOrganizationId: organisation }
+  ]
+}
 
+}
+
+const getSearchFilter=(search:string)=>{
+  if(!search)return {};
+
+  else return {$or:[
+    {ref:{ $regex: search, $options: "i" }}
+   
+  ]}
 }
 

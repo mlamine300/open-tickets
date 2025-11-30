@@ -8,7 +8,7 @@ type inputProps = {
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   type: string;
   placeHolder: string;
-  key: string;
+  key?: string;
   error?: string;
   parentClassName?: string;
   labelClassName?: string;
