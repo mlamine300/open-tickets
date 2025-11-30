@@ -75,7 +75,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         
    {organisations&&
    
-                <div className={"bg-white flex flex-col items-start gap-0"}>
+                <div className={"bg-background-base flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Emitrice" </label>
                 <Select 
                 value={emitterOrganization}
@@ -88,7 +88,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 </SelectTrigger>
                 
                 
-                <SelectContent  id={`select-station-emmitrice`} className="bg-white ">
+                <SelectContent  id={`select-station-emmitrice`} className="bg-background-base ">
                   
                  
 
@@ -107,7 +107,8 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
               </div>}
                  {organisations&&
                  
-                  <div className={"bg-white flex flex-col items-start gap-0"}>
+                  
+<div className={"bg-background-base flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Destinatrice" </label>
              
                  <Select 
@@ -121,7 +122,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 </SelectTrigger>
                 
                 
-                <SelectContent  id={`select-station-destinataire`} className="bg-white ">
+                <SelectContent  id={`select-station-destinataire`} className="bg-background-base ">
                   
                  
 
@@ -138,10 +139,9 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 
               </Select>
               </div>}
-
              
 
-               <div className={"bg-white flex flex-col items-start gap-0"}>
+               <div className={"bg-background-base flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priority </label>
              
             <Select 
@@ -155,7 +155,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 </SelectTrigger>
                 
                  
-                <SelectContent  id={`select-status`} className="bg-white ">
+                <SelectContent  id={`select-status`} className="bg-background-base ">
                   
                 
                   <p className='text-sm hover:cursor-pointer'  onClick={(e)=>setPriority("")}>

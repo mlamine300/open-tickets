@@ -3,10 +3,11 @@
 import type{ ColumnDef } from "@tanstack/react-table"
 import type { ticket } from "../../../../types"
 import { Link } from "react-router";
-import { ArrowUpDown, ExternalLink, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ExternalLink, Eye, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import Button from "../ui/Button";
 import { format } from 'date-fns'
+import { SheetTrigger } from "../ui/sheet";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -102,7 +103,9 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
       </p></div>
     }
   },
-   {
+  
+
+       {
     accessorKey: "assignedTo",
     header: "Assigned To",
      cell: ({ row }) => {
@@ -113,7 +116,19 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
       return assignedTo||"no one";
      },
     },
+     {
+    
+    header: "Voir",
+     cell: ({ row }) => {
+        
+        const id=row.original._id;
+        
+      
+      return <div onClick={()=>action.showTicket(row.original)}> <Eye className="text-primary hover:text-gray-cold/50"/> </div>;
+     },
+    },
 {
+  header:"Actions",
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -131,7 +146,7 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
               <MoreHorizontal />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white ">
+          <DropdownMenuContent align="end" className="bg-background-base ">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             
             {/* <DropdownMenuSeparator /> */}
@@ -139,7 +154,9 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
             <Link to={`/ticket/${id}`}>Voir Ticket</Link>
             </DropdownMenuItem>
             {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>action.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
-                 <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</DropdownMenuItem>
+                 <DropdownMenuItem onClick={()=>action.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
+                 <SheetTrigger className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</SheetTrigger>
+                 </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

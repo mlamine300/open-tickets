@@ -218,4 +218,17 @@ export const standardForm=(organisations:Organisation[]):FormType=>({
         {name:"organisationDest",label:"organisation Destinataire",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
         {name:"organisationTag",label:"organisation Taguée",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
     ]
+
+export const COMMENT_ACTIONS=["comment","open","in_charge","called","relancer","close"]
+
+    export const COMMENT_ACTIONS_DICTIONNAIRE=
+      {
+      comment:"Commentaire",
+  open: "lancée",
+  in_charge: "pris en charge",
+  called: "le concerné a été appelé",
+  relancer: "relancer",
+  close:"traité"
+}
+    
     

@@ -7,7 +7,7 @@ const Header = () => {
     <header className="fixed top-0 pt-5  w-full max-w-[1440px]  flex items-center z-10 border-b-[1px] border-gray-hot px-10 h-    bg-background-base">
       <h4>{name} </h4>
       <button
-        className="rounded-lg shadow-lg w-12 h-12 flex items-center justify-center ml-auto"
+        className="rounded-lg shadow-lg w-12 h-12 flex items-center justify-center ml-auto mr-20"
         onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
       >
         {theme === "light" ? (

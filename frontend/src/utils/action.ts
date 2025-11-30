@@ -156,3 +156,17 @@ toast.success("Ticket a été Pris en charge")
     
 }
 }
+export const AddComment=async(ticketId:string,action:string,message:string)=>{
+    try {
+        const res=await axiosInstance.post(API_PATH.COMMENT.ADD_COMMENT(ticketId),{message,action});
+        if(res.status!==200){
+            console.log("error adding comment",res.data);
+            return
+        }
+        else
+        toast.success("comment ajouter avec succés!!!")
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
