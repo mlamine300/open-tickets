@@ -52,23 +52,24 @@ export interface Organisation{
 
 export interface ticket{
   _id:string;
-  creator:string;
+  creator?:{email:string,name:string,_id:string};
   ref:string;
   emitterOrganizationId:string;
   recipientOrganizationId:string;
-  emitterOrganization?:string;
-  recipientOrganization?:string;
-    associatedOrganizations?:string[];
+  emitterOrganization?:{name:string,_id:string};
+  recipientOrganization?:{name:string,_id:string};
+    associatedOrganizations?:{name:string,_id:string}[];
     type:string;
     status?:string;
     priority?:string;
     pj?:any;
     message:string;
     commentsId:string[];
-    specialFeilds?:{name:string;value:any}[]
+    specialFields?:any;
     assignedTo?:{user:{name:string;email:string};date:Date}
     AssignementHistory?:{name:string;date:Date}[]
     updatedAt?:Date;
+    formName?:string;
 }
 
 export interface Comment{

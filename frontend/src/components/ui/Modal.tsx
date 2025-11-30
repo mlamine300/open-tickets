@@ -30,8 +30,8 @@ const Modal = ({
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 "
     >
       <div
-        className={twMerge( className,
-          "bg-white rounded-lg p-6 w-full m-8 md:max-w-[600px] relative h-96 max-w-[90%]"
+        className={twMerge( 
+          "bg-white rounded-lg p-6 w-full m-8 md:max-w-[600px] relative h-96 max-w-[90%]",className
          
         )}
       >

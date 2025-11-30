@@ -76,4 +76,14 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
   }
 }
 
-export const COMMENT_ACTIONS=["comment","open","close","en_cours","traite"]
+ export const COMMENT_ACTIONS=["comment","open","in_charge","called","relancer","close"]
+
+    export const COMMENT_ACTIONS_DICTIONNAIRE=
+      {
+      comment:"Commentaire",
+  open: "lancée",
+  in_charge: "pris en charge",
+  called: "le concerné a été appelé",
+  relancer: "relancer",
+  close:"traité"
+}

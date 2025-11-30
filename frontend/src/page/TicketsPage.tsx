@@ -96,7 +96,7 @@ const TicketsPage = () => {
         close={()=>setShowModal("")}
         showModal={(Boolean(showModal))}
         title={showModal==="confirmation"?"Prendre en charge le Ticket":"Detail de Ticket"}
-        className={cn(showModal==="ticket"&&"max-w-[1000px]")}
+        className={cn(showModal==="ticket"&&" md:min-w-8/12 min-h-10/12 ")}
 
         >
          {showModal==="confirmation"?<ConfirmTakeInCharge handleTakeInCharge={handleTakeInCharge} setShowModal={setShowModal}/>:showModal==="ticket"&&selectedTicket?<TicketViewOnModal ticket={selectedTicket} />:<div/>}

@@ -212,6 +212,7 @@ if(recipientOrganizationId){
           priority: 1,
           createdAt: 1,
           updatedAt: 1,
+          specialFields:1,
           creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
           emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
           recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
