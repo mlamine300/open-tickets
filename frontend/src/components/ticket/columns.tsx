@@ -5,7 +5,7 @@ import type { ticket } from "../../../../types"
 import { Link } from "react-router";
 import { ArrowUpDown, ExternalLink, Eye, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import Button from "../ui/Button";
+
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
 
@@ -13,7 +13,7 @@ import { SheetTrigger } from "../ui/sheet";
 // You can use a Zod schema here if you want.
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
-export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
+export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<ticket>[] =({actions,path})=> [
   {accessorKey:"createdAt",
    header: ({ column }) => {
       return (
@@ -124,7 +124,7 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
         const id=row.original._id;
         
       
-      return <div onClick={()=>action.showTicket(row.original)}> <Eye className="text-primary hover:text-gray-cold/50"/> </div>;
+      return <div onClick={()=>actions.showTicket(row.original)}> <Eye className="text-primary hover:text-gray-cold/50"/> </div>;
      },
     },
 {
@@ -134,9 +134,9 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
     cell: ({ row }) => {
       const id = row.original._id;
       
-      
+      const assignedTo=row.original.assignedTo
       const status=row.getValue("status");
-      const assigned=row.getValue("assignedTo");
+      
       
       return (
         <DropdownMenu >
@@ -153,10 +153,13 @@ export const columns:(actions:any)=> ColumnDef<ticket>[] =(action)=> [
             <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >
             <Link to={`/ticket/${id}`}>Voir Ticket</Link>
             </DropdownMenuItem>
-            {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>action.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
-                 <DropdownMenuItem onClick={()=>action.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
+                <DropdownMenuItem onClick={()=>actions.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
                  <SheetTrigger className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</SheetTrigger>
                  </DropdownMenuItem>
+                   {/* {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
+                  {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleClosing(row.original)}>marquer comme clotoré</DropdownMenuItem>}
+               {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleFormward(row.original)}>transferer a un autre</DropdownMenuItem>}
+         */}
           </DropdownMenuContent>
         </DropdownMenu>
       )

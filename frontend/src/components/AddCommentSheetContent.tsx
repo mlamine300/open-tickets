@@ -5,30 +5,131 @@ import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from './
 import { COMMENT_ACTIONS, COMMENT_ACTIONS_DICTIONNAIRE } from '@/utils/data';
 import Input from './ui/Input';
 import Button from './ui/Button';
-import { AddComment } from '@/utils/action';
+import { AddCommentAction, closeTicketAction, relanceeTicketAction, TakeTicketIncharge } from '@/actions/action';
 import toast from 'react-hot-toast';
+import { useUserContext } from '@/context/user/userContext';
+import { Link } from 'react-router';
 
-const AddCommentSheetContent = ({ticket}:{ticket:ticket}) => {
-    const [action,setAction]=useState<string>("");
+const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void}) => {
+    const [action,setAction]=useState<string>("comment");
+    const[pending,setPending]=useState(false);
     const [message,setMessage]=useState<string>("");
     const ref=useRef<HTMLButtonElement|null>(null);
-    const handleComment=(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
-      if(!message)toast.error("tu devrais ecrir un message"),
+    const {user}=useUserContext();
+    
+/**
+ * 
+ * @param e      comment:"Commentaire",
+  open: "lancée",
+  in_charge: "pris en charge",
+  called: "le concerné a été appelé",
+  relancer: "relancer",
+  close:"traité"
+ */
+    const handleAction=(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
       e.preventDefault();
-      AddComment(ticket._id,action,message);
-      setAction("");
+     setPending(true);
+      switch(action){
+        case "in_charge":{
+          handleTakeInCharge();
+          break;
+        }
+        
+         case "relancer":{
+          handleRelance();
+         
+          break;
+        }
+         case "close":{
+          handleClosing();
+          break;
+        }
+        default:{
+          handleComment();
+        }
+         refresh();
+      }
+      setPending(false);
+    }
+
+    const handleComment=async()=>{
+     
+      if(!message||!action){
+        toast.error("tu devrais ecrir un message et choisir une action")
+      }
+     await AddCommentAction(ticket._id,action,message);
+      setAction("comment");
       setMessage("");
       if(ref&&ref.current){
       ref.current.click();
       }
      
     }
+      const handleTakeInCharge=async()=>{
+        setPending(true);
+        if(ticket.status!=="pending"){
+          toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas le prendre en charge`)
+          return
+        }
+        await  TakeTicketIncharge(ticket._id,message);
+         setAction("comment");
+      setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      setPending(false)
+         refresh();
+        }
+        const handleClosing=async()=>{
+          setPending(true)
+           if(ticket.assignedTo?.user._id!==user?._id){
+            console.log();
+            
+          toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
+        return;
+        }
+         await closeTicketAction(ticket._id,message);
+          setAction("comment");
+      setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      setPending(false);
+      refresh();
+        }
+        const handleRelance=async()=>{
+          setPending(true)
+           if(ticket.assignedTo?.user._id!==user?._id){
+          toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
+        return;
+        }
+        alert("reopen")
+       await relanceeTicketAction(ticket._id,message);
+        setAction("comment");
+      setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      setPending(false)
+      refresh();
+        }
   return (
       <SheetContent className='h-full bg-background-base'>
     <SheetHeader>
       <SheetTitle>Ajouter un commentaire</SheetTitle>
     </SheetHeader>
      <form action="" className='my-4 w-full h-full px-4 flex flex-col gap-8'>
+      <div className='flex flex-col gap-1'>
+
+      <div  className='flex items-center gap-2 '>
+        <p className='italic font-semibold text-sm'>Ticket Id:</p>
+        <Link to={`/ticket/${ticket._id}`} className='text-sm underline hover:font-semibold'>{ticket._id}</Link>
+      </div>
+      <div className='flex items-center gap-2 '>
+        <p className='italic font-semibold text-sm'>Ref/Tracking:</p>
+        <p className='text-sm'>{ticket.ref}</p>
+      </div>
+      </div>
             <div className={"flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-sm italic '} htmlFor={`select-action`}>Action :</label>
              
@@ -66,11 +167,11 @@ const AddCommentSheetContent = ({ticket}:{ticket:ticket}) => {
                 </div>
                 <Input parentClassName='w-full' inputClassName='h-42' type='area' placeHolder='Ajouter votre commentaire ici...' label='Commentaire' onChange={(e)=>setMessage(e.target.value)} value={message} />
             
-                  <Button type='button' text='Ajouter' variant='primary' onClick={(e)=>{
-                    handleComment(e)
+                  <Button disabled={pending} className='disabled:bg-gray-cold/50' type='button' text='Ajouter' variant='primary' onClick={(e)=>{
+                    handleAction(e)
                   }} />
-                  <SheetClose>
-                    <Button type='button'  text='Fermer' ref={ref} variant='outline' className='border-red-500 text-red-500 hover:text-red-300 hover:border-red-400 w-full mt-auto' />
+                  <SheetClose ref={ref}>
+                    <p    className='border-red-500 text-red-500 hover:text-red-300 hover:border-red-400 w-full mt-auto border' >Ferme</p>
                   </SheetClose>
       </form>
   </SheetContent>

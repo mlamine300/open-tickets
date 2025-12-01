@@ -9,9 +9,9 @@ import Button from "./ui/Button";
 import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import toast from "react-hot-toast";
 //import { useNavigate } from "react-router";
-import { getAllorganisations } from "@/utils/action";
+import { getAllorganisations } from "@/actions/action";
 import { useEffect, useState } from "react";
-import { addTicket } from "@/utils/action";
+import { addTicket } from "@/actions/action";
 import { useForm } from "react-hook-form";
 
 

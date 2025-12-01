@@ -67,7 +67,7 @@ export interface ticket{
     message:string;
     commentsId:string[];
     specialFields?:any;
-    assignedTo?:{user:{name:string;email:string};date:Date}
+    assignedTo?:{user:{name:string;email:string;_id:string};date:Date}
     AssignementHistory?:{name:string;date:Date}[]
     updatedAt?:Date;
     formName?:string;

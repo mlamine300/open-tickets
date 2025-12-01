@@ -29,10 +29,13 @@ export const API_PATH = {
      ADD_TICKET:"/api/tickets",
       GET_TICKET:"/api/tickets",
       GET_MY_TICKETS:(status:string)=>`/api/tickets/me/${status}`,
-      TAKE_IN_CHARGE:(id:string)=>`/api/tickets/take_in_charge/${id}`
+      TAKE_IN_CHARGE:(id:string)=>`/api/tickets/take_in_charge/${id}`,
+      CLOSE_TICKET:(id:string)=>`/api/tickets/close/${id}`,
+      REOPEN_TICKET:(id:string)=>`/api/tickets/relance/${id}`,
+     
      
   },
-  COMMENT:{ADD_COMMENT:(id:string)=>`/api/comment/${id}`},
+  COMMENT:{ADD_COMMENT:(id:string)=>`/api/comment/${id}`,GET_COMMENTS_OF_TICKETS:(id:string)=>`/api/comment/${id}`},
   // TASK: {
   //   GET_DASHBOARD_DATA: "/api/tasks/dashboard-data",
   //   GET_USER_DASHBOARD_DATA: "/api/tasks/user-dashboard-data",

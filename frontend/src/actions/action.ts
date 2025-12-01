@@ -1,8 +1,9 @@
 import z from "zod";
-import type { Organisation, ticket } from "../../../types";
-import { API_PATH } from "./apiPaths"
-import axiosInstance from "./axiosInstance"
+import type { Organisation, ticket,Comment } from "../../../types";
+
 import toast from "react-hot-toast";
+import axiosInstance from "@/utils/axiosInstance";
+import { API_PATH } from "@/utils/apiPaths";
 
 export const addTicket=async(ticket:ticket)=>{
 try {
@@ -53,7 +54,7 @@ export const getOpenTicket:(params:any)=>Promise<{data:ticket[],total:number}>=a
 }
 export const getClosedTicket:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
      console.log("closed");
-    const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("close"),{...params});
+    const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("complete"),{...params});
     if(res.status===200) return {data:res.data.data as ticket[],total:res.data.totalCount};
    return {data:[],total:0};
     
@@ -96,7 +97,7 @@ export const getSpecificTicket:(t:string,params:any)=>Promise<{data:ticket[],tot
             break;
         }
          case "/tickets/sent/close":{
-        return getSentTicket("close",params)
+        return getSentTicket("complete",params)
             break;
         }
         default:{
@@ -143,11 +144,11 @@ export const getOrganisationId=async(name:string)=>{
   return foundOne.at(0)
 }
 
-export const TakeTicketIncharge=async(ticketId:string)=>{
+export const TakeTicketIncharge=async(ticketId:string,message:string)=>{
 try {
-    const res=await axiosInstance.put(API_PATH.TICKETS.TAKE_IN_CHARGE(ticketId));
+    const res=await axiosInstance.post(API_PATH.TICKETS.TAKE_IN_CHARGE(ticketId),{message});
      if(res.status!==200){
-    console.log("Error Adding ticket",res.data.message);
+    console.log("Error Pris en charge",res.data.message);
 return null; 
 }
 toast.success("Ticket a été Pris en charge")
@@ -156,8 +157,11 @@ toast.success("Ticket a été Pris en charge")
     
 }
 }
-export const AddComment=async(ticketId:string,action:string,message:string)=>{
+export const AddCommentAction=async(ticketId:string,action:string,message:string)=>{
+   
     try {
+        
+        
         const res=await axiosInstance.post(API_PATH.COMMENT.ADD_COMMENT(ticketId),{message,action});
         if(res.status!==200){
             console.log("error adding comment",res.data);
@@ -199,5 +203,47 @@ return localForms;
 
 } catch (error) {
     throw error;
+}
+}
+
+export const getTicketCommentsAction:(id:string)=>Promise<Comment[]>=async(ticketId:string)=>{
+try {
+    const res=await axiosInstance.get(API_PATH.COMMENT.GET_COMMENTS_OF_TICKETS(ticketId))
+    console.log(res);
+    
+    if(res.status===200){
+        return res.data.data;
+    }
+    else return [];
+} catch (error) {
+    console.error(error);
+    
+}
+}
+export const closeTicketAction=async(ticketId:string,message:string)=>{
+try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.CLOSE_TICKET(ticketId),{message});
+     if(res.status!==200){
+    console.log("Error closing ticket",res.data.message);
+return null; 
+}
+toast.success("Ticket a été clotoré")
+} catch (error) {
+    console.log(error);
+    
+}
+}
+
+export const relanceeTicketAction=async(ticketId:string,message:string)=>{
+try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.REOPEN_TICKET(ticketId),{message});
+     if(res.status!==200){
+    console.log("Error reopen ticket",res.data.message);
+return null; 
+}
+toast.success("Ticket est relancé")
+} catch (error) {
+    console.log(error);
+    
 }
 }

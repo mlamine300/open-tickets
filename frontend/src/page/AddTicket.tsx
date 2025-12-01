@@ -7,7 +7,7 @@ import type { FormType, Organisation } from '../../../types';
 import { standardForm } from '@/utils/data';
 import DynamicForm from '@/components/Formulaire';
 import { buildZodFormSchema } from '@/utils/zod';
-import { getAllorganisations, getFormsAction } from '@/utils/action';
+import { getAllorganisations, getFormsAction } from '@/actions/action';
 import { API_PATH } from '@/utils/apiPaths';
 import toast from 'react-hot-toast';
 

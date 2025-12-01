@@ -812,7 +812,70 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     return res.status(500).json({message:"server error",error})
   }
 }
+export const closeTicket=async (req:Request,res:Response)=>{
+  try {
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
 
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      ticket.status="complete";
+    const message=req.body.message;
+    const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"close",
+      message,
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.comments.push(comment._id)
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    return res.status(500).json({message:"server error",error})
+  }
+}
+export const relanceTicket=async (req:Request,res:Response)=>{
+  try {
+  
+    
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      ticket.status="pending";
+    const message=req.body.message;
+    const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"relancer",
+      message,
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.comments.push(comment._id)
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    console.log(error);
+    
+    return res.status(500).json({message:"server error",error})
+  }
+}
 const getFilterFromType=(type:string,userId:string)=>{
 switch(type){
     case "pending":{

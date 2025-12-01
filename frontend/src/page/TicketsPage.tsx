@@ -1,5 +1,5 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { getAllorganisations, getSpecificTicket, getTickets, TakeTicketIncharge } from '@/utils/action';
+import { getAllorganisations, getSpecificTicket, getTickets, TakeTicketIncharge } from '@/actions/action';
 import { API_PATH } from '@/utils/apiPaths';
 import axiosInstance from '@/utils/axiosInstance';
 import React, { useEffect, useState } from 'react';
@@ -15,8 +15,8 @@ import FilterTableDiv from '@/components/FilterTableDiv';
 import Modal from '@/components/ui/Modal';
 import { Sheet } from '@/components/ui/sheet';
 import AddCommentSheetContent from '@/components/AddCommentSheetContent';
-import ConfirmTakeInCharge from './ConfirmTakeInCharge';
-import TicketViewOnModal from './TicketViewOnModal';
+import ConfirmTakeInCharge from '../components/ConfirmTakeInCharge';
+import TicketViewOnModal from '../components/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 
 const TicketsPage = () => {
@@ -56,17 +56,28 @@ const TicketsPage = () => {
         retrieveOrganisations();
     },[pathname,page,priority,emitterOrganizationId,recipientOrganizationId,search,triggerRerender])
 
-    const handleTakeInCharge=()=>{
-      if(!selectedTicket){
-        alert("please select a ticket before action")
-        return;
-      } 
-     TakeTicketIncharge(selectedTicket._id);
-     setShowModal("");
-     setSelectedTicket(null);  
-     setTriggerRerender(Math.random()) 
+const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
+          setShowModal(modalTitle);
+          setSelectedTicket(selectedticket);
+          
+         }
+    // const handleTakeInChargeConfirmation=()=>{
+    //   if(!selectedTicket){
+    //     alert("please select a ticket before action")
+    //     return;
+    //   } 
+    //  TakeTicketIncharge(selectedTicket._id);
+    //  setShowModal("");
+    //  setSelectedTicket(null);  
+    //  setTriggerRerender(Math.random()) 
      
-    }
+    // }
+    // const handleClosing=()=>{
+
+    // }
+    // const handleFormward=()=>{
+
+    // }
   return (
     <Sheet>
     <DashboardLayout>
@@ -75,16 +86,15 @@ const TicketsPage = () => {
       {(tickets&&!pending)?(
         <div className='flex flex-col w-full h-full'>
           <FilterTableDiv organisations={organisations} />
-         <DataTable columns={columns({handleTakeInCharge:(selectedticket:ticket)=>{
-          setShowModal("confirmation");
-          setSelectedTicket(selectedticket);
-          
-         },addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-         showTicket:(ticket:ticket)=>{
-          setShowModal("ticket");
-          setSelectedTicket(ticket);
-         }
-         
+         <DataTable columns={columns({actions:{
+          addComment:(ticket:ticket)=>setSelectedTicket(ticket),
+          // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
+          // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
+         showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
+        //  handleClosing:(ticket:ticket)=>openConfirmation(ticket,"close"),
+        //  handleFormward:(ticket:ticket)=>openConfirmation(ticket,"forward"),
+        },
+         path:pathname
          
          })} data={tickets} />
          <TablePagination maxPages={Math.ceil(totalTicketsSize/10)} className='mt-auto ml-auto gap-2 p-5'/>
@@ -103,11 +113,24 @@ const TicketsPage = () => {
         className={cn(showModal==="ticket"&&" md:min-w-8/12 min-h-10/12 overflow-y-auto ")}
 
         >
-         {showModal==="confirmation"?<ConfirmTakeInCharge handleTakeInCharge={handleTakeInCharge} setShowModal={setShowModal}/>:showModal==="ticket"&&selectedTicket?<TicketViewOnModal ticket={selectedTicket} />:<div/>}
+         {
+         (showModal==="ticket"&&selectedTicket)?
+         <TicketViewOnModal ticket={selectedTicket} />
+
+        //  :showModal==="confirmation"?
+        //  <ConfirmTakeInCharge header='Êtes-vous sûr de vouloir prendre en charge ce ticket' action={handleTakeInChargeConfirmation} setShowModal={setShowModal}/>
+         
+        //  :(showModal==="close"&&selectedTicket)?
+        //   <ConfirmTakeInCharge header='Êtes-vous sûr de vouloir clotorer ce ticket' action={handleClosing} setShowModal={setShowModal}/>
+        //  :(showModal==="forward"&&selectedTicket)?<div>forward</div>
+        
+        :<div/>}
         </Modal>
       </div>
     </DashboardLayout>
-   {selectedTicket&& <AddCommentSheetContent ticket={selectedTicket} />}
+   {selectedTicket&& <AddCommentSheetContent refresh={()=>{
+    setTriggerRerender(Math.random())
+   }} ticket={selectedTicket} />}
     </Sheet>
   );
 };
