@@ -1,43 +1,18 @@
-// import React, { useEffect, useState } from 'react';
-// import type { Form } from '../../../types';
-// import { getAllorganisations } from '@/utils/helper';
-
-// const Formulaire = ({form}:{form:Form|null}) => {
-//   const[organisations,setOrganisations]=useState(null);
-//   useEffect(()=>{
-//     const setOrganisation=async()=>{
-//       const theorganisations=await getAllorganisations();
-//       setOrganisations(theorganisations)
-//     }
-//     setOrganisation();
-//   },[])
-//     console.log(form);
-//     console.log(organisations);
-    
-//   return (
-//     <div>
-//       <h1>Form</h1>
-//     </div>
-//   );
-// };
-
-// export default Formulaire;
-
-import { Form, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { FormType, FormFieldType, Organisation } from "../../../types";
+import type { FormType, Organisation } from "../../../types";
 import type z from "zod";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+
 import Input from "./ui/Input";
 import Button from "./ui/Button";
 
-import {SelectLabel, Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import toast from "react-hot-toast";
 //import { useNavigate } from "react-router";
-import { getAllorganisations, getOrganisationId } from "@/utils/action";
+import { getAllorganisations } from "@/utils/action";
 import { useEffect, useState } from "react";
 import { addTicket } from "@/utils/action";
+import { useForm } from "react-hook-form";
 
 
 
@@ -76,7 +51,7 @@ if (!form) return <p>Form is null </p>;
   return (
       <form
       onSubmit={myForm.handleSubmit(onSubmit)}
-      className="space-y-6   w-full bg-white rounded-lg shadow-2xl p-4 flex flex-col items-center "
+      className="space-y-6   w-full bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
     >
       <div>
         <h2 className="text-2xl font-semibold text-primary">{form.name}</h2>
@@ -101,12 +76,10 @@ if (!form) return <p>Form is null </p>;
 
         return (
           <div key={field.name} className="space-y-2">
-            {/* <Label>{field.label}</Label> */}
-
-            {/* TEXT FIELD */}
+          
             {(field.type === "text"||field.type==="number"||field.type==="date") && (
               <Input
-              parentClassName="bg-white flex flex-col items-start gap-0"
+              parentClassName="bg-background-base flex flex-col items-start gap-0"
               labelClassName={"w-full flex text-xs italic "}
               containerClassName="w-full "
               type={field.type}
@@ -123,45 +96,11 @@ if (!form) return <p>Form is null </p>;
                 key={field.name}
               />
             )}
-
-            {/* NUMBER FIELD */}
-            {/* {field.type === "number" && (
-              <Input
-               parentClassName="bg-white flex flex-row items-center"
-              labelClassName="max-w-24 min-w-16 flex"
-              containerClassName="w-full "
-              
-              label={field.label}
-              value={field.name}
-              key={field.name}
-              
-                type={field.type}
-                {...myForm.register(field.name, { valueAsNumber: true })}
-                placeHolder={field.label}
-              />
-            )} }
-
-            {/* DATE FIELD */}
-            {/* {field.type === "date" && (
-              <Input
-               parentClassName="bg-white flex flex-row items-center"
-              labelClassName="max-w-24 min-w-16 flex"
-              containerClassName="w-full "
-              label={field.label}
-              value={new Date().toDateString()}
-              key={field.name}
-              placeHolder={field.label}
-                type="date"
-                {...myForm.register(field.name)}
-              />
-            )} */}
-
-            {/* SELECT FIELD */}
             {field.type === "select" && (
-              <div className={"bg-white flex flex-col items-start gap-0"}>
+              <div className={"bg-background-base flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
               <Select 
-                value={myForm.watch(field.name) ?? ""}
+                value={myForm.watch(field.name) ?? field.default??""}
                 onValueChange={(value) => myForm.setValue(field.name, value)}
               >
                 
@@ -171,7 +110,7 @@ if (!form) return <p>Form is null </p>;
                 </SelectTrigger>
                 
                 
-                <SelectContent  id={`select-${field.name}`} className="bg-white ">
+                <SelectContent  id={`select-${field.name}`} className="bg-background-base ">
                   
                  
 

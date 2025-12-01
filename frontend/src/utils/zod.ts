@@ -1,7 +1,6 @@
 import { z } from "zod";
 import type { FormType, FormFieldType } from "../../../types";
-import { PRIORITY_DATA, STATUS_DATA } from "./data";
-import { getAllorganisations } from "./action";
+
 
 export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
   let schema: z.ZodTypeAny;
@@ -25,12 +24,14 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
     case "select":
       if (!field.possibleValues || field.possibleValues.length === 0) {
         schema = z.string(); // fallback
+        
       }
       else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"){
       schema = z.string();
       }
       else {
         schema = z.enum(field.possibleValues as [string, ...string[]]);
+        if(field.default)schema=schema.default(field.default)
       }
       break;
 
@@ -48,11 +49,7 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
 export  function buildZodFormSchema(formFromDb:FormType) {
    
   const shape: Record<string, z.ZodTypeAny> = {
-    // priority: z.enum(PRIORITY_DATA.map(x => x.value as string) as [string, ...string[]]).default("low"),
-    // status:z.enum(STATUS_DATA.map(x => x.value as string) as [string, ...string[]]).default("open"),
-    // organisationsTag:z.array(z.string()),
-    // organisationDesinataire:z.string(),
-    // message:z.string().min(3,"message should contain more then 3 charactars")
+
   };
 
   formFromDb.fields.forEach((field) => {

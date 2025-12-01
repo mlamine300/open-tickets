@@ -175,8 +175,16 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
      
     </div>
     <form className='flex justify-end items-center'>
-    
+    <div className='flex justify-between'>
+
     <Input parentClassName='flex flex-row items-center gap-2' containerClassName='h-10' label=' Recherche :' labelClassName='' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e)=>setSearch(e.target.value)} />
+      <button className='hover:font-bold hover:underline' onClick={()=>{
+        setEmitterOrganization("");
+        setRecipientOrganization("");
+        setPriority("");
+        setSearch("");
+      }}>Reset</button>            
+      </div>
 </form>
    </div>
         </AccordionContent>

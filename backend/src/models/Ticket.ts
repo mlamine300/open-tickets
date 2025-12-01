@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { CommentShema } from "./Comment.ts";
 const AssignedToSchema=new mongoose.Schema({
 userId:{type: Schema.Types.ObjectId, ref: 'User',required:false},
 date:{type:Date,required:false},
@@ -18,7 +19,8 @@ const TicketSchema=new mongoose.Schema({
     specialFields : {type:Schema.Types.Mixed,required:false},
     updatedAt:{type:Date,default:new Date() },
     assignedTo:{type:AssignedToSchema, required:false},
-    assignementHistory:{type:[AssignedToSchema],required:false}
+    assignementHistory:{type:[AssignedToSchema],required:false},
+    lastComment:{type:CommentShema,required:false},
 
 },{ timestamps: true });
 

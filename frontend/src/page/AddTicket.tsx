@@ -7,7 +7,7 @@ import type { FormType, Organisation } from '../../../types';
 import { standardForm } from '@/utils/data';
 import DynamicForm from '@/components/Formulaire';
 import { buildZodFormSchema } from '@/utils/zod';
-import { getAllorganisations } from '@/utils/action';
+import { getAllorganisations, getFormsAction } from '@/utils/action';
 import { API_PATH } from '@/utils/apiPaths';
 import toast from 'react-hot-toast';
 
@@ -19,18 +19,15 @@ const AddTicket = () => {
     
     useEffect(()=>{
         const getForms=async()=>{
-            try {
-                const res=await axiosInstance.get('/api/forms');
-                console.log(res.data.data);
-                if(res.status===200){
-                    
-                    setForms(res.data.data);
-                   
-                }
-                
-            } catch (error) {
-                console.log(error)
-            }
+          try {
+            const localForms=await getFormsAction();
+            setForms(localForms);
+          } catch (error) {
+            console.log(error);
+            
+          }
+          
+          
         }
         const getOrganisations=async()=>{
           const myorganisation=await getAllorganisations();

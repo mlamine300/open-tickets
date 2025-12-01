@@ -33,6 +33,7 @@ export interface FormFieldType{
       label:string;
       type:"text"|"number"|"select"|"date"|"select-multiple"|"area";
       possibleValues?:string[];
+      default?:string;
     required:boolean;}
 export interface FormType{_id:string;
   name:string;
@@ -70,12 +71,17 @@ export interface ticket{
     AssignementHistory?:{name:string;date:Date}[]
     updatedAt?:Date;
     formName?:string;
+    lastComment?:Comment;
 }
 
 export interface Comment{
+  author?:{_id:string,name:string,email:string}
   ticketId:string;
-  authorId:string;
+  ticketRef?:string;
+  authorId?:string;
   message:string;
+  action:string;
+  createdAt:Date;
 
 }
 

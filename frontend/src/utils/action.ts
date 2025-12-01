@@ -170,3 +170,34 @@ export const AddComment=async(ticketId:string,action:string,message:string)=>{
         
     }
 }
+
+export const getFormsAction=async()=>{
+      try {
+        const localFormString=localStorage.getItem("forms")||"{}";
+
+const data=JSON.parse(localFormString)
+const {date,forms:localForms}=data;
+const today=new Date().getTime();
+const differenceInHours =(Number(new Date(date).getTime())- Number(today))/1000/60/60 ;
+
+if(!localForms||!Array.isArray(localForms)||localForms.length<1||differenceInHours>8){
+ const res=await axiosInstance.get(API_PATH.FORMS.GET_FORMS);
+  console.log("refreshing forms");
+  console.log(res);
+  if(res.status===200){
+  const forms=res.data.data;
+  localStorage.setItem("forms",JSON.stringify({forms,date:new Date()}))
+  return forms;
+  }
+  
+  
+return null;
+}
+
+return localForms;
+
+
+} catch (error) {
+    throw error;
+}
+}

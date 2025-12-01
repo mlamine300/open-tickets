@@ -14,6 +14,7 @@ export const API_PATH = {
     DELETE_USER: (userID: string) => `/api/users/${userID}`,
   },
   FORMS:{
+    GET_FORMS:'/api/forms',
     GET_FORM_BY_ID:(id:string)=>`/api/forms/${id}`,
      ADD_FORM:"/api/forms",
      UPDATE_FORM_BY_ID:(id:string)=>`/api/forms/${id}`

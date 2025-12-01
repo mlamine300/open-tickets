@@ -22,6 +22,8 @@ export const addComment=async(req:Request,res:Response)=>{
             return res.status(400).json({message:"error adding comment"});
         }
          ticket.comments.push(comment._id);
+         if(ticket.ref)comment.ticketRef=ticket.ref;
+         ticket.lastComment=comment;
          await ticket.save();
          return res.status(200).json({message:"success",data:{ticket,comment}});
         

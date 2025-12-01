@@ -20,8 +20,8 @@ export const addTicket=async(req:Request,res:Response)=>{
         
         //checking request format
         if(!req?.body)return res.status(400).json({message:"there are no fields in request body"})
-        const{organisationDest,organisationTag,formName,message}=req.body;
-        if(!organisationDest||!formName||!message){
+        const{organisationDest,organisationTag,formName,message,ref}=req.body;
+        if(!organisationDest||!formName||!message||!ref){
             return res.status(400).json({message:"fields are required {recipientOrganizationId ,associatedOrganizations ,type and message}"});
         }
         //transform organisation data from name to id
@@ -45,9 +45,11 @@ export const addTicket=async(req:Request,res:Response)=>{
         //
         const priority=req.body?.priority?.toLowerCase()||"low";
         const commentsId:any[]=[];
+        
+       console.log(req.body);
        
         const ticket=await ticketModel.create({creator:userId,
-           emitterOrganizationId, recipientOrganizationId,associatedOrganizations,formName,message,specialFields,priority,commentsId
+           emitterOrganizationId, recipientOrganizationId,associatedOrganizations,formName,message,specialFields,priority,commentsId,ref
         })
         return res.status(200).json({message:"success",data:ticket})
 
@@ -201,6 +203,33 @@ if(recipientOrganizationId){
 
       { $project: { assignedUsers: 0 } },
 
+      // Populate lastComment.author (replace authorId with author doc)
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastComment.authorId",
+          foreignField: "_id",
+          as: "lastCommentAuthor"
+        }
+      },
+      {
+        $addFields: {
+          lastComment: {
+            $cond: [
+              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+              {
+                $mergeObjects: [
+                  "$lastComment",
+                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+                ]
+              },
+              "$lastComment"
+            ]
+          }
+        }
+      },
+      { $project: { lastCommentAuthor: 0 } },
+
       // project only necessary fields for creator, organisations and assignedTo
       {
         $project: {
@@ -213,6 +242,14 @@ if(recipientOrganizationId){
           createdAt: 1,
           updatedAt: 1,
           specialFields:1,
+          lastComment: {
+            _id: "$lastComment._id",
+            message: "$lastComment.message",
+            action: "$lastComment.action",
+            ticketRef: "$lastComment.ticketRef",
+            createdAt: "$lastComment.createdAt",
+            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+          },
           creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
           emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
           recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
@@ -472,6 +509,33 @@ if(recipientOrganizationId){
 
       { $project: { assignedUsers: 0 } },
 
+      // Populate lastComment.author (replace authorId with author doc)
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastComment.authorId",
+          foreignField: "_id",
+          as: "lastCommentAuthor"
+        }
+      },
+      {
+        $addFields: {
+          lastComment: {
+            $cond: [
+              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+              {
+                $mergeObjects: [
+                  "$lastComment",
+                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+                ]
+              },
+              "$lastComment"
+            ]
+          }
+        }
+      },
+      { $project: { lastCommentAuthor: 0 } },
+
       // project only necessary fields for creator, organisations and assignedTo
       {
         $project: {
@@ -483,6 +547,15 @@ if(recipientOrganizationId){
           priority: 1,
           createdAt: 1,
           updatedAt: 1,
+          specialFields:1,
+          lastComment: {
+            _id: "$lastComment._id",
+            message: "$lastComment.message",
+            action: "$lastComment.action",
+            ticketRef: "$lastComment.ticketRef",
+            createdAt: "$lastComment.createdAt",
+            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+          },
           creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
           emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
           recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },

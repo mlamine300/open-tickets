@@ -89,14 +89,18 @@ const TicketsPage = () => {
          })} data={tickets} />
          <TablePagination maxPages={Math.ceil(totalTicketsSize/10)} className='mt-auto ml-auto gap-2 p-5'/>
         </div>
-      ):<Spinner/>}
+      ):
+      (<div className='w-full h-full flex items-center justify-center'>
+        <Spinner size='xl'/>
+      </div>)
+      }
       </Card>
       <div>
         <Modal 
         close={()=>setShowModal("")}
         showModal={(Boolean(showModal))}
         title={showModal==="confirmation"?"Prendre en charge le Ticket":"Detail de Ticket"}
-        className={cn(showModal==="ticket"&&" md:min-w-8/12 min-h-10/12 ")}
+        className={cn(showModal==="ticket"&&" md:min-w-8/12 min-h-10/12 overflow-y-auto ")}
 
         >
          {showModal==="confirmation"?<ConfirmTakeInCharge handleTakeInCharge={handleTakeInCharge} setShowModal={setShowModal}/>:showModal==="ticket"&&selectedTicket?<TicketViewOnModal ticket={selectedTicket} />:<div/>}
