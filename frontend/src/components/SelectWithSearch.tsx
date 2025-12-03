@@ -1,0 +1,48 @@
+import React, { useEffect, useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import Input from './ui/Input';
+import { HiXMark } from 'react-icons/hi2';
+
+const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value:string;onValueChange:(value:string)=>void;label:string;name:string;possibleValues?:string[]}) => {
+  const [search,setSearch]=useState("");
+  const [filtredValues,setFiltredValues]=useState(possibleValues);
+  useEffect(()=>{
+    setFiltredValues(possibleValues?.filter(p=>p.toLowerCase().trim().includes(search.toLowerCase().trim())))
+  },[search])
+    return (
+    <Select 
+                value={value}
+                onValueChange={(e)=>{
+                    setSearch("");
+                    onValueChange(e)
+                }}
+              >
+                
+                <SelectTrigger className={"w-full"}>
+                  <SelectValue  placeholder={`Select a ${label}`} />
+                  
+                </SelectTrigger>
+                
+                
+                <SelectContent  id={`select-${name}`} className="bg-background-base ">
+                  
+                 
+
+                
+                  <div className='relative flex items-center gap-1 justify-center'>
+                      <Input parentClassName='w-full mx-1' inputClassName='text-xs' type='text' label='' labelClassName='hidden' onChange={(e)=>{setSearch(e.target.value)}  } value={search} placeHolder={`search a ${name}`} />
+                      <HiXMark onClick={()=>setSearch("")} className='absolute right-2 text-red-500 hover:font-bold cursor-pointer hover:w-5 hover:h-5'/>
+                  </div>
+                  { filtredValues?.map((val) => (
+                    <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val} value={val}>
+                      {val}
+                    </SelectItem>
+                  ))}
+                  
+                </SelectContent>
+                
+              </Select>
+  );
+};
+
+export default SelectWithSearch;

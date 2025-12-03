@@ -2,10 +2,11 @@ import {
   LuClipboardCheck,
   LuLayoutDashboard,
   LuLogOut,
-  LuSquarePlus,
-  LuUser,
+  LuPlus,
 } from "react-icons/lu";
 import type { FormType, FormFieldType, Organisation } from "../../../types";
+import { Label } from "@radix-ui/react-select";
+import { HiFolder } from "react-icons/hi2";
 
 export const SIDE_MENU_ADMIN_DATA = [
   {
@@ -37,7 +38,7 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
      {
       id:"22",
-      label: "Prêt en charge par moi ",
+      label: "Pris en charge par moi ",
       icon: LuClipboardCheck,
       path: "/tickets/open_me",
 
@@ -89,6 +90,28 @@ export const SIDE_MENU_ADMIN_DATA = [
     ]
 
     },
+    {id:"05",
+      label:"Formulaires",
+      icon:LuPlus,
+      path:"/forms",
+      hasChilds:true,
+      childs:[
+        {
+          id:"51",
+      label:"Formulaires",
+      icon:HiFolder,
+      path:"/forms",
+        },
+        {
+          id:"52",
+      label:"Ajouter Formulaires",
+      icon:LuPlus,
+      path:"/forms/new",
+        },
+        
+      ]
+
+    },
   {
     id: "06",
     label: "Logout",
@@ -130,7 +153,7 @@ export const SIDE_MENU_USER_DATA = [
     },
      {
       id:"22",
-      label: "Prêt en charge par moi ",
+      label: "Pris en charge par moi ",
       icon: LuClipboardCheck,
       path: "/tickets/open_me",
 
@@ -215,8 +238,8 @@ export const standardForm=(organisations:Organisation[]):FormType=>({
       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false,default:"low"},
       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
-        {name:"organisationDest",label:"organisation Destinataire",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
-        {name:"organisationTag",label:"organisation Taguée",type:"select",possibleValues:organisations.map(o=>o.name),required:false},
+        {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:organisations.map(o=>o.name),required:false},
+        {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:organisations.map(o=>o.name),required:false},
     ]
 
 export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]

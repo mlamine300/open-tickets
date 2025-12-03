@@ -17,15 +17,6 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
     const ref=useRef<HTMLButtonElement|null>(null);
     const {user}=useUserContext();
     
-/**
- * 
- * @param e      comment:"Commentaire",
-  open: "lancée",
-  in_charge: "pris en charge",
-  called: "le concerné a été appelé",
-  relancer: "relancer",
-  close:"traité"
- */
     const handleAction=(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
       e.preventDefault();
      setPending(true);
@@ -57,11 +48,14 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
       if(!message||!action){
         toast.error("tu devrais ecrir un message et choisir une action")
       }
-     await AddCommentAction(ticket._id,action,message);
+      if(ticket._id){
+  await AddCommentAction(ticket._id,action,message);
       setAction("comment");
       setMessage("");
       if(ref&&ref.current){
       ref.current.click();
+      }
+   
       }
      
     }
@@ -71,7 +65,8 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
           toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas le prendre en charge`)
           return
         }
-        await  TakeTicketIncharge(ticket._id,message);
+        if(ticket._id){
+          await  TakeTicketIncharge(ticket._id,message);
          setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -79,6 +74,7 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
       }
       setPending(false)
          refresh();
+        }
         }
         const handleClosing=async()=>{
           setPending(true)
@@ -88,7 +84,8 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
         return;
         }
-         await closeTicketAction(ticket._id,message);
+        if(ticket._id){
+           await closeTicketAction(ticket._id,message);
           setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -97,14 +94,16 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
       setPending(false);
       refresh();
         }
+        }
         const handleRelance=async()=>{
           setPending(true)
            if(ticket.assignedTo?.user._id!==user?._id){
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
         return;
         }
-        alert("reopen")
-       await relanceeTicketAction(ticket._id,message);
+       
+      if(ticket._id){
+         await relanceeTicketAction(ticket._id,message);
         setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -112,6 +111,7 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
       }
       setPending(false)
       refresh();
+      }
         }
   return (
       <SheetContent className='h-full bg-background-base'>
