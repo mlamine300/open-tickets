@@ -1,4 +1,4 @@
-import { standardForm } from "@/utils/data";
+import { standardForm, StandartFierlds } from "@/utils/data";
 import { useState } from "react";
 import type { FormFieldType, FormType } from "../../../../types";
 import Input from "@/components/ui/Input";
@@ -8,14 +8,22 @@ import { buildZodFormSchema } from "@/utils/zod";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import AddFieldMenu from "@/components/AddFieldMenu";
+import toast from "react-hot-toast";
 
 
 const AddFormPage = () => {
-    
+    const standartFierlds=StandartFierlds([]).map(s=>s.name);
     const [form,setForm]=useState<FormType>({name:"",description:"",fields:[]})
     const [showModal,setShowModal]=useState(false);
     const addFunction=(data:FormFieldType)=>{
-      console.log();
+      alert("add")
+      if(form.fields.filter(f=>f.name===data.name).length>0){
+        toast.error(`le nom (${data.name}) existe déja assurer vous que le nom est correct)`)
+      return;
+      }
+      form.fields.push(data);
+      toast.success("good");
+
       
     }
   return (
@@ -28,14 +36,18 @@ const AddFormPage = () => {
           <Input parentClassName="items-start gap-0 w-full" containerClassName="w-8/12" labelClassName="italic text-xs font-semibold " label="Descriptions" placeHolder="description.." type="area" value={form.description}
          onChange={(e)=>setForm(f=>{return{...f,description:e.target.value}})} />
         <Button text="Ajouter un champ de saisie" variant="primary" className="self-center" onClick={()=>setShowModal(true)}/>
-
+        <div className="flex flex-wrap gap-2">
+          {form.fields.filter(f=>!standartFierlds.includes(f.name))&&form.fields.filter(f=>!standartFierlds.includes(f.name)).map(f=>{
+            return <p className="px-4 py-1 rounded bg-primary hover:bg-red-500/50" onClick={()=>setForm({...form,fields:form.fields.filter(fild=>fild!==f)})}>{f.name}</p>
+          })}
+        </div>
       </div>
       <div className="w-full flex-col gap-4 bg-background-base h-full">
         <p className="italic text-lg font-semibold">{form.name}</p>
       <DynamicForm form={form} />
       </div>
     </div>
-    <Modal close={()=>setShowModal(false)} showModal={showModal} title="Ajouter un champs" >
+    <Modal className="w-10/12 max-w-8/12 min-w-8/12 h-fit pb-20" close={()=>setShowModal(false)} showModal={showModal} title="Ajouter un champs" >
       <AddFieldMenu addFunction={addFunction} />
     </Modal>
     </DashboardLayout>
