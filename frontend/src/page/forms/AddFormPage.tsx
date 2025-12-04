@@ -1,23 +1,37 @@
-import { standardForm, StandartFierlds } from "@/utils/data";
-import { useState } from "react";
+import {  StandartFierlds } from "@/utils/data";
+import { useEffect, useState } from "react";
 import type { FormFieldType, FormType } from "../../../../types";
 import Input from "@/components/ui/Input";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import DynamicForm from "@/components/Formulaire";
-import { buildZodFormSchema } from "@/utils/zod";
+
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import AddFieldMenu from "@/components/AddFieldMenu";
 import toast from "react-hot-toast";
-import { addFormAction } from "@/actions/action";
+import { addFormAction, getFormByIdAction } from "@/actions/action";
+import { useParams } from "react-router";
 
 
 const AddFormPage = () => {
+    const params=useParams();
+    const id=params.id||"new";
     const standartFierlds=StandartFierlds([]).map(s=>s.name);
-    const [form,setForm]=useState<FormType>({name:"",description:"",fields:[]});
-    const dumpForm=form;
+    const [form,setForm]=useState<FormType>({name:"",description:"",fields:[]}); 
     const [pending,setPending]=useState(false);
     const [showModal,setShowModal]=useState(false);
+
+  useEffect(()=>{
+    const getForm=async()=>{
+      if(id!=="new"){
+ const f=await getFormByIdAction(id);
+ if(f)setForm(f);
+      }
+     
+    }
+    getForm();
+  },[])
+
+
     const addFunction=(data:FormFieldType)=>{
       
       if(form.fields.filter(f=>f.name===data.name).length>0){

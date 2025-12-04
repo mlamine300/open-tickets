@@ -259,3 +259,13 @@ export const addFormAction=async(form:FormType)=>{
         
     }
 }
+
+export const getFormByIdAction=async(id:string)=>{
+    try {
+        const res=await axiosInstance.get(API_PATH.FORMS.GET_FORM_BY_ID(id));
+        if(res.status===200)return res.data.data;
+        return null;
+    } catch (error) {
+        
+    }
+}

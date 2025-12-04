@@ -33,7 +33,7 @@ function App() {
        </Route>
        <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}></Route>
          <Route path="/forms" element={<FormsPages />} />
-         <Route path="/forms/new" element={<AddFormPage />} />
+         <Route path="/forms/:id" element={<AddFormPage />} />
       </Routes>  
        
       <Toaster position="top-center" reverseOrder={false} />
