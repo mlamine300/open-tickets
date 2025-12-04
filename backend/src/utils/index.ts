@@ -17,7 +17,7 @@ export const validateFieldSchema=(input:any)=> {
   }
 
   // Validate type
-  const allowedTypes = ["text", "number", "select", "date"];
+  const allowedTypes = ["text", "number", "select", "date","select","select-filter","select-multiple","list"];
   if (!allowedTypes.includes(input.type || "text")) {
     errors.push(`type must be one of: ${allowedTypes.join(", ")}.`);
   }

@@ -9,7 +9,7 @@ import SelectWithSearch from './SelectWithSearch';
 import InputMultiple from './InputMultiple';
 import Button from './ui/Button';
 const AddFieldMenu = ({addFunction}:{addFunction:(data:FormFieldType)=>void}) => {
-    const [field,setField]=useState<FormFieldType|null>()
+    //const [field,setField]=useState<FormFieldType|null>()
      type placeholder={placeholder:string};
     const addFieldMenuFormFields:(FormFieldType&placeholder)[]=[
         {name:"name",type:"text",label:"Nom de champs",placeholder:"exemple: nom de client",required:true},
@@ -36,7 +36,11 @@ const AddFieldMenu = ({addFunction}:{addFunction:(data:FormFieldType)=>void}) =>
   return (
     <Form {...addFieldMenuForm}>
 
-    <form onSubmit={addFieldMenuForm.handleSubmit(addFunction)} className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-2">
+    <form onSubmit={addFieldMenuForm.handleSubmit((data:FormFieldType)=>{
+        addFunction(data)
+        addFieldMenuForm.reset({name:"",label:"",type:"text",default:"",possibleValues:[],required:false});
+        
+    })} className="grid grid-cols-1 xl:grid-cols-2 gap-x-4 gap-y-2">
     {addFieldMenuFormFields.map(fi=>{
 
         return   <FormField
@@ -55,7 +59,7 @@ const AddFieldMenu = ({addFunction}:{addFunction:(data:FormFieldType)=>void}) =>
                  <SelectWithSearch  label={fi.label} name={fi.name}  value={addFieldMenuForm.watch(fi.name as any||"")} onValueChange={(s)=>addFieldMenuForm.setValue(fi.name as any,fi.name==="required"?s==="oui":s)} possibleValues={fi.possibleValues}/>
                
                </div>
-                :fi.type==="list"?
+                :((fi.type)==="list")?
                 <InputMultiple  label={fi.label} name={fi.name}  value={addFieldMenuForm.watch(fi.name as any)} onValueChange={(s:string[])=>addFieldMenuForm.setValue(fi.name as any,s)}
                  parentClassName='gap-px items-start w-full' containerClassName='h-8 w-11/12 ml-2' inputClassName='text-xs' labelClassName='italic text-xs'/>
              :""}

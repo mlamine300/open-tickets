@@ -224,22 +224,24 @@ export const STATUS_DATA = [
   { label: "Completed", value: "Completed" },
 ];
 
-export const standardForm=(organisations:Organisation[]):FormType=>({
+export const standardForm=(organisations?:Organisation[]):FormType=>({
         _id:"standard",
         name:"standard",
         description:"reclamation standard",
-        fields:StandartFierlds(organisations),
+        fields:StandartFierlds(),
     })
 
 
 
-    export const StandartFierlds=(organisations:Organisation[]):FormFieldType[]=>[
+    export const StandartFierlds=(organisations?:Organisation[]):FormFieldType[]=>[
       {name:"ref",label:"Ref/Tracking",type:"text",required:true},
       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false,default:"low"},
       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
-        {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:organisations.map(o=>o.name),required:false},
-        {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:organisations.map(o=>o.name),required:false},
+        {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:[
+                        "organisations"
+                    ],required:false},
+        {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:["organisations"],required:false},
     ]
 
 export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]

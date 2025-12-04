@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Organisation, ticket,Comment } from "../../../types";
+import type { Organisation, ticket,Comment, FormType } from "../../../types";
 
 import toast from "react-hot-toast";
 import axiosInstance from "@/utils/axiosInstance";
@@ -192,7 +192,7 @@ if(!localForms||!Array.isArray(localForms)||localForms.length<1||differenceInHou
   const forms=res.data.data;
   localStorage.setItem("forms",JSON.stringify({forms,date:new Date()}))
   return forms;
-  }
+  }z
   
   
 return null;
@@ -246,4 +246,16 @@ toast.success("Ticket est relancé")
     console.log(error);
     
 }
+}
+
+export const addFormAction=async(form:FormType)=>{
+    try {
+        const res=await axiosInstance.post(API_PATH.FORMS.ADD_FORM,form);
+        if(res.status===200)toast.success(`Formulaire (${form.name}) a été ajouter avec succés`);
+        return true;
+    } catch (error) {
+     console.log(error);
+     return false;
+        
+    }
 }

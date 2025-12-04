@@ -1,8 +1,6 @@
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { getAllorganisations, getSpecificTicket, getTickets, TakeTicketIncharge } from '@/actions/action';
-import { API_PATH } from '@/utils/apiPaths';
-import axiosInstance from '@/utils/axiosInstance';
-import React, { useEffect, useState } from 'react';
+import { getAllorganisations, getSpecificTicket } from '@/actions/action';
+import { useEffect, useState } from 'react';
 
 import type { Organisation, ticket } from '../../../types';
 import { useLocation, useSearchParams } from 'react-router';
@@ -15,7 +13,6 @@ import FilterTableDiv from '@/components/FilterTableDiv';
 import Modal from '@/components/ui/Modal';
 import { Sheet } from '@/components/ui/sheet';
 import AddCommentSheetContent from '@/components/AddCommentSheetContent';
-import ConfirmTakeInCharge from '../components/ConfirmTakeInCharge';
 import TicketViewOnModal from '../components/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 

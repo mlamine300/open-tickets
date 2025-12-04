@@ -23,36 +23,42 @@ import { buildZodFormSchema } from "@/utils/zod";
 
 
 export default function DynamicForm({ form,disabled }:{form:FormType|null,disabled?:boolean}) {
-
- // const navigate=useNavigate();
- const [formulaire,setFormulaire]=useState<FormType|null>(form);
-  const[allOrganisations,setAllORganisations]=useState<Organisation[]>([]);
-  const allOrganisationsString : string[]=allOrganisations.map(o=>o.name)
-  console.log(allOrganisationsString);
+  const [triggerRerender,setTriggerRerender]=useState(0);
+  //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
+  const formulaire=form||standardForm();
+  
   
   
   const [pending,setPending]=useState<boolean>(false);
   useEffect(()=>{
+    
     const getOrganisations=async()=>{
       const organisations=await getAllorganisations() as Organisation[];
-      setAllORganisations(organisations); 
-      if(!form){
- setFormulaire(standardForm(organisations))
-      }
-     
+       //setAllORganisations(organisations); 
+        const organisationString=organisations.map(o=>o.name);
+      formulaire.fields.forEach(field=>{
         
+        if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
+        
+          field.possibleValues=(organisationString)
+          setTriggerRerender(Math.random());
+        }
+      })
     }
+    if(!formulaire.fields.map(f=>f.name).includes("priority") )
+     formulaire.fields.push(...StandartFierlds());
     getOrganisations();
-  },[])
+  },[form])
  if(!formulaire){
 return (<div className="flex justify-center items-center">
   <Spinner size="xl" />
  </div>)
  }
  
-    if(!formulaire.fields.map(f=>f.name).includes("priority")&&allOrganisations&&Array.isArray(allOrganisations)&&allOrganisations.length>0)
-     formulaire.fields.push(...StandartFierlds(allOrganisations));
+    
 
+    //console.log(formulaire);
+    
     if (!formulaire) return <p>Form is null </p>;
     const schema=buildZodFormSchema(formulaire) as any;
   const myForm = useForm({
@@ -93,15 +99,7 @@ setPending(false);
 
 
       {formulaire.fields.map((field) => {
-        if (
-          field.possibleValues &&
-          field.possibleValues.length ===1 &&
-          field.possibleValues.at(0) === "organisations" 
-        ) {
-          console.log("-------->",allOrganisations);
-          
-          field.possibleValues.push(...allOrganisationsString);
-        }
+       
         const fieldError = (errors as Record<string, any>)[field.name]?.message;
 
         return (

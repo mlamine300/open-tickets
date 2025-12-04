@@ -38,21 +38,29 @@ try {
 
 export const addForm=async(req:Request,res:Response)=>{
    try {
+    
+    
      if(!req.body)return res.status(400).json({message:"name and fields are required"});
-    const {name,fields}=req.body;
+    const {name,fields,description}=req.body;
     if(!name||!fields){
         return res.status(400).json({message:"name and fields are required"});
     }
     if(!Array.isArray(fields)||fields.length<1){
         return res.status(400).json({message:"field sould be an array whith a length of one or heigher"});  
     }
+    const form=await formulaireModel.find({name}).lean().exec();
+    if(form&&form.length>0)return res.status(409).json({message:"duplicate, this form already existe"})
     fields.forEach(f=>{
         if(!validateFieldSchema(f).valid){
-            return res.status(400).json({message:`error in field :${f.label||"label"}`})
+            console.log(validateFieldSchema(f));
+            
+            return res.status(400).json({message:`error in field :${f.label||"label"}  ${validateFieldSchema(f).errors.at(0)}`})
 
         }
     })
-
+        const data=await formulaireModel.create({name,description,fields})
+        if(data)return res.status(200).json({message:"success",data})
+            else return res.status(400).json({message:"error creating form"})
    } catch (error) {
     return res.status(500).json({message:"Server Error",error})
    }
