@@ -2,10 +2,11 @@ import DashboardLayout from '@/layouts/DashboardLayout';
 import  { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormType, Organisation } from '../../../types';
-import { standardForm } from '@/utils/data';
-import DynamicForm from '@/components/Formulaire';
-import { getAllorganisations, getFormsAction } from '@/actions/action';
+import type { FormType, Organisation } from '../../../../types';
+import { standardForm } from '@/data/data';
+import DynamicForm from '@/components/ticket/Formulaire';
+import { getAllorganisationsAction } from '@/actions/organisationAction';
+import { getFormsAction } from '@/actions/formAction';
 
 const AddTicket = () => {
     
@@ -26,7 +27,7 @@ const AddTicket = () => {
           
         }
         const getOrganisations=async()=>{
-          const myorganisation=await getAllorganisations();
+          const myorganisation=await getAllorganisationsAction();
           setOrganisation(myorganisation)
         }
         getForms();
@@ -36,7 +37,7 @@ const AddTicket = () => {
     const myStandardForm=standardForm(organisations);
 
   return (
-    <DashboardLayout>
+    <div>
       <div className='flex flex-col items-center gap-4'>
         <h1 className='text-2xl font-semibold italic text-primary'>Portail des réclamations</h1>
       <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
@@ -62,7 +63,7 @@ const AddTicket = () => {
         <DynamicForm form={myStandardForm}  />
       </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

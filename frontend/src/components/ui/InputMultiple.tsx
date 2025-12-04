@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Input from "./ui/Input";
+import Input from "./Input";
 import { Plus } from "lucide-react";
 
 

@@ -4,7 +4,7 @@ import type{ ColumnDef } from "@tanstack/react-table"
 import type { ticket } from "../../../../types"
 import { Link } from "react-router";
 import { ArrowUpDown, ExternalLink, Eye, MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
@@ -13,7 +13,7 @@ import { SheetTrigger } from "../ui/sheet";
 // You can use a Zod schema here if you want.
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
-export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<ticket>[] =({actions,path})=> [
+export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<ticket>[] =({actions})=> [
   {accessorKey:"createdAt",
    header: ({ column }) => {
       return (
@@ -75,7 +75,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         <ArrowUpDown/>
          <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">to:</span> {recipientOrganization} </p>
       </div>;
-     }
+}
   },
 
   {
@@ -121,7 +121,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     header: "Voir",
      cell: ({ row }) => {
         
-        const id=row.original._id;
+        
         
       
       return <div onClick={()=>actions.showTicket(row.original)}> <Eye className="text-primary hover:text-gray-cold/50"/> </div>;
@@ -134,8 +134,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     cell: ({ row }) => {
       const id = row.original._id;
       
-      const assignedTo=row.original.assignedTo
-      const status=row.getValue("status");
+
       
       
       return (

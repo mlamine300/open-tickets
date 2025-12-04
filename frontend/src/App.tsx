@@ -5,16 +5,16 @@ import Login from './page/auth/Login'
 import SignUp from './page/auth/SignUp'
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from './routes/PrivateRoute';
-import NotFound from './components/NotFound';
+import NotFound from './components/main/NotFound';
 import Dashboard from './page/Dashboard';
 
 
-import TicketsPage from './page/TicketsPage';
-import TicketOverViewPage from './page/TicketOverViewPage';
-import AddTicket from './page/AddTicket';
+import TicketsPage from './page/tickets/TicketsPage';
+import TicketOverViewPage from './page/tickets/TicketOverViewPage';
+import AddTicket from './page/tickets/AddTicket';
 import AddFormPage from './page/forms/AddFormPage';
 import FormsPages from './page/forms/FormsPage';
-import AddTicketFormPage from './page/AddTicketFormPage';
+import AddTicketFormPage from './page/tickets/AddTicketFormPage';
 function App() {
  
 
@@ -30,10 +30,12 @@ function App() {
         <Route path="/form/:id" element={<AddTicketFormPage />} />
         <Route path="/tickets/*" element={<TicketsPage />} />
         <Route path="/ticket/:id" element={<TicketOverViewPage />} />
+         <Route path="*" element={<NotFound />} />
        </Route>
-       <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}></Route>
+       <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}>
          <Route path="/forms" element={<FormsPages />} />
          <Route path="/forms/:id" element={<AddFormPage />} />
+         </Route>
       </Routes>  
        
       <Toaster position="top-center" reverseOrder={false} />

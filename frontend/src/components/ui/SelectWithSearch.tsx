@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import Input from './ui/Input';
+import  { useEffect, useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
+import Input from './Input';
 import { HiXMark } from 'react-icons/hi2';
 
 const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value:string;onValueChange:(value:string)=>void;label:string;name:string;possibleValues?:string[]}) => {

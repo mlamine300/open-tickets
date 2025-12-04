@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils';
-import React, { useState, useEffect } from 'react';
-import type { Organisation } from '../../../types';
-import Input from './ui/Input';
+import  { useState, useEffect } from 'react';
+import type { Organisation } from '../../../../types';
+import Input from '../ui/Input';
 import { useSearchParams } from 'react-router';
-import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
-import { PRIORITY_DATA, STATUS_DATA } from '@/utils/data';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { PRIORITY_DATA } from '@/data/data';
 
-import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
  const [searchParams,setSearchParams]=useSearchParams();
@@ -89,10 +89,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 
                 
                 <SelectContent  id={`select-station-emmitrice`} className="bg-background-base ">
-                  
-                 
-
-                 <p className='text-sm hover:cursor-pointer'  onClick={(e)=>setEmitterOrganization("")}>
+                   <p className='text-sm hover:cursor-pointer'  onClick={()=>setEmitterOrganization("")}>
                     Organisation
                   </p>
                   { organisations?.map((val) => (
@@ -126,7 +123,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                   
                  
 
-                 <p className='text-sm hover:cursor-pointer'  onClick={(e)=>setRecipientOrganization("")}>
+                 <p className='text-sm hover:cursor-pointer'  onClick={()=>setRecipientOrganization("")}>
                     Organisation
                   </p>
                   { organisations?.map((val) => (
@@ -158,7 +155,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 <SelectContent  id={`select-status`} className="bg-background-base ">
                   
                 
-                  <p className='text-sm hover:cursor-pointer'  onClick={(e)=>setPriority("")}>
+                  <p className='text-sm hover:cursor-pointer'  onClick={()=>setPriority("")}>
                     Priority
                   </p>
                  

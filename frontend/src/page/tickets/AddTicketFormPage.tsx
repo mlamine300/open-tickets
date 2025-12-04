@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import type { FormType } from '../../../types';
+import type { FormType } from '../../../../types';
 
-import {   getFormsAction } from '@/actions/action';
+import {   getFormsAction } from '@/actions/formAction';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import DynamicForm from '@/components/Formulaire';
+import DynamicForm from '@/components/ticket/Formulaire';
 
 
 
@@ -39,7 +39,7 @@ const AddTicketFormPage = () => {
    
     
     return (
-      <DashboardLayout >
+    
         <div className='w-full flex flex-col items-center'>
 
        
@@ -48,7 +48,7 @@ const AddTicketFormPage = () => {
         </div>
         
         
-      </DashboardLayout>
+      
     );
 };
 

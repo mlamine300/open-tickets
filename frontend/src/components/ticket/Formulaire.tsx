@@ -1,22 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { FormType, Organisation } from "../../../types";
+import type { FormType, Organisation } from "../../../../types";
 import type z from "zod";
 
-import Input from "./ui/Input";
-import Button from "./ui/Button";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
-import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import toast from "react-hot-toast";
 //import { useNavigate } from "react-router";
-import { getAllorganisations } from "@/actions/action";
+import { getAllorganisationsAction } from "@/actions/organisationAction";
 import { useEffect, useState } from "react";
-import { addTicket } from "@/actions/action";
+import { addTicketAction } from "@/actions/ticketAction";
 import { useForm } from "react-hook-form";
-import SelectWithSearch from "./SelectWithSearch";
-import SelectMultiple from "./SelectMultiple";
-import { standardForm, StandartFierlds } from "@/utils/data";
-import Spinner from "./Spinner";
+import SelectWithSearch from "../ui/SelectWithSearch";
+import SelectMultiple from "../ui/SelectMultiple";
+import { standardForm, StandartFierlds } from "@/data/data";
+import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
 
 
@@ -33,7 +33,7 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
   useEffect(()=>{
     
     const getOrganisations=async()=>{
-      const organisations=await getAllorganisations() as Organisation[];
+      const organisations=await getAllorganisationsAction() as Organisation[];
        //setAllORganisations(organisations); 
         const organisationString=organisations.map(o=>o.name);
       formulaire.fields.forEach(field=>{
@@ -69,7 +69,7 @@ const onSubmit = async(data: z.infer<typeof schema>) => {
   setPending(true)
     console.log(data);
     
-  const ticket=await addTicket({formName:formulaire?.name,...data});
+  const ticket=await addTicketAction({formName:formulaire?.name,...data});
   if(ticket){
 toast.success("ticket créé!!!!")
 myForm.reset();

@@ -29,7 +29,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-     const [sorting, setSorting] = useState<SortingState>([])
+  const [sorting, setSorting] = useState<SortingState>([])
   const table = useReactTable({
     data,
     columns,
@@ -40,11 +40,10 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
-  })
- 
+  });
 
   return (
-    <div className="overflow-hidden rounded-md border flex items-center justify-center w-full border border-gray-hot">
+    <div className="overflow-hidden rounded-md border flex items-center justify-center w-full  border-gray-hot">
       <Table className="bg-background-base border border-gray-hot">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

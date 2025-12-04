@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import type { Comment, ticket } from '../../../types';
+import  { useEffect, useState } from 'react';
+import type { Comment, ticket } from '../../../../types';
 import { AccordionItem,Accordion, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
-import CommentRow from '@/components/CommentRow';
-import Button from './ui/Button';
-import { getTicketCommentsAction } from '@/actions/action';
+import CommentRow from '@/components/ticket/CommentRow';
+import { getTicketCommentsAction } from '@/actions/commentAction';
 
 const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   const [showAllComment,setShowAllComment]=useState(false);
@@ -11,7 +10,7 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   useEffect(()=>{
     const getAllCommentFromServer=async()=>{
      if(showAllComment&&(!allComment||allComment.length===0)){
- const comments=await getTicketCommentsAction(ticket._id) ;
+ const comments=await getTicketCommentsAction(ticket._id||"") ;
     setAllComment(comments);
      }
      

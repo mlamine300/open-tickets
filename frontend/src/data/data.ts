@@ -5,7 +5,6 @@ import {
   LuPlus,
 } from "react-icons/lu";
 import type { FormType, FormFieldType, Organisation } from "../../../types";
-import { Label } from "@radix-ui/react-select";
 import { HiFolder } from "react-icons/hi2";
 
 export const SIDE_MENU_ADMIN_DATA = [
@@ -230,7 +229,6 @@ export const standardForm=(organisations?:Organisation[]):FormType=>({
         description:"reclamation standard",
         fields:StandartFierlds(),
     })
-
 
 
     export const StandartFierlds=(organisations?:Organisation[]):FormFieldType[]=>[

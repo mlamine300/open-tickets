@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { SIDE_MENU_ADMIN_DATA, SIDE_MENU_USER_DATA } from "../utils/data";
-import { useUserContext } from "../context/user/userContext";
-import MenuItem from "./MenuItem";
+import { SIDE_MENU_ADMIN_DATA, SIDE_MENU_USER_DATA } from "../../data/data";
+import { useUserContext } from "../../context/user/userContext";
+import MenuItem from "../ui/MenuItem";
 import { useLocation } from "react-router";
 import { HiBars3 } from "react-icons/hi2";
-import { getColorFromName } from "../utils/helper";
-import PopUpMenuItem from "./PopUpMenuItem";
-import { Accordion } from "./ui/accordion";
+
+import PopUpMenuItem from "../ui/PopUpMenuItem";
+import { Accordion } from "../ui/accordion";
+import { getColorFromName } from "../../../../utils/helper";
 
 const SideBar = () => {
   const { pathname } = useLocation();

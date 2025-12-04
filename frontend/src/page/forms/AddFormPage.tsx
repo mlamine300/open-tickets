@@ -1,14 +1,13 @@
-import {  StandartFierlds } from "@/utils/data";
+import {  StandartFierlds } from "@/data/data";
 import { useEffect, useState } from "react";
 import type { FormFieldType, FormType } from "../../../../types";
 import Input from "@/components/ui/Input";
-import DashboardLayout from "@/layouts/DashboardLayout";
 
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
-import AddFieldMenu from "@/components/AddFieldMenu";
+import AddFieldMenu from "@/components/form/AddFieldMenu";
 import toast from "react-hot-toast";
-import { addFormAction, getFormByIdAction } from "@/actions/action";
+import { addFormAction, getFormByIdAction } from "@/actions/formAction";
 import { useParams } from "react-router";
 
 
@@ -60,7 +59,7 @@ const AddFormPage = () => {
     }
 
   return (
-    <DashboardLayout>
+    <div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 h-full w-11/12  min-w-[1080px]">
       <div className="flex items-start flex-col gap-2 w-full h-full ">
         
@@ -84,7 +83,7 @@ const AddFormPage = () => {
     <Modal className="w-10/12 max-w-8/12 min-w-8/12 h-fit pb-20" close={()=>setShowModal(false)} showModal={showModal} title="Ajouter un champs" >
       <AddFieldMenu addFunction={addFunction} />
     </Modal>
-    </DashboardLayout>
+    </div>
   );
 };
 

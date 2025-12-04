@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type{ FormType } from '../../../../types';
-import { getFormsAction } from '@/actions/action';
+import { getFormsAction } from '@/actions/formAction';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { Pen, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -16,7 +16,7 @@ const FormsPages = () => {
 getForms();
   },[])
   return (
-    <DashboardLayout >
+    <div >
       <div className='w-11/12  xl:min-w-[1080px]'>
       <Card className='flex flex-col gap-8 w py-8 px-4 bg-background-base rounded-xl shadow-2xl border-none max-w-[800px] items-center'>
       <h3 className='text-lg font-semibold'>Créer / Editer / Supprimer des formulaires </h3>
@@ -38,7 +38,7 @@ getForms();
       </div>
       </Card>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

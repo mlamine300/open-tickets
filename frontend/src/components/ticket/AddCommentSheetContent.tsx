@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle } from './ui/sheet';
-import type { ticket } from '../../../types';
-import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from './ui/select';
-import { COMMENT_ACTIONS, COMMENT_ACTIONS_DICTIONNAIRE } from '@/utils/data';
-import Input from './ui/Input';
-import Button from './ui/Button';
-import { AddCommentAction, closeTicketAction, relanceeTicketAction, TakeTicketIncharge } from '@/actions/action';
+import { SheetClose, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
+import type { ticket } from '../../../../types';
+import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from '../ui/select';
+import {  COMMENT_ACTIONS_DICTIONNAIRE } from '@/data/data';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import {  closeTicketAction, relanceeTicketAction, TakeTicketInchargeAction } from '@/actions/ticketAction';
+import {AddCommentAction} from "@/actions/commentAction"
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
 import { Link } from 'react-router';
@@ -66,7 +67,7 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
           return
         }
         if(ticket._id){
-          await  TakeTicketIncharge(ticket._id,message);
+          await  TakeTicketInchargeAction(ticket._id,message);
          setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -152,7 +153,7 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
                   
                  
 
-                 <p className='text-sm hover:cursor-pointer'  onClick={(e)=>setAction("")}>
+                 <p className='text-sm hover:cursor-pointer'  onClick={()=>setAction("")}>
                     Actions
                   </p>
                   { Object.entries(COMMENT_ACTIONS_DICTIONNAIRE).map((val) => (

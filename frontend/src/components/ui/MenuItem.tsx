@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Link } from "react-router";
-import axiosInstance from "../utils/axiosInstance";
-import { API_PATH } from "../utils/apiPaths";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATH } from "../../data/apiPaths";
 
 const MenuItem = ({
   item,

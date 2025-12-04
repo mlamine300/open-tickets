@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from "axios";
-import { API_ENDPOINT } from "./apiPaths";
+import { API_ENDPOINT } from "../data/apiPaths";
 
 import { tokenService } from "./tokenService";
 

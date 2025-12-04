@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import SideBar from "../components/SideBar";
+import SideBar from "../components/main/SideBar";
 
 const DashboardLayout = ({ children }: { children: any }) => {
   return (

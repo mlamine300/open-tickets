@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import ProfilePhotoSelector from "../../components/ProfilePhotoSelector";
+
 import AuthLayout from "../../layouts/AuthLayout";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
@@ -11,9 +11,8 @@ import {
 } from "../../../../utils/helper";
 import { Link, useNavigate } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
-import { API_PATH } from "../../utils/apiPaths";
+import { API_PATH } from "../../data/apiPaths";
 import { useUserContext } from "../../context/user/userContext";
-import { uploadImage } from "../../utils/uploadImage";
 import { tokenService } from "../../utils/tokenService";
 import toast from "react-hot-toast";
 

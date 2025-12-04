@@ -7,7 +7,7 @@ import AuthLayout from "../../layouts/AuthLayout";
 import { Link, useNavigate } from "react-router";
 import { validateEmail, validatePassword } from "../../../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
-import { API_PATH } from "../../utils/apiPaths";
+import { API_PATH } from "../../data/apiPaths";
 import { useUserContext } from "../../context/user/userContext";
 import { AxiosError } from "axios";
 

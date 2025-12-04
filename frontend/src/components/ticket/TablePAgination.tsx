@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "react-router";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 
 
 

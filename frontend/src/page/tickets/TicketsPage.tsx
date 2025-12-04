@@ -1,19 +1,19 @@
-import DashboardLayout from '@/layouts/DashboardLayout';
-import { getAllorganisations, getSpecificTicket } from '@/actions/action';
+import {  getSpecificTicketAction } from '@/actions/ticketAction';
+import {getAllorganisationsAction} from "@/actions/organisationAction";
 import { useEffect, useState } from 'react';
 
-import type { Organisation, ticket } from '../../../types';
+import type { Organisation, ticket } from '../../../../types';
 import { useLocation, useSearchParams } from 'react-router';
 import { DataTable } from '@/components/ticket/data-table';
 import { columns } from '@/components/ticket/columns';
-import Spinner from '@/components/Spinner';
+import Spinner from '@/components/main/Spinner';
 import { Card } from '@/components/ui/card';
-import TablePagination from '@/components/TablePAgination';
-import FilterTableDiv from '@/components/FilterTableDiv';
+import TablePagination from '@/components/ticket/TablePAgination';
+import FilterTableDiv from '@/components/ticket/FilterTableDiv';
 import Modal from '@/components/ui/Modal';
 import { Sheet } from '@/components/ui/sheet';
-import AddCommentSheetContent from '@/components/AddCommentSheetContent';
-import TicketViewOnModal from '../components/TicketViewOnModal';
+import AddCommentSheetContent from '@/components/ticket/AddCommentSheetContent';
+import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 
 const TicketsPage = () => {
@@ -39,14 +39,14 @@ const TicketsPage = () => {
         const getMyTickets=async()=>{
            setPending(true)
            setTicket([]);
-            const res=await getSpecificTicket(pathname,{page,search,emitterOrganizationId,recipientOrganizationId,priority});
+            const res=await getSpecificTicketAction(pathname,{page,search,emitterOrganizationId,recipientOrganizationId,priority});
             setTicket(res.data);
             setTotalTicketsSize(res.total);
             console.log(res);
             setPending(false)
         }
         const retrieveOrganisations=async()=>{
-          const organisationsFromAction=await getAllorganisations();
+          const organisationsFromAction=await getAllorganisationsAction();
           setOrganisations(organisationsFromAction)
         }
         getMyTickets();
@@ -77,7 +77,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
     // }
   return (
     <Sheet>
-    <DashboardLayout>
+    
       <Card className='flex item-center bg-background-base border-none shadow-2xl w-full p-5 min-h-screen justify-start'>
 
       {(tickets&&!pending)?(
@@ -124,7 +124,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
         :<div/>}
         </Modal>
       </div>
-    </DashboardLayout>
+    
    {selectedTicket&& <AddCommentSheetContent refresh={()=>{
     setTriggerRerender(Math.random())
    }} ticket={selectedTicket} />}
