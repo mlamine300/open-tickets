@@ -24,7 +24,8 @@
     "mongodb": "^7.0.0",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+  "@types/node": "20.x"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
