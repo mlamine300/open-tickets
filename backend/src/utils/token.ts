@@ -1,7 +1,6 @@
-import { type User } from "../../../types/index.ts";
+
 import jwt from "jsonwebtoken";
-import userModel from "../models/User.ts"
-import bcrypt from "bcryptjs";
+
  
 export const signAccessToken = (user: any) => {
   return jwt.sign(
