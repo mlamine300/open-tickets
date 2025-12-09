@@ -223,15 +223,20 @@ export const refreshToken = async (req: Request, res: Response) => {
     //const payload = jwt.decode(token);
 
     const user = await userModel.findById((payload as TokenPayload).userId);
-    if (!user)
-      return res.status(401).json({ message: "invalid refresh token" });
+    if (!user){
+      clearCookies(res);
+       return res.status(401).json({ message: "invalid refresh token" });
+    }
+     
     const hashedtoken = crypto.createHash("sha256").update(token).digest("hex");
 
     user.refreshTokens.forEach((r) =>
       console.log(r.token, " | ", hashedtoken, " = ", r.token === hashedtoken)
     );
     const idx = user.refreshTokens.findIndex((rt) => rt.token === hashedtoken);
-    if (idx !== -1) {
+    console.log("index of token ========",idx);
+    
+    if (idx === -1) {
       user.refreshTokens.splice(0, user.refreshTokens.length);
       await user.save();
       return res.status(403).json({ msg: "Reuse detected" });
@@ -265,6 +270,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     res.json({ accessToken });
   } catch (error) {
     console.error(error);
+    clearCookies(res);
     return res.status(462).json({ message: "invalid refresh token" });
   }
 };
@@ -279,7 +285,7 @@ export const logout = async (req: Request, res: Response) => {
     );
   }
 
-  {
+  
     const secure = process.env.NODE_ENV === "production";
     const clearOpts: any = {
       httpOnly: true,
@@ -288,6 +294,16 @@ export const logout = async (req: Request, res: Response) => {
       path: "/",
     };
     res.clearCookie("refreshToken", clearOpts);
-  }
+  
   res.sendStatus(204);
 };
+const clearCookies=(res:Response)=>{
+  const secure = process.env.NODE_ENV === "production";
+    const clearOpts: any = {
+      httpOnly: true,
+      secure,
+      sameSite: secure ? "none" : "lax",
+      path: "/",
+    };
+    res.clearCookie("refreshToken", clearOpts);
+}
