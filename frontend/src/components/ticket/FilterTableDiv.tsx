@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import  { useState, useEffect } from 'react';
-import type { Organisation } from '../../../../types';
+import type { Organisation } from '@/types';
 import Input from '../ui/Input';
 import { useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';

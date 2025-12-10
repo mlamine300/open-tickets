@@ -1,5 +1,5 @@
 import axiosInstance from "@/utils/axiosInstance";
-import type { Organisation } from "../../../types";
+import type { Organisation } from "@/types";
 import { API_PATH } from "@/data/apiPaths";
 
 export const getAllorganisationsAction:()=>Promise<Organisation[]> =async()=>{

@@ -1,7 +1,7 @@
 import { API_PATH } from "@/data/apiPaths";
 import axiosInstance from "@/utils/axiosInstance";
 import toast from "react-hot-toast";
-import type { FormType } from "../../../types";
+import type { FormType } from "@/types";
 
 export const getFormsAction=async()=>{
       try {

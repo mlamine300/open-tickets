@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { FormType, Organisation } from "../../../../types";
+import type { FormType, Organisation } from "@/types";
 import type z from "zod";
 
 import Input from "../ui/Input";

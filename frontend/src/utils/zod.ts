@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { FormType, FormFieldType } from "../../../types";
+import type { FormType, FormFieldType } from "@/types";
 
 
 export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {

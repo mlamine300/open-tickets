@@ -1,7 +1,7 @@
 import { API_PATH } from "@/data/apiPaths";
 import axiosInstance from "@/utils/axiosInstance";
 import toast from "react-hot-toast";
-import type { Comment } from "../../../types";
+import type { Comment } from "@/types";
 
 export const AddCommentAction=async(ticketId:string,action:string,message:string)=>{
    

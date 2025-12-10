@@ -1,13 +1,13 @@
 
 
 import {
-  Accordion,
+ 
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import MenuItem from './MenuItem';
-import type { MenuItemType, SimpleMenuItemType } from "../../../../types";
+import type { MenuItemType, SimpleMenuItemType } from "@/types";
 import { useLocation } from "react-router";
 
 const PopUpMenuItem = ({

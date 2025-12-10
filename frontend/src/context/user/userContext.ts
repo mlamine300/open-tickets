@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { User } from "../../../../types/index";
+import type { User } from "@/types/index";
 
 export interface UserContext {
   user: User | null;

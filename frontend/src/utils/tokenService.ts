@@ -1,7 +1,7 @@
-import type { User } from "../../../types/index";
+import type { User } from "@/types";
 
 // tokenService.ts
-let accessToken: string | null = null;
+
 let updateUserFn: ((u: User) => void) | null = null;
 
 export const tokenService = {

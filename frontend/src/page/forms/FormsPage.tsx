@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import type{ FormType } from '../../../../types';
+import  { useEffect, useState } from 'react';
+import type{ FormType } from '@/types';
 import { getFormsAction } from '@/actions/formAction';
-import DashboardLayout from '@/layouts/DashboardLayout';
 import { Pen, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router';

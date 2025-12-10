@@ -1,5 +1,5 @@
 
-import type { Comment } from '../../../../types';
+import type { Comment } from '@/types';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 

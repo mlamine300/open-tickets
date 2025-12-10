@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import type { FormFieldType } from '../../../../types';
+
+import type { FormFieldType } from '@/types';
 import {z} from "zod"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Form, FormControl, FormField, FormItem,  FormMessage } from '../ui/form';
 import Input from '../ui/Input';
 import SelectWithSearch from '../ui/SelectWithSearch';
 import InputMultiple from '../ui/InputMultiple';
@@ -46,7 +46,7 @@ const AddFieldMenu = ({addFunction}:{addFunction:(data:FormFieldType)=>void}) =>
         return   <FormField
           control={addFieldMenuForm.control}
           name={fi.name as any}
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               {/* <FormLabel>{fi.label}</FormLabel> */}
               <FormControl>

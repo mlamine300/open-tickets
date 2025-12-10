@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import type { FormType } from '../../../../types';
+import type { FormType } from '@/types';
 
 import {   getFormsAction } from '@/actions/formAction';
-import DashboardLayout from '@/layouts/DashboardLayout';
+
 import DynamicForm from '@/components/ticket/Formulaire';
 
 

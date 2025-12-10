@@ -1,8 +1,7 @@
-import DashboardLayout from '@/layouts/DashboardLayout';
 import  { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormType, Organisation } from '../../../../types';
+import type { FormType, Organisation } from '@/types';
 import { standardForm } from '@/data/data';
 import DynamicForm from '@/components/ticket/Formulaire';
 import { getAllorganisationsAction } from '@/actions/organisationAction';

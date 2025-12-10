@@ -1,9 +1,10 @@
-import z from "zod";
-import type { Organisation, ticket,Comment, FormType } from "../../../types";
+
+
 
 import toast from "react-hot-toast";
 import axiosInstance from "@/utils/axiosInstance";
 import { API_PATH } from "@/data/apiPaths";
+import type { ticket } from "@/types";
 
 export const addTicketAction=async(ticket:ticket)=>{
 try {

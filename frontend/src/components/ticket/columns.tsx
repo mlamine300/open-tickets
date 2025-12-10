@@ -1,7 +1,7 @@
 
 
 import type{ ColumnDef } from "@tanstack/react-table"
-import type { ticket } from "../../../../types"
+import type { ticket } from "@/types"
 import { Link } from "react-router";
 import { ArrowUpDown, ExternalLink, Eye, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";

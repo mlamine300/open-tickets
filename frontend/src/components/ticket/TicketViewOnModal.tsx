@@ -1,5 +1,5 @@
 import  { useEffect, useState } from 'react';
-import type { Comment, ticket } from '../../../../types';
+import type { Comment, ticket } from '@/types';
 import { AccordionItem,Accordion, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import CommentRow from '@/components/ticket/CommentRow';
 import { getTicketCommentsAction } from '@/actions/commentAction';

@@ -1,6 +1,6 @@
 import {  StandartFierlds } from "@/data/data";
 import { useEffect, useState } from "react";
-import type { FormFieldType, FormType } from "../../../../types";
+import type { FormFieldType, FormType } from "@/types";
 import Input from "@/components/ui/Input";
 
 import Button from "@/components/ui/Button";

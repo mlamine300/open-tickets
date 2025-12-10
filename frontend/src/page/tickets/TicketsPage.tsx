@@ -2,7 +2,7 @@ import {  getSpecificTicketAction } from '@/actions/ticketAction';
 import {getAllorganisationsAction} from "@/actions/organisationAction";
 import { useEffect, useState } from 'react';
 
-import type { Organisation, ticket } from '../../../../types';
+import type { Organisation, ticket } from '@/types';
 import { useLocation, useSearchParams } from 'react-router';
 import { DataTable } from '@/components/ticket/data-table';
 import { columns } from '@/components/ticket/columns';

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
-import type { ticket } from '../../../../types';
+import type { ticket } from '@/types';
 import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from '../ui/select';
 import {  COMMENT_ACTIONS_DICTIONNAIRE } from '@/data/data';
 import Input from '../ui/Input';

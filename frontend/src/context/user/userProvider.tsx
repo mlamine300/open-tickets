@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../data/apiPaths";
-import type { User } from "../../../../../types/index";
+import type { User } from "@/types";
 import { userContext } from "./userContext";
 import { tokenService } from "../../utils/tokenService";
 
