@@ -20,7 +20,7 @@ const Login = () => {
   const [error, setError] = useState<any>({});
   const [pending, setpending] = useState(false);
   const { updateUser, user } = useUserContext();
-
+console.log(user);
   const navigate = useNavigate();
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>

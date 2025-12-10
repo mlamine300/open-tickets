@@ -1,15 +1,16 @@
 import  { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormType, Organisation } from '@/types';
+import type { FormType } from '@/types';
 import { standardForm } from '@/data/data';
 import DynamicForm from '@/components/ticket/Formulaire';
-import { getAllorganisationsAction } from '@/actions/organisationAction';
+//import { getAllorganisationsAction } from '@/actions/organisationAction';
 import { getFormsAction } from '@/actions/formAction';
 
 const AddTicket = () => {
     
-    const[organisations,setOrganisation]=useState<Organisation[]>([]);
+   // const[organisations,setOrganisation]=useState<Organisation[]>([]);
+
     const[forms,setForms]=useState<FormType[]|null>(null);
     
     
@@ -25,15 +26,15 @@ const AddTicket = () => {
           
           
         }
-        const getOrganisations=async()=>{
-          const myorganisation=await getAllorganisationsAction();
-          setOrganisation(myorganisation)
-        }
+        // const getOrganisations=async()=>{
+        //   const myorganisation=await getAllorganisationsAction();
+        //   //setOrganisation(myorganisation)
+        // }
         getForms();
-        getOrganisations();
+        //getOrganisations();
        
     },[])
-    const myStandardForm=standardForm(organisations);
+    const myStandardForm=standardForm();
 
   return (
     <div>

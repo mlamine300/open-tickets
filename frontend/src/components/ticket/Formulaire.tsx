@@ -25,6 +25,7 @@ import { buildZodFormSchema } from "@/utils/zod";
 export default function DynamicForm({ form,disabled }:{form:FormType|null,disabled?:boolean}) {
   const [triggerRerender,setTriggerRerender]=useState(0);
   //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
+  console.log(triggerRerender);
   const formulaire=form||standardForm();
   
   

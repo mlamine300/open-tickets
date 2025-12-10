@@ -14,7 +14,7 @@ import { useParams } from "react-router";
 const AddFormPage = () => {
     const params=useParams();
     const id=params.id||"new";
-    const standartFierlds=StandartFierlds([]).map(s=>s.name);
+    const standartFierlds=StandartFierlds().map(s=>s.name);
     const [form,setForm]=useState<FormType>({name:"",description:"",fields:[]}); 
     const [pending,setPending]=useState(false);
     const [showModal,setShowModal]=useState(false);

@@ -4,7 +4,7 @@ import {
   LuLogOut,
   LuPlus,
 } from "react-icons/lu";
-import type { FormType, FormFieldType, Organisation } from "../../../types";
+import type { FormType, FormFieldType } from "../../../types";
 import { HiFolder } from "react-icons/hi2";
 
 export const SIDE_MENU_ADMIN_DATA = [
@@ -223,7 +223,7 @@ export const STATUS_DATA = [
   { label: "Completed", value: "Completed" },
 ];
 
-export const standardForm=(organisations?:Organisation[]):FormType=>({
+export const standardForm=():FormType=>({
         _id:"standard",
         name:"standard",
         description:"reclamation standard",
@@ -231,7 +231,7 @@ export const standardForm=(organisations?:Organisation[]):FormType=>({
     })
 
 
-    export const StandartFierlds=(organisations?:Organisation[]):FormFieldType[]=>[
+    export const StandartFierlds=():FormFieldType[]=>[
       {name:"ref",label:"Ref/Tracking",type:"text",required:true},
       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false,default:"low"},
       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},

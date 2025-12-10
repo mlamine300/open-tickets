@@ -5,7 +5,7 @@ import { API_ENDPOINT } from "../data/apiPaths";
 import { tokenService } from "./tokenService";
 
 let isRefreshing = false;
-let refreshingAttemps=0;
+
 let failedQueue: any[] = [];
 const processQueue = (error: any, token = null) => {
   failedQueue.forEach((prom) =>
@@ -79,7 +79,7 @@ const refreshToken = async (err: any) => {
         failedQueue.push({ resolve, reject });
       }).then((token) => {
         originalReq.headers["Authorization"] = "Bearer " + token;
-        refreshingAttemps=0;
+        
         return axiosInstance(originalReq);
       });
     }
@@ -108,7 +108,7 @@ const refreshToken = async (err: any) => {
       tokenService.setToken(newToken);
       // localStorage.setItem("token", newToken);
       // console.log("refresh end");
-      refreshingAttemps=0;
+      
       return axiosInstance(originalReq);
     } catch (e) {
       processQueue(e, null);
