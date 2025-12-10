@@ -1,5 +1,5 @@
 import type { JwtPayload } from "jsonwebtoken";
-import { Organisation } from "../../../types/index.ts";
+
 
 export interface TokenPayload extends JwtPayload {
   userId: string;
@@ -10,3 +10,10 @@ export interface TokenPayload extends JwtPayload {
   iat?: number;
   exp?: number;
 }
+export interface FormFieldType{
+      name:string;
+      label:string;
+      type:"text"|"number"|"select"|"date"|"select-multiple"|"area"|"select-filter"|"list";
+      possibleValues?:string[];
+      default?:string;
+    required:boolean;}

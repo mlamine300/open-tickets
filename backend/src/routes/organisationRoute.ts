@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { addOrganisation, getOrganisationById, getOrganisations, updateOrganisation } from "../controllers/organisationController.ts";
-import { checkAdmin, protect } from "../middlewares/authMiddleware.ts";
+import { addOrganisation, getOrganisationById, getOrganisations, updateOrganisation } from "../controllers/organisationController.js";
+import { checkAdmin, protect } from "../middlewares/authMiddleware.js";
 
 const organisationRouter=Router();
 

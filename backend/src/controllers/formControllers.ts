@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import formulaireModel from "../models/Formulaire.ts";
-import { validateFieldSchema } from "../utils/index.ts";
+import formulaireModel from "../models/Formulaire.js";
+import { validateFieldSchema } from "../utils/index.js";
 
 
 export const getForms=async(req:Request,res:Response)=>{

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { CommentShema } from "./Comment.ts";
+import { CommentShema } from "./Comment.js";
 const AssignedToSchema=new mongoose.Schema({
 userId:{type: Schema.Types.ObjectId, ref: 'User',required:false},
 date:{type:Date,required:false},

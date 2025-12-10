@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { type NextFunction, type Request, type Response } from "express";
-import userModel from "../models/User.ts";
-import type { TokenPayload } from "../types/index.ts";
+import userModel from "../models/User.js";
+import type { TokenPayload } from "../types/index.js";
 
 export const protect = async (
   req: Request,

@@ -1,12 +1,10 @@
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken";
-import { TokenPayload } from "../types/index.ts";
-import ticketModel from "../models/Ticket.ts";
-import { ticket, User } from "../../../types/index.ts";
-import { getFieldsFromFormName, getOrganisationId, getOrganisationsId } from "../utils/index.ts";
-import { commentsModel } from "../models/Comment.ts";
-import { populate } from "dotenv";
-import mongoose, { PipelineStage } from "mongoose";
+import { TokenPayload } from "../types/index.js";
+import ticketModel from "../models/Ticket.js";
+import { getFieldsFromFormName, getOrganisationId, getOrganisationsId } from "../utils/index.js";
+import { commentsModel } from "../models/Comment.js";
+import mongoose from "mongoose";
 export const addTicket=async(req:Request,res:Response)=>{
    
 

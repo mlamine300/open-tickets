@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import ticketModel from "../models/Ticket.ts";
-import { commentsModel } from "../models/Comment.ts";
+import ticketModel from "../models/Ticket.js";
+import { commentsModel } from "../models/Comment.js";
 import mongoose from "mongoose";
-import { TokenPayload } from "../types/index.ts";
+import { TokenPayload } from "../types/index.js";
 import  jwt  from "jsonwebtoken";
 export const addComment=async(req:Request,res:Response)=>{
     try {

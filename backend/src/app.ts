@@ -4,20 +4,17 @@ import cors from "cors";
 import path from "path";
 
 import connectToDB from "./config/db.js";
-import authRouter from "./routes/authRoutes.ts";
+import authRouter from "./routes/authRoutes.js";
 
 import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
-import organisationModel from "./models/Organisation.ts";
-import { ObjectId } from "mongodb";
-import userModel from "./models/User.ts";
-import ticketModel from "./models/Ticket.ts";
-import organisationRouter from "./routes/organisationRoute.ts";
-import formRouter from "./routes/formRoutes.ts";
-import formulaireModel from "./models/Formulaire.ts";
-import { protect } from "./middlewares/authMiddleware.ts";
-import ticketRouter from "./routes/ticketRoutes.ts";
-import commentRouter from "./routes/commentRoutes.ts";
+
+import organisationRouter from "./routes/organisationRoute.js";
+import formRouter from "./routes/formRoutes.js";
+
+import { protect } from "./middlewares/authMiddleware.js";
+import ticketRouter from "./routes/ticketRoutes.js";
+import commentRouter from "./routes/commentRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

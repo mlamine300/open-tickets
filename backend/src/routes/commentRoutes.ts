@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addComment, getCommentOfTicket } from "../controllers/commentController.ts";
+import { addComment, getCommentOfTicket } from "../controllers/commentController.js";
 
 const commentRouter=Router();
 commentRouter.post("/:id",addComment);

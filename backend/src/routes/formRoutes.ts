@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { addForm, getFormById, getForms } from "../controllers/formControllers.ts";
-import { checkAdmin, protect } from "../middlewares/authMiddleware.ts";
+import { addForm, getFormById, getForms } from "../controllers/formControllers.js";
+import { checkAdmin, protect } from "../middlewares/authMiddleware.js";
 
 const formRouter=Router();
 

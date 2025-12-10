@@ -1,11 +1,10 @@
-import express from "express";
+
 import type { NextFunction, Response, Request } from "express";
-import userModel from "../models/User.ts";
+import userModel from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { TokenPayload } from "../types/index.ts";
-import { signAccessToken, signRefreshToken } from "../utils/token.ts";
-import { User } from "../../../types/index.ts";
+import { TokenPayload } from "../types/index.js";
+import { signAccessToken, signRefreshToken } from "../utils/token.js";
 import crypto from "crypto";
 
 export const registerUser = async (

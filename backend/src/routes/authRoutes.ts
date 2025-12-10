@@ -8,7 +8,7 @@ import {
   logout,
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
-import { configurationStorage } from "../middlewares/uploadMiddleware.ts";
+import { configurationStorage } from "../middlewares/uploadMiddleware.js";
 const multer = configurationStorage();
 
 const authRouter = express.Router();

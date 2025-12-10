@@ -1,7 +1,8 @@
 import { Types } from "mongoose";
-import organisationModel from "../models/Organisation.ts";
-import formulaireModel from "../models/Formulaire.ts";
-import { FormFieldType } from "../../../types/index.ts";
+import organisationModel from "../models/Organisation.js";
+import formulaireModel from "../models/Formulaire.js";
+import { FormFieldType } from "../types/index.js";
+
 
 export const validateFieldSchema=(input:any)=> {
   const errors = [];

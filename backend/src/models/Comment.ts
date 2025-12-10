@@ -1,5 +1,5 @@
 import mongoose,{Schema} from "mongoose";
-import { COMMENT_ACTIONS } from "../utils/index.ts";
+import { COMMENT_ACTIONS } from "../utils/index.js";
 export const CommentShema=new mongoose.Schema({
     ticketId:{ type: Schema.Types.ObjectId, ref: 'Ticket',required:true },
     authorId:{ type: Schema.Types.ObjectId, ref: 'User',required:true },

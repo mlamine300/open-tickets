@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  addTicket, closeTicket, getMytickets, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.ts";
+import {  addTicket, closeTicket, getMytickets, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.js";
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);

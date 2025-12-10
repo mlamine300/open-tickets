@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import organisationModel from "../models/Organisation.ts"
+import organisationModel from "../models/Organisation.js"
 
 export const getOrganisations=async(req:Request,res:Response)=>{
 try {
