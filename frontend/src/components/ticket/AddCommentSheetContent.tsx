@@ -79,7 +79,7 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
         }
         const handleClosing=async()=>{
           setPending(true)
-           if(ticket.assignedTo?.user._id!==user?._id){
+           if(ticket.assignedTo?.user._id!==user?.id){
             console.log();
             
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
@@ -98,7 +98,11 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
         }
         const handleRelance=async()=>{
           setPending(true)
-           if(ticket.assignedTo?.user._id!==user?._id){
+           if(ticket.assignedTo?.user._id!==user?.id){
+            console.log(ticket.assignedTo?.user._id);
+            console.log(user?.id);
+            
+            
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
         return;
         }

@@ -1,12 +1,26 @@
 import  { useEffect, useState } from 'react';
 import type{ FormType } from '@/types';
 import { getFormsAction } from '@/actions/formAction';
-import { Pen, Trash2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { Link } from 'react-router';
+import FormsCards from '@/components/form/FormsCards';
+
+import Modal from '@/components/ui/Modal';
 
 const FormsPages = () => {
   const [forms,setForms]=useState<FormType[]>([]);
+  const [modalId,setModalId]=useState<string|null>(null);
+  const [showConfirm,setShowConfirm]=useState<boolean>(false);
+
+  const showModal=(id:string)=>{
+    setModalId(id);
+    setShowConfirm(true);
+  }
+  const deleteForm=async(id:string)=>{
+    //call delete action
+    await deleteForm(id)
+  }
+  
+
   useEffect(()=>{
     const getForms=async()=>{
    const formsRes=   await getFormsAction();
@@ -16,27 +30,29 @@ getForms();
   },[])
   return (
     <div >
-      <div className='w-11/12  xl:min-w-[1080px]'>
+      <div className='w-11/12  xl:min-w-[1080px] min-h-10/12'>
       <Card className='flex flex-col gap-8 w py-8 px-4 bg-background-base rounded-xl shadow-2xl border-none max-w-[800px] items-center'>
       <h3 className='text-lg font-semibold'>Créer / Editer / Supprimer des formulaires </h3>
-      <div className='flex flex-col gap-4 w-full'>
-      {forms.map(form=>
-      <div className='flex gap-2 items-center bg-background-base shadow-2xl rounded-lg py-4 px-2 max-w-[600px]'>
-       <div className='flex flex-col items-start py-2'>
-        
-        <h3 className='text-sm font-semibold'>{form.name}</h3>
-        <p className='text-xs italic font-light ml-2'><span className='font-bold text-gray-cold italic '>description :</span> {form.description} </p>
-       </div>
-        <div className='ml-auto flex gap-4 items-center'>
-            
-          <Link to={`/forms/${form._id}`}>
-          <Pen className='hover:scale-110 cursor-pointer'/></Link>
-          <Trash2 className='text-red-500 hover:scale-110 hover:text-red-600 hover:-rotate-12 cursor-pointer'/>
-        </div>
-      </div>)}
+      <div className='flex gap-4 w-full flex-wrap justify-start '>
+      {forms.map(form=> <FormsCards form={form} showModal={showModal}/>
+    )}
       </div>
       </Card>
       </div>
+      <Modal showModal={showConfirm} close={()=>setShowConfirm(false)} title="Confirmer la suppression" className='flex flex-col'>
+
+        <p className='mb-auto mt-10'>
+          Êtes-vous sûr de vouloir supprimer ce formulaire ? Cette action est irréversible.
+
+        </p>
+        <div className='flex gap-4 justify-end mt-4'>
+          <button onClick={()=>setShowConfirm(false)} className='px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400'>Annuler</button>
+          <button onClick={()=>{
+            deleteForm(modalId!);
+            setShowConfirm(false);
+          }} className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600'>Supprimer</button>
+        </div>
+      </Modal>
     </div>
   );
 };

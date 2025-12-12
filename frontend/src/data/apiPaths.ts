@@ -16,7 +16,9 @@ export const API_PATH = {
   FORMS:{
     GET_FORMS:'/api/forms',
     GET_FORM_BY_ID:(id:string)=>`/api/forms/${id}`,
+     EDIT_FORM_BY_ID:(id:string)=>`/api/forms/${id}`,
      ADD_FORM:"/api/forms",
+     DELETE_FORM:(id:string)=>`/api/forms/${id}`,
      UPDATE_FORM_BY_ID:(id:string)=>`/api/forms/${id}`
   },
   ORGANISATIONS:{

@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import formulaireModel from "../models/Formulaire.js";
 import { validateFieldSchema } from "../utils/index.js";
+import ticketModel from "../models/Ticket.js";
 
 
 export const getForms=async(req:Request,res:Response)=>{
    try {
-    const list=await formulaireModel.find({}).lean().exec();
+    const list=await formulaireModel.find({active:true}).lean().exec();
     if(!list||list.length<1){
 return res.status(404).json({message:"there are no forms in database"});
 
@@ -28,6 +29,26 @@ try {
     if(!form){
         return res.status(404).json({message:"form not found"});
     }
+
+    return res.status(200).json({message:"success",data:form})
+
+} catch (error) {
+    return res.status(500).json({message:"Server Error",error})
+}
+}
+
+export const editFormById=async(req:Request,res:Response)=>{
+try {
+    const {id}=req.params;
+    const formRequest=req.body;
+    if(!id){
+        return res.status(400).json({message:"id is required"})
+    }
+    const form=await formulaireModel.findByIdAndUpdate(id,{...formRequest});
+    if(!form){
+        return res.status(404).json({message:"form not found"});
+    }
+
 
     return res.status(200).json({message:"success",data:form})
 
@@ -64,4 +85,27 @@ export const addForm=async(req:Request,res:Response)=>{
    } catch (error) {
     return res.status(500).json({message:"Server Error",error})
    }
+}
+export const deleteForm=async(req:Request,res:Response)=>{
+    try {
+         const {id}=req.params;
+    if(!id){
+        return res.status(400).json({message:"id is required"})
+    }
+    const form=await formulaireModel.findById(id);
+    if(!form){
+        return res.status(404).json({message:"form not found"});
+    }
+    if(!form.active)return res.status(200).json({message:"no change",form})
+
+      const tickets=await ticketModel.find({formName:form.name});
+      if(tickets.length){
+        return res.status(409).json({message:"delete is impossible there are some tickets with this form"});
+      }  
+    form.active=false;
+    await form.save();
+    return res.status(200).json({message:"success",form})
+    } catch (error) {
+        return res.status(500).json({message:"Server Error",error})
+    }
 }

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { boolean } from "zod";
 
 const FieldSchema=new mongoose.Schema({
     label:{type:String,required:true},
@@ -11,7 +12,8 @@ const FieldSchema=new mongoose.Schema({
 const FormulaireSchema=new mongoose.Schema({
     name:{type:String,required:true},
     description:{type:String,required:false},
-    fields:[FieldSchema]
+    fields:[FieldSchema],
+    active:{type:boolean,default:true}
 })
 
  const formulaireModel=mongoose.model("Formulaire",FormulaireSchema);

@@ -114,6 +114,7 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   const user = {
+    id: foundUser._id,
     token: accessToken,
     profileImageUrl: foundUser.organisation,
     email: foundUser.email,

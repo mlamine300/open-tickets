@@ -47,6 +47,19 @@ export const addFormAction=async(form:FormType)=>{
         
     }
 }
+export const editFormAction=async(id:string,form:FormType)=>{
+   
+    try {
+         
+        const res=await axiosInstance.put(API_PATH.FORMS.EDIT_FORM_BY_ID(id),form);
+        if(res.status===200)toast.success(`Formulaire (${form.name}) a été Modifier avec succés`);
+        return true;
+    } catch (error) {
+     console.log(error);
+     return false;
+        
+    }
+}
 
 export const getFormByIdAction=async(id:string)=>{
     try {
@@ -54,6 +67,16 @@ export const getFormByIdAction=async(id:string)=>{
         if(res.status===200)return res.data.data;
         return null;
     } catch (error) {
+        
+    }
+}
+
+export const deleteFormAction=async(id:string)=>{
+    try {
+        const res=await axiosInstance.delete(API_PATH.FORMS.DELETE_FORM(id));
+        if(res.status===200)toast.success(`formulaire N° ${id} a été supprimer!`);
+    } catch (error) {
+        console.log("error delete form action",error);
         
     }
 }

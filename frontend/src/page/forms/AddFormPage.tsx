@@ -7,7 +7,7 @@ import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import AddFieldMenu from "@/components/form/AddFieldMenu";
 import toast from "react-hot-toast";
-import { addFormAction, getFormByIdAction } from "@/actions/formAction";
+import { addFormAction, editFormAction, getFormByIdAction } from "@/actions/formAction";
 import { useParams } from "react-router";
 
 
@@ -25,10 +25,12 @@ const AddFormPage = () => {
  const f=await getFormByIdAction(id);
  if(f)setForm(f);
       }
-     
+      else if(id==="new"){
+     setForm({name:"",description:"",fields:[]});
     }
+  }
     getForm();
-  },[])
+  },[id])
 
 
     const addFunction=(data:FormFieldType)=>{
@@ -45,11 +47,23 @@ const AddFormPage = () => {
       
     }
 
-    const submitForm=async()=>{
+    const submitFormAdd=async()=>{
       setPending(true); 
       try {
           
           const ret=await addFormAction(form);
+          if(ret)setForm({name:"",description:"",fields:[]})
+        } catch (error) {
+          console.log(error);
+          
+        }
+        setPending(false);
+    }
+    const submitFormEdit=async()=>{
+ setPending(true); 
+      try {
+          
+          const ret=await editFormAction(id,form);
           if(ret)setForm({name:"",description:"",fields:[]})
         } catch (error) {
           console.log(error);
@@ -73,7 +87,10 @@ const AddFormPage = () => {
             return <p className="px-4 py-1 rounded bg-primary hover:bg-red-500/50 cursor-pointer" onClick={()=>setForm({...form,fields:form.fields.filter(fild=>fild!==f)})}>{f.name}</p>
           })}
         </div>
-        <Button disabled={pending} onClick={()=>submitForm()} text="Sauvgarder" variant="primary" className="w-8/12 mx-auto mt-auto" />
+      {
+id==="new"?<Button disabled={pending} onClick={()=>submitFormAdd()} text="Ajouter le Formulaire" variant="primary" className="w-8/12 mx-auto mt-auto" />
+:      <Button disabled={pending} onClick={()=>submitFormEdit()} text="Modifier le Formulaire" variant="primary" className="w-8/12 mx-auto mt-auto" />
+} 
       </div>
       <div className="w-full flex-col gap-4 bg-background-base h-full">
         <p className="italic text-lg font-semibold">{form.name}</p>

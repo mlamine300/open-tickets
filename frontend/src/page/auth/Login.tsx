@@ -51,7 +51,8 @@ console.log(user);
         // localStorage.setItem("token", token);
        tokenService.setToken(token);
         localStorage.setItem("role", response.data.role);
-
+        console.log(response.data);
+        
         updateUser(response.data);
 
         
