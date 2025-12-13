@@ -74,7 +74,12 @@ export const getFormByIdAction=async(id:string)=>{
 export const deleteFormAction=async(id:string)=>{
     try {
         const res=await axiosInstance.delete(API_PATH.FORMS.DELETE_FORM(id));
-        if(res.status===200)toast.success(`formulaire N° ${id} a été supprimer!`);
+        if(res.status===200){
+           
+            localStorage.removeItem("forms");
+            getFormsAction();
+             toast.success(`formulaire N° ${id} a été supprimer!`);
+        }
     } catch (error) {
         console.log("error delete form action",error);
         

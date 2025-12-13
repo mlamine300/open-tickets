@@ -6,53 +6,56 @@ import {
 } from "react-icons/lu";
 import type { FormType, FormFieldType } from "../../../types";
 import { HiFolder } from "react-icons/hi2";
+import { BookmarkCheck, CheckCheck, LayoutList, Loader, Plus } from "lucide-react";
+import { FaTools, FaWpforms } from "react-icons/fa";
+import { check } from "zod";
 
 export const SIDE_MENU_ADMIN_DATA = [
   {
     id: "01",
-    label: "DashBoard",
+    label: "Tableau de bord",
     icon: LuLayoutDashboard,
     path: "/",
   },
    {
     id: "01",
-    label: "Add ticket",
-    icon: LuLayoutDashboard,
+    label: "Ajouter un Ticket",
+    icon: Plus,
     path: "/form",
     hasChilds:false
   },
   {
     id: "02",
-    label: "My Tickets",
-    icon: LuClipboardCheck,
+    label: "Mes Tickets",
+    icon: LayoutList,
     path: "/tickets",
     hasChilds:true,
     childs:[
       {
       id:"21",
       label: "Tickets en attente",
-      icon: LuClipboardCheck,
+      icon: Loader,
       path: "/tickets/pending",
 
     },
      {
       id:"22",
-      label: "Pris en charge par moi ",
-      icon: LuClipboardCheck,
+      label: "Pris en charge par moi",
+      icon: FaTools,
       path: "/tickets/open_me",
 
     },
         {
       id:"23",
       label: "Ticket ouvert ",
-      icon: LuClipboardCheck,
+      icon: BookmarkCheck,
       path: "/tickets/open",
 
     },
     {
       id:"24",
       label: "Ticket clôturés ",
-      icon: LuClipboardCheck,
+      icon: CheckCheck,
       path: "/tickets/close",
 
     },
@@ -71,19 +74,19 @@ export const SIDE_MENU_ADMIN_DATA = [
       {
       id:"31",
       label: "En attente",
-      icon: LuClipboardCheck,
+      icon: Loader,
       path: "/tickets/sent/pending",
       },
        {
       id:"32",
       label: "Ouvert",
-      icon: LuClipboardCheck,
+      icon: BookmarkCheck,
       path: "/tickets/sent/open",
       },
        {
       id:"33",
       label: "Clôturés",
-      icon: LuClipboardCheck,
+      icon: CheckCheck,
       path: "/tickets/sent/close",
       },
     ]
@@ -91,15 +94,15 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
     {id:"05",
       label:"Formulaires",
-      icon:LuPlus,
+      icon: FaWpforms,
       path:"/forms",
       hasChilds:true,
       childs:[
         {
           id:"51",
       label:"Formulaires",
-      icon:HiFolder,
-      path:"/forms",
+      icon:FaWpforms,
+      path:"/forms/list",
         },
         {
           id:"52",
@@ -113,7 +116,7 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
   {
     id: "06",
-    label: "Logout",
+    label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
   },
@@ -122,7 +125,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 export const SIDE_MENU_USER_DATA = [
   {
     id: "01",
-    label: "DashBoard",
+    label: "Tableau de bord",
     icon: LuLayoutDashboard,
     path: "/",
     hasChilds:false
@@ -130,44 +133,44 @@ export const SIDE_MENU_USER_DATA = [
   },
    {
     id: "01",
-    label: "Add Ticket",
-    icon: LuLayoutDashboard,
+    label: "Ajouter un Ticket",
+    icon: Plus,
     path: "/form",
     hasChilds:false
 
   },
   {
     id: "02",
-    label: "My Tickets",
-    icon: LuClipboardCheck,
+    label: "Mes Tickets",
+    icon: LayoutList,
     path: "/tickets",
     hasChilds:true,
     childs:[
       {
       id:"21",
       label: "Tickets en attente",
-      icon: LuClipboardCheck,
+      icon: Loader,
       path: "/tickets/pending",
 
     },
      {
       id:"22",
-      label: "Pris en charge par moi ",
-      icon: LuClipboardCheck,
+      label: "Pris en charge par moi",
+      icon: FaTools,
       path: "/tickets/open_me",
 
     },
         {
       id:"23",
       label: "Ticket ouvert ",
-      icon: LuClipboardCheck,
+      icon: BookmarkCheck,
       path: "/tickets/open",
 
     },
     {
       id:"24",
       label: "Ticket clôturés ",
-      icon: LuClipboardCheck,
+      icon: CheckCheck,
       path: "/tickets/close",
 
     },
@@ -186,19 +189,19 @@ export const SIDE_MENU_USER_DATA = [
       {
       id:"31",
       label: "En attente",
-      icon: LuClipboardCheck,
+      icon: Loader,
       path: "/tickets/sent/pending",
       },
        {
       id:"32",
       label: "Ouvert",
-      icon: LuClipboardCheck,
+      icon: BookmarkCheck,
       path: "/tickets/sent/open",
       },
        {
       id:"33",
       label: "Clôturés",
-      icon: LuClipboardCheck,
+      icon: CheckCheck,
       path: "/tickets/sent/close",
       },
     ]
@@ -206,7 +209,7 @@ export const SIDE_MENU_USER_DATA = [
     },
   {
     id: "06",
-    label: "Logout",
+    label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
   },

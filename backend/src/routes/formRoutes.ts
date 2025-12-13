@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addForm, deleteForm, getFormById, getForms } from "../controllers/formControllers.js";
+import { addForm, deleteForm, editFormById, getFormById, getForms } from "../controllers/formControllers.js";
 import { checkAdmin, protect } from "../middlewares/authMiddleware.js";
 
 const formRouter=Router();
@@ -7,7 +7,7 @@ const formRouter=Router();
 formRouter.get("/",protect,getForms);
 
 formRouter.get("/:id",protect,getFormById);
-formRouter.put("/:id",protect,getFormById);
+formRouter.put("/:id",protect,editFormById);
 formRouter.delete("/:id",protect,deleteForm);
 formRouter.post("/",protect,checkAdmin,addForm);
 

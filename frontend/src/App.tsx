@@ -33,7 +33,7 @@ function App() {
          <Route path="*" element={<NotFound />} />
        </Route>
        <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}>
-         <Route path="/forms" element={<FormsPages />} />
+         <Route path="/forms/list" element={<FormsPages />} />
          <Route path="/forms/:id" element={<AddFormPage />} />
          </Route>
       </Routes>  

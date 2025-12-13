@@ -46,7 +46,7 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
         }
       })
     }
-    if(!formulaire.fields.map(f=>f.name).includes("priority") )
+    if(!disabled&& !formulaire.fields.map(f=>f.name).includes("priority") )
      formulaire.fields.push(...StandartFierlds());
     getOrganisations();
   },[form])

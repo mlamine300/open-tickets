@@ -1,23 +1,30 @@
 import  { useEffect, useState } from 'react';
 import type{ FormType } from '@/types';
-import { getFormsAction } from '@/actions/formAction';
+import { deleteFormAction, getFormsAction } from '@/actions/formAction';
 import { Card } from '@/components/ui/card';
 import FormsCards from '@/components/form/FormsCards';
 
 import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/main/Spinner';
 
 const FormsPages = () => {
   const [forms,setForms]=useState<FormType[]>([]);
   const [modalId,setModalId]=useState<string|null>(null);
   const [showConfirm,setShowConfirm]=useState<boolean>(false);
+  const [pending,setPending]=useState(false);
+    const [forceRerender,setForceRerender]=useState(0);
 
   const showModal=(id:string)=>{
     setModalId(id);
     setShowConfirm(true);
   }
   const deleteForm=async(id:string)=>{
-    //call delete action
-    await deleteForm(id)
+    setPending(true);
+    await deleteFormAction(id)
+    setPending(false);
+    setForceRerender(Math.random());
+
+
   }
   
 
@@ -27,11 +34,16 @@ const FormsPages = () => {
    setForms(formsRes);
     }
 getForms();
-  },[])
+  },[forceRerender])
+
+  if(pending)return <div className='layout w-full h-full flex items-center justify-center'>
+    <Spinner size='xl'  />
+  </div>
+
   return (
     <div >
-      <div className='w-11/12  xl:min-w-[1080px] min-h-10/12'>
-      <Card className='flex flex-col gap-8 w py-8 px-4 bg-background-base rounded-xl shadow-2xl border-none max-w-[800px] items-center'>
+      <div className='w-11/12  xl:min-w-[1080px] '>
+      <Card className='flex flex-col gap-8 w py-8 px-4 bg-background-base rounded-xl shadow-2xl border-none items-center min-h-[90vh]'>
       <h3 className='text-lg font-semibold'>Créer / Editer / Supprimer des formulaires </h3>
       <div className='flex gap-4 w-full flex-wrap justify-start '>
       {forms.map(form=> <FormsCards form={form} showModal={showModal}/>

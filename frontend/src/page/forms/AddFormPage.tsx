@@ -8,7 +8,8 @@ import Modal from "@/components/ui/Modal";
 import AddFieldMenu from "@/components/form/AddFieldMenu";
 import toast from "react-hot-toast";
 import { addFormAction, editFormAction, getFormByIdAction } from "@/actions/formAction";
-import { useParams } from "react-router";
+import { useLocation, useNavigate, useNavigation, useParams } from "react-router";
+import DynamicForm from "@/components/ticket/Formulaire";
 
 
 const AddFormPage = () => {
@@ -18,6 +19,7 @@ const AddFormPage = () => {
     const [form,setForm]=useState<FormType>({name:"",description:"",fields:[]}); 
     const [pending,setPending]=useState(false);
     const [showModal,setShowModal]=useState(false);
+    const navigate=useNavigate();
 
   useEffect(()=>{
     const getForm=async()=>{
@@ -64,7 +66,7 @@ const AddFormPage = () => {
       try {
           
           const ret=await editFormAction(id,form);
-          if(ret)setForm({name:"",description:"",fields:[]})
+          if(ret)navigate("/forms/list")
         } catch (error) {
           console.log(error);
           
@@ -73,8 +75,8 @@ const AddFormPage = () => {
     }
 
   return (
-    <div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 h-full w-11/12  min-w-[1080px]">
+    <div >
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 min-h-[60vh]  w-11/12  min-w-[1080px]">
       <div className="flex items-start flex-col gap-2 w-full h-full ">
         
         <Input parentClassName="items-start gap-0 w-full" containerClassName="w-11/12" labelClassName="italic text-xs font-semibold " inputClassName="text-xs w-full" label="Nom de Formulaire" placeHolder="colis perdus.." type="text" value={form.name}
@@ -92,9 +94,14 @@ id==="new"?<Button disabled={pending} onClick={()=>submitFormAdd()} text="Ajoute
 :      <Button disabled={pending} onClick={()=>submitFormEdit()} text="Modifier le Formulaire" variant="primary" className="w-8/12 mx-auto mt-auto" />
 } 
       </div>
-      <div className="w-full flex-col gap-4 bg-background-base h-full">
-        <p className="italic text-lg font-semibold">{form.name}</p>
-      {/* <DynamicForm form={dumpForm} /> */}
+      <div className="hidden xl:flex w-full flex-col gap-4 bg-background-base h-full">
+        
+     {(form&&form.fields&&Array.isArray(form.fields)&&form.fields.length)? <DynamicForm form={form} disabled={true} />:
+     <div className="flex flex-col items-center my-5 w-full h-full gap-8">
+        <h3 className="italic font-extrabold underline">Fomrmulaire vide</h3>
+        <p className="text-sm italic text-text-primary/50 font-normal">Ajouter des champs pour créer un fomulaire </p>
+     </div>
+     }
       </div>
     </div>
     <Modal className="w-10/12 max-w-8/12 min-w-8/12 h-fit pb-20" close={()=>setShowModal(false)} showModal={showModal} title="Ajouter un champs" >

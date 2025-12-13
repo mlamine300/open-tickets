@@ -44,6 +44,8 @@ try {
     if(!id){
         return res.status(400).json({message:"id is required"})
     }
+    console.log({...formRequest});
+    
     const form=await formulaireModel.findByIdAndUpdate(id,{...formRequest});
     if(!form){
         return res.status(404).json({message:"form not found"});

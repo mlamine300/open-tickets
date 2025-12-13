@@ -69,9 +69,9 @@
     color: var(--color-text-primary);
   }
 
-  .layout {
-    @apply max-w-[1440px] w-full h-full  min-h-lvh  flex justify-center items-center m-auto;
-  }
+ .layout {
+  @apply xl:max-w-4xl lg:max-w-2xl md:max-w-xl max-w-lg 2xl:max-w-6xl;
+}
   button {
     @apply cursor-pointer px-2 py-1 disabled:cursor-not-allowed;
   }
