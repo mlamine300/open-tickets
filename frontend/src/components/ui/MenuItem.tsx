@@ -41,7 +41,7 @@ const MenuItem = ({
         choosed
           ? "text-primary bg-primary/10 border-r-2 border-primary "
           : "text-text-primary/90"
-      }`}
+      } ${item.path === "/logout" ? "mt-auto" : ""}`}
     >
       <Icon className={""} />
       <p className="text-sm">{item.label} </p>

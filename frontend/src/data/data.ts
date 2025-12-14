@@ -5,10 +5,10 @@ import {
   LuPlus,
 } from "react-icons/lu";
 import type { FormType, FormFieldType } from "../../../types";
-import { HiFolder } from "react-icons/hi2";
+
 import { BookmarkCheck, CheckCheck, LayoutList, Loader, Plus } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
-import { check } from "zod";
+
 
 export const SIDE_MENU_ADMIN_DATA = [
   {
@@ -26,7 +26,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   },
   {
     id: "02",
-    label: "Mes Tickets",
+    label: "Mes Tickets (réception)",
     icon: LayoutList,
     path: "/tickets",
     hasChilds:true,
@@ -141,7 +141,7 @@ export const SIDE_MENU_USER_DATA = [
   },
   {
     id: "02",
-    label: "Mes Tickets",
+    label: "Mes Tickets (réception)",
     icon: LayoutList,
     path: "/tickets",
     hasChilds:true,

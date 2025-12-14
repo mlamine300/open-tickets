@@ -33,7 +33,7 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
  </div>
  <div className='flex items-center gap-2 text-xs lg:text-sm'>
     <p className='text-text-primary/50'>Assigné a :</p>
-    <p>{ticket.assignedTo?.user.name||"pas encore"} </p>
+    <p>{ticket.assignedTo?.user?.name||"pas encore"} </p>
  </div>
  <div className='flex items-center gap-2 text-xs lg:text-sm'>
     <p className='text-text-primary/50'>Organisation Destinatrice :</p>

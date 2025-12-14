@@ -20,6 +20,21 @@ return null;
 }
 
 }
+export const getTicketByIdAction:(ticketId:string)=>Promise<ticket|null>=async(ticketId)=>{
+    try {
+        const res=await axiosInstance.get(API_PATH.TICKETS.GET_TICKET_BY_ID(ticketId));
+        if(res.status!==200){
+         console.log("Error fetching ticket",res.data.message);
+    return null; 
+    }  
+        return res.data.data as ticket;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }  
+}         
+
+
 
 export const getTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS(""),{...params});

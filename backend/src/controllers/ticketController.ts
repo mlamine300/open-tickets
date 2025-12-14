@@ -346,7 +346,7 @@ export const getTicketByid=async(req:Request,res:Response)=>{
      const token = req.headers.authorization?.split(" ")[1];
 if (!token) return res.status(409).json({ message: "not autorized" });
     const user = (await jwt.decode(token)) as TokenPayload;
-    const { userId,role,organisation,organisationsList,activeStatus }=user;
+    const { userId }=user;
     if (!userId) return res.status(409).json({ message: "not autorized" });
     const id=req.params.id;
     if(!id)return res.status(400).json({message:"id is required"})

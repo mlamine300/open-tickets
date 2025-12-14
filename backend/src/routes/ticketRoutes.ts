@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {  addTicket, closeTicket, getMytickets, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.js";
+import {  addTicket, closeTicket, getMytickets, getTicketByid, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.js";
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);
-//ticketRouter.get("/:id",getTicketByid);
+ticketRouter.get("/:id",getTicketByid);
 ticketRouter.post("/list/:type",getTickets)
 ticketRouter.post("/take_in_charge/:id",takeTicketInCharge)
 ticketRouter.post("/close/:id",closeTicket)
