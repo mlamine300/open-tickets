@@ -6,7 +6,7 @@ import {
 } from "react-icons/lu";
 import type { FormType, FormFieldType } from "../../../types";
 
-import { BookmarkCheck, CheckCheck, LayoutList, Loader, Plus } from "lucide-react";
+import { BookmarkCheck, CheckCheck, LayoutList, Loader, Plus, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -90,6 +90,28 @@ export const SIDE_MENU_ADMIN_DATA = [
       path: "/tickets/sent/close",
       },
     ]
+
+    },
+    {id:"04",
+      label:"Utilisateurs",
+      icon: Users,
+      path:"/users",
+      hasChilds:true,
+      childs:[
+        {
+          id:"41",
+      label:"Modifier Utilisateur",
+      icon:UserRoundPen,
+      path:"/users/list",
+        },
+        {
+          id:"52",
+      label:"Ajouter Utilisateur",
+      icon:LuPlus,
+      path:"/users/new",
+        },
+        
+      ]
 
     },
     {id:"05",

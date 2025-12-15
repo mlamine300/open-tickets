@@ -15,6 +15,8 @@ import AddTicket from './page/tickets/AddTicket';
 import AddFormPage from './page/forms/AddFormPage';
 import FormsPages from './page/forms/FormsPage';
 import AddTicketFormPage from './page/tickets/AddTicketFormPage';
+import UsersPage from './page/users/UsersPage';
+import AddEditUserPage from './page/users/AddEditUserPage';
 function App() {
  
 
@@ -35,6 +37,8 @@ function App() {
        <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}>
          <Route path="/forms/list" element={<FormsPages />} />
          <Route path="/forms/:id" element={<AddFormPage />} />
+          <Route path="/users/list" element={<UsersPage />} />
+         <Route path="/users/:id" element={<AddEditUserPage />} />
          </Route>
       </Routes>  
        
