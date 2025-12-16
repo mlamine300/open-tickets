@@ -15,6 +15,7 @@ import formRouter from "./routes/formRoutes.js";
 import { protect } from "./middlewares/authMiddleware.js";
 import ticketRouter from "./routes/ticketRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
+import userRouter from "./routes/userRoute.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -295,7 +296,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/organisations",protect, organisationRouter);
 app.use("/api/forms",protect, formRouter);
 app.use("/api/tickets",protect, ticketRouter);
-app.use("/api/comment",protect, commentRouter);
+app.use("/api/comments",protect, commentRouter);
+app.use("/api/users",protect, userRouter);
 
 
 

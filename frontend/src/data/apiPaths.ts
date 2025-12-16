@@ -38,22 +38,8 @@ export const API_PATH = {
      
      
   },
-  COMMENT:{ADD_COMMENT:(id:string)=>`/api/comment/${id}`,GET_COMMENTS_OF_TICKETS:(id:string)=>`/api/comment/${id}`},
-  // TASK: {
-  //   GET_DASHBOARD_DATA: "/api/tasks/dashboard-data",
-  //   GET_USER_DASHBOARD_DATA: "/api/tasks/user-dashboard-data",
-  //   GET_ALL_TASKS: "/api/tasks",
-  //   CREATE_TASK: "/api/tasks",
-  //   GET_TASK_BY_ID: (taskId: string) => `/api/tasks/${taskId}`,
-  //   UPDATE_TASK: (taskId: string) => `/api/tasks/${taskId}`,
-  //   DELETE_TASK: (taskId: string) => `/api/tasks/${taskId}`,
-  //   UPDATE_TASK_STATUS: (taskId: string) => `/api/tasks/${taskId}/status`,
-  //   UPDATE_TASK_CHECKLIST: (taskId: string) => `/api/tasks/${taskId}/todo`,
-  // },
-  // REPORTS: {
-  //   EXPORT_TASKS: "/api/reports/export/tasks",
-  //   EXPORT_USERS: "/api/reports/export/users",
-  // },
+  COMMENT:{ADD_COMMENT:(id:string)=>`/api/comments/${id}`,GET_COMMENTS_OF_TICKETS:(id:string)=>`/api/comments/${id}`},
+  
   IMAGE: {
     UPLOAD: "/api/auth/upload-image",
   },

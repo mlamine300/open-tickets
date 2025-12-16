@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 import organisationModel from "../models/Organisation.js";
 import formulaireModel from "../models/Formulaire.js";
-import { FormFieldType } from "../types/index.js";
-
+import { FormFieldType, TokenPayload } from "../types/index.js";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken"
 
 export const validateFieldSchema=(input:any)=> {
   const errors = [];
@@ -87,3 +88,34 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
   relancer: "relancer",
   close:"traité"
 }
+
+export const checkToken=(req:Request)=>{
+          const token = req.headers.authorization?.split(" ")[1];
+              if (!token) return {status:409,message: "not authorized" }
+          
+              const user = jwt.decode(token) as TokenPayload;
+              if (!user?.userId) return {status:409,message: "not authorized" }
+              return  {status:200,token,user}
+}
+
+export const getMissingKeys=(object:object,keys:string[])=>{
+  const objectKeys=Object.keys(object);
+  return keys.filter(k=>!objectKeys.includes(k));
+}
+
+export const validatePassword = (password: string) => {
+  return true;
+  const regex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!%*.?&]{8,}$/;
+  return regex.test(password);
+};
+
+export const validateEmail = (email: string) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email.trim());
+};
+
+export const validateName = (name: string) => {
+  const regex = /^[A-Za-z\s]{2,}$/;
+  return regex.test(name.trim());
+};
