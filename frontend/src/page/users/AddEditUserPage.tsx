@@ -135,7 +135,7 @@ export default function UserFormPage() {
                 <FormItem>
                   
                   <FormControl>
-                    <Input parentClassName="gap-1 items-start"  label="Name" type="text" placeHolder="John Doe" {...field} />
+                    <Input parentClassName="gap-1 items-start"  label="Nom" type="text" placeHolder="John Doe" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,7 +212,9 @@ export default function UserFormPage() {
                    
                   </FormLabel>
                   <FormControl>
-                    <Input parentClassName="items-start gap-1" labelClassName={id !== "new"?"text-xs font-regular italic":""}  label={` Password ${id !== "new" ? "(leave empty to keep current)" :""}`} placeHolder="********" type="password" {...field} />
+                    <Input parentClassName="items-start gap-1" labelClassName={id !== "new"?"text-xs font-regular italic":""}  
+                    label={` Mot de passe ${id !== "new" ? "(laisser vide pour maintenir le courant)" :""}`}
+                     placeHolder="********" type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -228,7 +230,7 @@ export default function UserFormPage() {
                 <FormItem>
                   
                   <FormControl>
-                    <Input   parentClassName="items-start gap-1"  label="Confirm Password" placeHolder="********" type="password" {...field} />
+                    <Input   parentClassName="items-start gap-1"  label="Confirmer Mot de passe" placeHolder="********" type="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
