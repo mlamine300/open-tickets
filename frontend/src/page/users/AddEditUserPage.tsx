@@ -120,7 +120,7 @@ export default function UserFormPage() {
     <Card className="max-w-2xl  mt-10  bg-background-base shadow-2xl rounded-xl border-none">
       <CardHeader>
         <CardTitle>
-          {id === "new" ? "Create User" : "Edit User"}
+          {id === "new" ? "Créer un Utilisateur" : "Modifier un Utilisateur"}
         </CardTitle>
       </CardHeader>
 
@@ -255,7 +255,7 @@ export default function UserFormPage() {
 
             {/* Submit */}
             <div className="flex justify-center gap-3 col-span-2">
-              <Button className="px-4" variant="primary" text={id === "new" ? "Create User" : "Update User"}  type="submit" disabled={loading}/>
+              <Button className="px-4" variant="primary" text={id === "new" ? "Ajouter Utilisateur" : "Modifier Utilisateur"}  type="submit" disabled={loading}/>
                 
               
             </div>
