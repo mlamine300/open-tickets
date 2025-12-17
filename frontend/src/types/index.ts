@@ -1,3 +1,5 @@
+import {z} from "zod";
+
 export interface SimpleMenuItemType {
     id: string;
     label: string;
@@ -86,4 +88,14 @@ export interface Comment{
 
 }
 
+export const UserSchema=z.object({
+  name: z.string().min(3,"").max(35,""),
+  email: z.email("format de l'email est incorrect"),
+  organisation: z.string().min(3,"").max(35,""),
+  organisationsList: z.array(z.string()),
+  password: z.string().min(8,"format de mot de passe et incorrect").max(135,"format de mot de passe et incorrect").or(z.enum([""])),
+  rePassword: z.string().min(8,"format de mot de passe et incorrect").max(135,"format de mot de passe et incorrect").or(z.enum([""])),
+  role: z.enum(["standard","supervisor","admin"],`role doit etre : standard ou supervisor ou admin`),
+})
+export type userFormType= z.infer<typeof UserSchema>
 

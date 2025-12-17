@@ -2,6 +2,8 @@ import { Request,Response } from "express";
 import userModel from "../models/User.js";
 import { checkToken, getMissingKeys, validateEmail, validateName, validatePassword } from "../utils/index.js";
 import organisationModel from "../models/Organisation.js";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 export const getUsers=async(req:Request,res:Response)=>{
     try {
          const t= checkToken(req);
@@ -39,7 +41,10 @@ export const getUserById=async(req:Request,res:Response)=>{
          const id=req.params.id;
          if(!id)return res.status(400).json({message:"user id is required!"});
 
-         const user=await userModel.findById(id).lean().exec();
+         const user=await userModel.findById(id,{password:0}).populate("organisation","_id, name").populate({
+        path: "organisationsList",
+        select: "_id name",
+      }).lean().exec();
          if(!user)return res.status(404).json({message:"there is no user with such id"});
          return res.status(200).json({message:"success",data:user});
 
@@ -56,18 +61,24 @@ export const addUser=async(req:Request,res:Response)=>{
         if(t.status!==200)return res.status(t.status).json({message:t.message});
         const  informations=req.body;
         const missingKeys=getMissingKeys(informations,["name","email","password","organisation","role"]);
-        if(missingKeys)return res.status(400).json({message:`${missingKeys.join(", ")} are required in the request`});
+        if(missingKeys&&missingKeys.length)return res.status(400).json({message:`${missingKeys.join(", ")} are required in the request`});
         const {name,email,password,organisation:organisationId,role}=informations;
         if(!validateEmail(email))return res.status(400).json("email format is invalid")
-        if(!validateEmail(name))return res.status(400).json("name format is invalid")
-         if(!password(email))return res.status(400).json("password format is invalid")
+        if(!validateName(name))return res.status(400).json("name format is invalid")
+         if(!validatePassword(password))return res.status(400).json("password format is invalid")
         if(role!=="standard"&&role!=="supervisor")return res.status(400).json("invalid role")
-            const organisation=await organisationModel.findById(organisationId).lean().exec();
+            const organisation=await organisationModel.findById(new mongoose.Types.ObjectId(organisationId)).lean().exec();
         if(!organisation)return res.status(400).json("invalid organisation id")
-        const foundUser=await userModel.find({email}).lean().exec();
-    if(foundUser)return res.status(400).json({message:"user with this id already exist"});
+        const foundUser=await userModel.find({email}, { password: 0,refreshTokens:0 }).lean().exec();
+    
+    if(foundUser&&foundUser.length>0&&foundUser.at(0)?._id)return res.status(400).json({message:`user with this id ${foundUser.at(0)?._id} already exist`});
     const newUser=await userModel.create(informations);
-    if(newUser._id)return res.status(200).json({message:"success",data:newUser});
+    if(newUser._id)return res.status(200).json({message:"success",data:{name:newUser.name,
+        email:newUser.email,_id:newUser._id,
+        role:newUser.role,createdAt:newUser.createdAt,
+        organisation:newUser.organisation,
+        organisationsList:newUser.organisationsList
+    }});
     return res.status(400).json({message:"user not created"})
 
 
@@ -88,10 +99,12 @@ export const updateUser=async(req:Request,res:Response)=>{
         if(t.user?.userId!==id&&t.user?.role!=="admin")return res.status(409).json({message:"not authorized (admin only)"});
         const foundUser=await userModel.findById(id);
         if(!foundUser)return res.status(404).json({message:"ther is no user with such id"});
-        const {name,email,password,organisation,role}=req.body;
+        const {name,email,password,organisation,role,organisationsList}=req.body;
+        
         if(email){
             const emailUser=await userModel.findOne({email})
-            if(emailUser&&emailUser._id!==foundUser._id)return res.status(400).json({message:"this email is taken"});
+           
+            if(!emailUser||(emailUser._id!==foundUser._id&&t.user.role!=="admin"))return res.status(409).json({message:"you don't have permission"});
             if(!validateEmail(email))return res.status(400).json({message:"this email is invalid"});
             foundUser.email=email;
         }
@@ -100,11 +113,12 @@ export const updateUser=async(req:Request,res:Response)=>{
             foundUser.name=name;
         }if(password){
             if(!validatePassword(password))return res.status(400).json({message:"this password is invalid"});
-            foundUser.password=password;
+            const hashedPassword = await bcrypt.hash(password, 10);
+            foundUser.password=hashedPassword;
             foundUser.refreshTokens.splice(0,0)
         }
         if(role){
-            if(role!="standard"&&role!="supervisor")return res.status(400).json("invalid role");
+            if(role!="standard"&&role!="supervisor")return res.status(400).json({message:"invalid role"});
             foundUser.role=role;
         }
         if(organisation){
@@ -112,8 +126,21 @@ export const updateUser=async(req:Request,res:Response)=>{
            if(!foundOrganisation) return res.status(400).json({message:"invalid organisation id"});
            foundUser.organisation=organisation;
         }
+      
+        if(organisationsList&&Array.isArray(organisationsList)&&organisationsList.length){
+           
+            const foundOrganisations=await organisationModel.find({_id: { $in: [...organisationsList] }});
+            if(!foundOrganisations||foundOrganisations.length<organisationsList.length)
+            {
+
+                return res.status(400).json({message:"incorrect organisations list"})
+            }
+            const x=organisationsList.map(o=>new mongoose.Types.ObjectId(o));
+                foundUser.organisationsList=x;
+                console.log(foundUser.organisationsList)
+            }
         await foundUser.save();
-        return res.status(200).json({message:"success",data:foundUser});
+        return res.status(200).json({message:"success",data:{foundUser,password:null,refreshToken:null}});
     } catch (error) {
         console.log(error);
         return res.status(500).json({message:"server error",error})

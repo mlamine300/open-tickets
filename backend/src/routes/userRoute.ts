@@ -5,8 +5,8 @@ import { addUser, deleteUser, getUserById, getUsers, updateUser } from "../contr
 const userRouter=Router();
 userRouter.post("/",getUsers);
 userRouter.get("/:id",getUserById);
-userRouter.post("/",checkAdmin,addUser);
-userRouter.patch("/:id",checkAdmin,updateUser);
+userRouter.post("/new",checkAdmin,addUser);
+userRouter.put("/:id",checkAdmin,updateUser);
 userRouter.delete("/:id",checkAdmin,deleteUser);
 
 export default userRouter;
