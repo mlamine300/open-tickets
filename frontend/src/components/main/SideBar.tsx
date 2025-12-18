@@ -26,7 +26,7 @@ const SideBar = () => {
     <>
       {/* <button onClick={setShowed((s) => !s)}> */}
       <HiBars3
-        className="fixed z-20 left-10  top-5 rounded-full bg-gray-hot/20 p-2 text-primary md:hidden w-8 h-8 active:rotate-30 transition"
+        className="fixed z-20 left-2  top-6 rounded-full bg-gray-hot/20 p-2 text-primary md:hidden w-8 h-8 active:rotate-30 transition"
         onClick={() => setShowed((b) => !b)}
       />
       {/* </button> */}
@@ -35,10 +35,10 @@ const SideBar = () => {
         className={`min-h-lvh  bg-background-base transition duration-300 ease-in-out  ${
           showed
             ? "fixed h-full  flex flex-col w-full z-10"
-            : "relative  mt-10 hidden xl:flex flex-col w-64 border-r gap-10 border-gray-hot "
+            : "relative  mt-14 hidden xl:flex flex-col w-64 border-r gap-10 border-gray-hot "
         }`}
       >
-        <div className="flex  flex-col items-center w-64 gap-1 mt-8 ">
+        <div className="flex  flex-col items-center w-64 gap-1 mt-8 max-md:mx-auto ">
            
             <p
               style={{

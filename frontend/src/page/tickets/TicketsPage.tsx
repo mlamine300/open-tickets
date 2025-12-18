@@ -79,12 +79,12 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
   return (
     <Sheet>
     
-      <Card className='flex item-center bg-background-base border-none shadow-2xl w-full p-5 min-h-screen justify-start'>
+      <Card className='flex item-center   border-none shadow-2xl w-fit p-5 min-h-screen justify-start'>
 
       {(tickets&&!pending)?(
-        <div className='flex flex-col w-full h-full'>
+        <div className='flex flex-col w-full h-full '>
           <FilterTableDiv organisations={organisations} />
-         <DataTable columns={columns({actions:{
+         <DataTable  columns={columns({actions:{
           addComment:(ticket:ticket)=>setSelectedTicket(ticket),
           // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
           // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
@@ -98,7 +98,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
          <TablePagination maxPages={Math.ceil(totalTicketsSize/10)} className='mt-auto ml-auto gap-2 p-5'/>
         </div>
       ):
-      (<div className='w-full h-full flex items-center justify-center'>
+      (<div className='w-full h-full flex items-center justify-center min-w-3xl'>
         <Spinner size='xl'/>
       </div>)
       }

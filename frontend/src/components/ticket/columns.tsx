@@ -3,8 +3,8 @@
 import type{ ColumnDef } from "@tanstack/react-table"
 import type { ticket } from "@/types"
 import { Link } from "react-router";
-import { ArrowUpDown, ExternalLink, Eye, MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
+//import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
@@ -18,7 +18,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
    header: ({ column }) => {
       return (
         <div
-        className="flex gap-1 items-center mx-4 cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
+        className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <p>Date</p>
@@ -28,8 +28,11 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     },
     cell:({row})=>{
       const date=row.getValue("createdAt") as string;
-
-      return format(date,"dd/MM/yyyy")
+      const dateStr=format(date,"dd/MM/yyyy");
+      return <p className="italic text-xs">
+        {dateStr}
+      </p>
+      
     }
 
   }
@@ -132,36 +135,39 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const id = row.original._id;
+      //const id = row.original._id;
       
 
       
-      
-      return (
-        <DropdownMenu >
-          <DropdownMenuTrigger asChild>
-            <button className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-background-base ">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+      return <SheetTrigger onClick={()=>actions.addComment(row.original)}  className="cursor-pointer" >
+       <MessageCirclePlus className="text-primary bg-transparent hover:text-primary/50 hover:scale-150"/>
+      </SheetTrigger>
+              
+      // return (
+      //   <DropdownMenu >
+      //     <DropdownMenuTrigger asChild>
+      //       <button className="h-8 w-8 p-0">
+      //         <span className="sr-only">Open menu</span>
+      //         <MoreHorizontal />
+      //       </button>
+      //     </DropdownMenuTrigger>
+      //     <DropdownMenuContent align="end" className="bg-background-base ">
+      //       <DropdownMenuLabel>Actions</DropdownMenuLabel>
             
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >
-            <Link to={`/ticket/${id}`}>Voir Ticket</Link>
-            </DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>actions.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
-                 <SheetTrigger className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</SheetTrigger>
-                 </DropdownMenuItem>
-                   {/* {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
-                  {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleClosing(row.original)}>marquer comme clotoré</DropdownMenuItem>}
-               {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleFormward(row.original)}>transferer a un autre</DropdownMenuItem>}
-         */}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      //       {/* <DropdownMenuSeparator /> */}
+      //       <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >
+      //       <Link to={`/ticket/${id}`}>Voir Ticket</Link>
+      //       </DropdownMenuItem>
+      //           <DropdownMenuItem onClick={()=>actions.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
+      //            <SheetTrigger className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</SheetTrigger>
+      //            </DropdownMenuItem>
+      //              {/* {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
+      //             {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleClosing(row.original)}>marquer comme clotoré</DropdownMenuItem>}
+      //          {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleFormward(row.original)}>transferer a un autre</DropdownMenuItem>}
+      //    */}
+      //     </DropdownMenuContent>
+      //   </DropdownMenu>
+      // )
     },
     
     }

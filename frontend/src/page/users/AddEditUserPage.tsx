@@ -25,7 +25,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { UserSchema, type Organisation, type userFormType } from "@/types"
 import { addUserAction, getUserByidAction, updateUserAction } from "@/actions/userAction"
 import Input from "@/components/ui/Input"
@@ -41,6 +41,7 @@ export default function UserFormPage() {
 
   const [loading, setLoading] = useState(false)
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchUser = async () => {
       if (id !== "new") {
@@ -104,10 +105,23 @@ export default function UserFormPage() {
     };
     if(id==="new"){
        const user= await addUserAction(valueTopatch);
-       if(user&&user.name)toast.success(`utilisateur ${user.name} a été créer`);
+       if(user&&user.name){
+        toast.success(`utilisateur ${user.name} a été créer`);
+      form.reset({name: "",
+      email: "",
+      organisation: "",
+      organisationsList: [],
+      password: "",
+      rePassword: "",
+      role: "standard",})
+      }
     }else{
         const user=await updateUserAction(id,valueTopatch);
-        if(user&&user.name)toast.success(`utilisateur ${user.name} a été modifier`);
+        if(user&&user.name) {
+
+          toast.success(`utilisateur ${user.name} a été modifier`);
+          navigate("/station/list")
+        }
     }
    // console.log("FORM VALUES", values)
     // create or update action here

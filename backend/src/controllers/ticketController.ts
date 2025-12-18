@@ -351,9 +351,9 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     const id=req.params.id;
     if(!id)return res.status(400).json({message:"id is required"})
 
-    const ticket=await ticketModel.findById(id);
+    const ticket=await ticketModel.findById(id).populate("emitterOrganizationId").populate("recipientOrganizationId").lean().exec();
     if(!ticket)return res.status(404).json({message:"ticket not found"})
-        return res.status(200).json({message:"success",data:ticket})
+        return res.status(200).json({message:"success",data:{...ticket,emitterOrganization:ticket.emitterOrganizationId,recipientOrganization:ticket.recipientOrganizationId}})
    } catch (error) {
     console.log(error);
     return res.status(500).json({message:"server error",error})

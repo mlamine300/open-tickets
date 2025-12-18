@@ -75,7 +75,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         
    {organisations&&
    
-                <div className={"bg-background-base flex flex-col items-start gap-0"}>
+                <div className={" flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Emitrice" </label>
                 <Select 
                 value={emitterOrganization}
@@ -105,7 +105,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                  {organisations&&
                  
                   
-<div className={"bg-background-base flex flex-col items-start gap-0"}>
+<div className={" flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Destinatrice" </label>
              
                  <Select 
@@ -138,7 +138,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
               </div>}
              
 
-               <div className={"bg-background-base flex flex-col items-start gap-0"}>
+               <div className={"flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priority </label>
              
             <Select 
@@ -175,7 +175,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
     <div className='flex justify-between'>
 
     <Input parentClassName='flex flex-row items-center gap-2' containerClassName='h-10' label=' Recherche :' labelClassName='' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e)=>setSearch(e.target.value)} />
-      <button className='hover:font-bold hover:underline' onClick={()=>{
+      <button className='hover:font-bold italic underline' onClick={()=>{
         setEmitterOrganization("");
         setRecipientOrganization("");
         setPriority("");
