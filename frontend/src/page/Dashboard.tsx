@@ -38,7 +38,10 @@ const Dashboard = () => {
   const formData=stats.formName.map((fn:any)=>{
     return {form:fn._id,value:fn.count,fullMark:totaleCount}
   })
-  console.log(statusData)
+  const emmiterData=stats.emmiter.map((ed:any)=>{
+    return {name:ed.name,count:ed.count}
+  })
+  console.log(emmiterData)
   return (
    
       <div className="grid grid-cols-1 w-full h-full lg:grid-cols-2 xl:grid-cols-3 min-h-screen min-w-screen ">

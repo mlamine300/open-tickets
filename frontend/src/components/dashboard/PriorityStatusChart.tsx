@@ -1,4 +1,4 @@
-import { Label, Legend, Pie, PieChart, Tooltip } from 'recharts';
+import {  Legend, Pie, PieChart, Tooltip } from 'recharts';
 
 function PriorityStatusChart({statusData,priorityData, isAnimationActive = true }: {statusData:any;priorityData:any; isAnimationActive?: boolean }) {
   return (
