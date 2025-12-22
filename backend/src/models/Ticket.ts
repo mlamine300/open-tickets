@@ -24,6 +24,13 @@ const TicketSchema=new mongoose.Schema({
 
 },{ timestamps: true });
 
+TicketSchema.index({ status: 1 });
+TicketSchema.index({ priority: 1 });
+TicketSchema.index({ emitterOrganizationId: 1 });
+TicketSchema.index({ recipientOrganizationId: 1 });
+TicketSchema.index({ "assignedTo.userId": 1 });
+TicketSchema.index({ createdAt: 1 });
+
 const ticketModel=mongoose.model("Ticket",TicketSchema)
 export default ticketModel;
 

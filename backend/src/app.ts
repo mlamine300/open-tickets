@@ -16,6 +16,7 @@ import { protect } from "./middlewares/authMiddleware.js";
 import ticketRouter from "./routes/ticketRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
 import userRouter from "./routes/userRoute.js";
+import { getDashboardStats, getTicketsByStatus } from "./controllers/ticketController.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -298,7 +299,7 @@ app.use("/api/forms",protect, formRouter);
 app.use("/api/tickets",protect, ticketRouter);
 app.use("/api/comments",protect, commentRouter);
 app.use("/api/users",protect, userRouter);
-
+app.get("/api/stat/status",getDashboardStats)
 
 
 app.use(
@@ -312,6 +313,7 @@ const numericPort = parseInt(rawPort.replace(/[^0-9]/g, ""), 10);
 const PORT =
   Number.isFinite(numericPort) && numericPort > 0 ? numericPort : 3500;
 
+  
 app.listen(PORT, (err?: Error) => {
   if (err) console.error("Server failed to start:", err);
   console.log(`Server running on port ${PORT}`);

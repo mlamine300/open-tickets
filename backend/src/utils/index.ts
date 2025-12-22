@@ -3,7 +3,7 @@ import organisationModel from "../models/Organisation.js";
 import formulaireModel from "../models/Formulaire.js";
 import { FormFieldType, TokenPayload } from "../types/index.js";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 export const validateFieldSchema=(input:any)=> {
   const errors = [];
@@ -97,7 +97,18 @@ export const checkToken=(req:Request)=>{
               if (!user?.userId) return {status:409,message: "not authorized" }
               return  {status:200,token,user}
 }
-
+export const getToken:(req:Request)=>TokenPayload|null=(req:Request)=>{
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if(!token)return null;
+     const user = jwt.decode(token) as TokenPayload;
+    return user;
+  } catch (error) {
+   console.log(error) 
+   return null;
+  }
+    
+}
 export const getMissingKeys=(object:object,keys:string[])=>{
   const objectKeys=Object.keys(object);
   return keys.filter(k=>!objectKeys.includes(k));
