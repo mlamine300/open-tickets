@@ -42,11 +42,16 @@ const Dashboard = () => {
   const emmiterData=stats.emmiter.map((ed:any)=>{
     return {name:ed.name,count:ed.count}
   })
+  const receiptionData=stats.recipient.map((ed:any)=>{
+    return {name:ed.name,count:ed.count}
+  })
   console.log(emmiterData)
   return (
    
-      <div className="grid grid-cols-1 w-full h-full lg:grid-cols-2 xl:grid-cols-3 min-h-screen min-w-screen ">
-        <OrganisationClassement data={emmiterData} fill="#3fa9fc" fillActive="#aa39ff" strokeActive="#5500ee"/>
+      <div className="grid grid-cols-1 w-full gap-1 justify h-full lg:grid-cols-2 min-h-screen xl:min-w-[70svw] ">
+        <OrganisationClassement title="Classement Organisation emmitrice" data={emmiterData} fill="#3fa9fc" fillActive="#aa39ff" strokeActive="#5500ee"/>
+       
+        <OrganisationClassement title="Classement Organisation réceptionniste" data={receiptionData} fill="#3fa9fc" fillActive="#aa39ff" strokeActive="#5500ee"/>
         <PriorityStatusChart isAnimationActive={true} statusData={statusData} priorityData={priorityData} />
         <FormNameRadarChart data={formData} />
       </div>

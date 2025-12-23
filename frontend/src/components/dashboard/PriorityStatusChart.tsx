@@ -2,9 +2,9 @@ import {  Legend, Pie, PieChart, Tooltip } from 'recharts';
 
 function PriorityStatusChart({statusData,priorityData, isAnimationActive = true }: {statusData:any;priorityData:any; isAnimationActive?: boolean }) {
   return (
-    <div className='flex flex-col gap-0'>
+    <div className='flex flex-col gap-0 w-full'>
  <h3 className='w-full text-start px-8 italic font-semibold'>Status & Priority </h3>
-    <PieChart className='mx-4'  style={{ width: '90%', maxWidth: '400px', maxHeight: '60vh', aspectRatio: 1 ,marginTop:0 }} responsive>
+    <PieChart className='mx-4' style={{width:'100%', height:'100%'}}   responsive>
     
       <Pie
         data={statusData}

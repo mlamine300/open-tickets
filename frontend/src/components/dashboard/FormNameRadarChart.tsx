@@ -3,14 +3,14 @@ import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, Tooltip 
 
 function FormNameRadarChart({data}:{data:any}) {
   return (
-    <div className='flex flex-col gap-0'>
+    <div className='flex flex-col gap-0 w-full'>
  <h3 className='w-full text-start px-8 italic font-semibold'>type des réclamation</h3>
     <RadarChart
       style={{
-        width: '90%',
-        height: '100%',
-        maxWidth: '400px',
-        maxHeight: '60vh',
+        // width: '90%',
+        // height: '100%',
+        // maxWidth: '100%',
+        // maxHeight: '60vh',
         aspectRatio: 1,
       }}
       responsive

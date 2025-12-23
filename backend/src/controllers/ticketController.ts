@@ -1035,7 +1035,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 name: { $first: "$emitterOrg.name" },
                 count: { $sum: 1 }
               }
-            }
+            },
+            { $sort: { count: -1 } },
+            {$limit:10}
           ],
           recipient: [
             {
@@ -1052,8 +1054,12 @@ export const getDashboardStats = async (req: Request, res: Response) => {
                 _id: "$recipientOrg._id",
                 name: { $first: "$recipientOrg.name" },
                 count: { $sum: 1 }
+                
               }
-            }
+              
+            },
+            { $sort: { count: -1 } },
+            {$limit:10}
           ],
 
           // 📈 EVOLUTION
