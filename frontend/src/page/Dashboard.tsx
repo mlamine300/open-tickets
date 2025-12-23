@@ -1,4 +1,5 @@
 import FormNameRadarChart from "@/components/dashboard/FormNameRadarChart";
+import OrganisationClassement from "@/components/dashboard/OrganisationClassement";
 import PriorityStatusChart from "@/components/dashboard/PriorityStatusChart";
 import Spinner from "@/components/main/Spinner";
 import axiosInstance from "@/utils/axiosInstance";
@@ -45,6 +46,7 @@ const Dashboard = () => {
   return (
    
       <div className="grid grid-cols-1 w-full h-full lg:grid-cols-2 xl:grid-cols-3 min-h-screen min-w-screen ">
+        <OrganisationClassement data={emmiterData} fill="#3fa9fc" fillActive="#aa39ff" strokeActive="#5500ee"/>
         <PriorityStatusChart isAnimationActive={true} statusData={statusData} priorityData={priorityData} />
         <FormNameRadarChart data={formData} />
       </div>

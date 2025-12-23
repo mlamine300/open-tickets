@@ -1,10 +1,11 @@
 import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from "recharts"
 
 
-function OrganisationClassement({data}:{data:any}) {
+function OrganisationClassement({data,fill,fillActive,strokeActive}:{data:any,fill:string,fillActive?:string,strokeActive?:string}) {
   return (
      <BarChart
-      style={{ width: '100%', maxWidth: '700px', maxHeight: '70vh', aspectRatio: 1.618 }}
+     
+      style={{ width: '100%', maxWidth: '80dvw', maxHeight: '70vh', aspectRatio: 1.618 }}
       responsive
       data={data}
       margin={{
@@ -15,11 +16,11 @@ function OrganisationClassement({data}:{data:any}) {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
+      <XAxis dataKey="name" width={"auto"} className="" />
       <YAxis width="auto" />
       <Tooltip />
-      <Legend />
-      <Bar dataKey="count" fill="#eeff55" activeBar={{ fill: '#e4963d', stroke: '#9a5d18' }} radius={[10, 10, 0, 0]} />
+      <Legend className="text-xs" />
+      <Bar dataKey="count" fill={fill||"#eeff55"} activeBar={{ fill: fillActive||'#e4963d', stroke: strokeActive||'#9a5d18' }} radius={[10, 10, 0, 0]} />
       
     </BarChart>
   )
