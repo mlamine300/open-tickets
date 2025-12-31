@@ -57,6 +57,7 @@ export const getCommentOfTicket=async(req:Request,res:Response)=>{
             },
             // Simplify author to single object (optional)
             { $unwind: { path: "$author", preserveNullAndEmptyArrays: true } },
+            {$sort:{createdAt:-1}}
         ]);
         if(!comments)return res.status(404).json({message:"there are no comments on this tickets"});
         return res.status(200).json({message:"success",data:comments});

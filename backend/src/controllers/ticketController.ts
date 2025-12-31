@@ -615,6 +615,7 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     if(!id)return res.status(400).json({message:"id is required"})
 
     const ticket=await ticketModel.findById(id).exec();
+    
     if(!ticket)return res.status(404).json({message:"ticket not found"})
       ticket.status="open";
       ticket.assignedTo={userId:new mongoose.Types.ObjectId(userId),date:new Date()}
@@ -623,6 +624,13 @@ if (!token) return res.status(409).json({ message: "not autorized" });
       : [{ userId: new mongoose.Types.ObjectId(userId), date: new Date() }];
 
     ticket.set('assignementHistory', history);
+    const message=req.body.message||"in_charge"
+        const comment=await commentsModel.create({authorId:userId,ticketId:id,message,action:"in_charge",ticketRef:ticket.ref});
+        if(!comment||!comment._id){
+            return res.status(400).json({message:"error adding comment"});
+        }
+        ticket.lastComment=comment;
+         ticket.comments.push(comment._id);
     await ticket.save();
     return res.status(200).json({message:"success",data:ticket})
 
