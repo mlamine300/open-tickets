@@ -35,7 +35,7 @@ const Dashboard = () => {
   const priorityData=stats.byPriority.map((bp:any)=>{
     return {name:bp._id,value:bp.count,fill:getFill(bp._id)}
   })
-  const totaleCount=stats.total.at(0).totalTickets;
+  const totaleCount=stats.total?.at(0)?.totalTickets;
   const formData=stats.formName.map((fn:any)=>{
     return {form:fn._id,value:fn.count,fullMark:totaleCount}
   })
