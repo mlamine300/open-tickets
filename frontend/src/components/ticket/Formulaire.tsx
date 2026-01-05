@@ -24,11 +24,15 @@ import { buildZodFormSchema } from "@/utils/zod";
 
 export default function DynamicForm({ form,disabled }:{form:FormType|null,disabled?:boolean}) {
   const [triggerRerender,setTriggerRerender]=useState(0);
+  
   //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
   console.log(triggerRerender);
+  
   const formulaire=form||standardForm();
   
-  
+ form?.fields.forEach(f=>{
+  if(f.name==="depart")console.log(f.possibleValues)
+ });
   
   const [pending,setPending]=useState<boolean>(false);
   useEffect(()=>{
@@ -40,8 +44,9 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
       formulaire.fields.forEach(field=>{
         
         if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
-        
+     
           field.possibleValues=(organisationString)
+          myForm.trigger();
           setTriggerRerender(Math.random());
         }
       })
