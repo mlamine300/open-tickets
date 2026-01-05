@@ -72,7 +72,8 @@ export const addUser=async(req:Request,res:Response)=>{
         const foundUser=await userModel.find({email}, { password: 0,refreshTokens:0 }).lean().exec();
     
     if(foundUser&&foundUser.length>0&&foundUser.at(0)?._id)return res.status(400).json({message:`user with this id ${foundUser.at(0)?._id} already exist`});
-    const newUser=await userModel.create(informations);
+    const hashedPassword=await bcrypt.hash(password, 10);
+    const newUser=await userModel.create({...informations,password:hashedPassword});
     if(newUser._id)return res.status(200).json({message:"success",data:{name:newUser.name,
         email:newUser.email,_id:newUser._id,
         role:newUser.role,createdAt:newUser.createdAt,
