@@ -8,7 +8,7 @@ const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value
   const [filtredValues,setFiltredValues]=useState(possibleValues);
   useEffect(()=>{
     setFiltredValues(possibleValues?.filter(p=>p.toLowerCase().trim().includes(search.toLowerCase().trim())))
-  },[search])
+  },[search,possibleValues])
     return (
     <Select 
                 value={value}

@@ -13,7 +13,7 @@ export interface TokenPayload extends JwtPayload {
 export interface FormFieldType{
       name:string;
       label:string;
-      type:"text"|"number"|"select"|"date"|"select-multiple"|"area"|"select-filter"|"list";
+      type:"text"|"number"|"select"|"date"|"select-multiple"|"area"|"select-filter"|"list"|"file";
       possibleValues?:string[];
       default?:string;
     required:boolean;}

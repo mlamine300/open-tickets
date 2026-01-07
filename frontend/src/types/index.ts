@@ -33,7 +33,7 @@ export interface User {
 export interface FormFieldType{
       name:string;
       label:string;
-      type:"text"|"number"|"select"|"date"|"select-multiple"|"area"|"select-filter"|"list";
+      type:"text"|"number"|"select"|"date"|"select-multiple"|"area"|"select-filter"|"list"|"file";
       possibleValues?:string[];
       default?:string;
     required:boolean;}
@@ -58,6 +58,7 @@ export interface ticket{
   _id?:string;
   creator?:{email:string,name:string,_id:string};
   ref:string;
+  attachement?:string;
   emitterOrganizationId:string;
   recipientOrganizationId:string;
   emitterOrganization?:{name:string,_id:string};

@@ -15,9 +15,11 @@ import { addTicketAction } from "@/actions/ticketAction";
 import { useForm } from "react-hook-form";
 import SelectWithSearch from "../ui/SelectWithSearch";
 import SelectMultiple from "../ui/SelectMultiple";
-import { standardForm, StandartFierlds } from "@/data/data";
+import { getStandardForm, StandartFierlds } from "@/data/data";
 import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
+import AddAttachement from "./AddAttachement";
+import { uploadFile } from "@/utils/UploadAttachement";
 
 
 
@@ -26,13 +28,13 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
   const [triggerRerender,setTriggerRerender]=useState(0);
   
   //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
-  console.log(triggerRerender);
   
-  const formulaire=form||standardForm();
   
- form?.fields.forEach(f=>{
-  if(f.name==="depart")console.log(f.possibleValues)
- });
+  const formulaire=form||getStandardForm();
+  
+//  form?.fields.forEach(f=>{
+//   if(f.name==="depart")console.log(f.possibleValues)
+//  });
   
   const [pending,setPending]=useState<boolean>(false);
   useEffect(()=>{
@@ -47,7 +49,7 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
      
           field.possibleValues=(organisationString)
           myForm.trigger();
-          setTriggerRerender(Math.random());
+          //setTriggerRerender(Math.random());
         }
       })
     }
@@ -74,8 +76,16 @@ return (<div className="flex justify-center items-center">
 const onSubmit = async(data: z.infer<typeof schema>) => {
   setPending(true)
     console.log(data);
+    let attachmentUrl;
+    const attachmentFile=myForm.getValues("attachement");
+    if (attachmentFile) {
+      const attachmentResponse = await uploadFile(attachmentFile);
+      console.log(attachmentResponse);
+      attachmentUrl = attachmentResponse.fileUrl ?? "";
+      console.log(attachmentUrl);
+    }
     
-  const ticket=await addTicketAction({formName:formulaire?.name,...data});
+  const ticket=await addTicketAction({formName:formulaire?.name,...data,attachement:attachmentUrl});
   if(ticket){
 toast.success("ticket créé!!!!")
 myForm.reset();
@@ -110,7 +120,27 @@ setPending(false);
 
         return (
           <div key={field.name} className="space-y-2">
-          
+          {field.type==="file"&&
+          <AddAttachement labelClassName={"w-full flex text-xs italic "}  label="attachement" image={myForm.watch(field.name)} setImage={(image:string)=>myForm.setValue(field.name,image)}/>
+          //  <Input
+          //     parentClassName="bg-background-base flex flex-col items-start gap-0"
+          //     labelClassName={"w-full flex text-xs italic "}
+          //     inputClassName="text-xs italic  hover:cursor-pointer"
+          //     containerClassName="w-full "
+          //     type={field.type}
+          //     value={myForm.watch(field.name) ?? ""}
+          //       // {...myForm.register(field.name)}
+          //       placeHolder={``}
+          //       label={field.label}
+          //       {...myForm.register(field.name)}
+          //       onChange={(e:any)=>{
+          //        myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
+          //      // myForm.setValue(field.name,e.target.value||"")
+          //       myForm.register(field.name)
+          //     }}
+          //       key={field.name}
+          //     />
+          }
             {(field.type === "text"||field.type==="number"||field.type==="date") && (
               <Input
               parentClassName="bg-background-base flex flex-col items-start gap-0"
@@ -121,6 +151,7 @@ setPending(false);
                 // {...myForm.register(field.name)}
                 placeHolder={`please enter ${field.name}`}
                 label={field.label}
+                isRequired={field.required}
                 {...myForm.register(field.name)}
                 onChange={(e:any)=>{
                  myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")

@@ -248,7 +248,7 @@ export const STATUS_DATA = [
   { label: "Completed", value: "Completed" },
 ];
 
-export const standardForm=():FormType=>({
+export const getStandardForm=():FormType=>({
         _id:"standard",
         name:"standard",
         description:"reclamation standard",
@@ -257,7 +257,7 @@ export const standardForm=():FormType=>({
 
 
     export const StandartFierlds=():FormFieldType[]=>[
-      {name:"ref",label:"Ref/Tracking",type:"text",required:true},
+      {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false,default:"low"},
       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
@@ -265,6 +265,7 @@ export const standardForm=():FormType=>({
                         "organisations"
                     ],required:false},
         {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:["organisations"],required:false},
+        {name:"attachement",label:"attachement",type:"file",required:false},
     ]
 
 export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]

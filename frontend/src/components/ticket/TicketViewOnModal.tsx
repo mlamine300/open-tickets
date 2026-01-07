@@ -54,7 +54,15 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
     <p className='text-text-primary text-xs italic font-semibold'>Message :</p>
     <p className='bg-gray-hot/20 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>
     {ticket.message||"basse"}
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas ea ullam molestiae possimus cupiditate architecto quod libero! Maiores cum omnis itaque suscipit temporibus blanditiis, consequuntur quam culpa libero. Hic, non.
+    {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas ea ullam molestiae possimus cupiditate architecto quod libero! Maiores cum omnis itaque suscipit temporibus blanditiis, consequuntur quam culpa libero. Hic, non. */}
+    
+     </p>
+ </div>
+ <div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>
+    <p className='text-text-primary text-xs italic font-semibold'>Attachement :</p>
+    <p className='bg-gray-hot/20 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>
+    {ticket.attachement||"basse"}
+    {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas ea ullam molestiae possimus cupiditate architecto quod libero! Maiores cum omnis itaque suscipit temporibus blanditiis, consequuntur quam culpa libero. Hic, non. */}
     
      </p>
  </div>

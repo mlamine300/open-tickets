@@ -1,0 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { API_PATH } from "@/data/apiPaths";
+import axiosInstance from "./axiosInstance";
+
+/**
+ * Uploads an image file to the server
+ * @param {File} file - The image file from an <input type="file">
+ * @returns {Promise<Object>} The server response
+ */
+export const uploadFile = async (file: File): Promise<any> => {
+  try {
+    const formData = new FormData();
+    formData.append("attachement", file);
+
+    const response = await axiosInstance.post(API_PATH.ATTACHEMENT.UPLOAD, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    throw error;
+  }
+};

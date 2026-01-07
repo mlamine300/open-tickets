@@ -21,6 +21,7 @@ const TicketSchema=new mongoose.Schema({
     assignedTo:{type:AssignedToSchema, required:false},
     assignementHistory:{type:[AssignedToSchema],required:false},
     lastComment:{type:CommentShema,required:false},
+    attachement:{type:String,required:false}
 
 },{ timestamps: true });
 

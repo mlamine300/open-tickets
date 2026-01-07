@@ -15,6 +15,7 @@ type inputProps = {
   containerClassName?: string;
   inputClassName?: string;
   disabled?: boolean;
+  isRequired?:boolean;
 };
 const Input = ({
   label,
@@ -29,12 +30,13 @@ const Input = ({
   containerClassName,
   inputClassName,
   disabled = false,
+  isRequired=false
 }: inputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <div className={twMerge("flex flex-col gap-4", parentClassName)}>
       <label className={labelClassName} htmlFor={key}>
-        {label}{" "}
+        {label}{`${isRequired?" * ":""}`}
       </label>
 
       <div

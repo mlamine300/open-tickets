@@ -42,11 +42,12 @@ export const addTicket=async(req:Request,res:Response)=>{
         
         //
         const priority=req.body?.priority?.toLowerCase()||"low";
+        const attachement=req.body?.attachement||"";
         const commentsId:any[]=[];
         
        console.log(req.body);
        
-        const ticket=await ticketModel.create({creator:userId,
+        const ticket=await ticketModel.create({creator:userId,attachement,
            emitterOrganizationId, recipientOrganizationId,associatedOrganizations,formName,message,specialFields,priority,commentsId,ref
         })
         return res.status(200).json({message:"success",data:ticket})
@@ -263,49 +264,7 @@ if(recipientOrganizationId){
         }
       },
 
-  //    {
-  //   $addFields: {
-  //     assignedTo: {
-  //       $cond: [
-  //         { $ifNull: ["$assignedTo", false] },
 
-  //         {
-  //           user: { $arrayElemAt: ["$assignedToUser", 0] },
-  //           date: "$assignedTo.date"
-  //         },
-
-  //         null
-  //       ]
-  //     }
-  //   }
-  // },
-
-  // Replace assignementHistory[i].userId with full user doc
-  // {
-  //   $addFields: {
-  //     assignementHistory: {
-  //       $map: {
-  //         input: "$assignementHistory",
-  //         as: "a",
-  //         in: {
-  //           user: {
-  //             $arrayElemAt: [
-  //               {
-  //                 $filter: {
-  //                   input: "$historyUsers",
-  //                   as: "hu",
-  //                   cond: { $eq: ["$$hu._id", "$$a.userId"] }
-  //                 }
-  //               },
-  //               0
-  //             ]
-  //           },
-  //           date: "$$a.date"
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
 
       // Sorting
       { $sort: { [sortField]: sortOrder } },
@@ -1097,10 +1056,4 @@ export const getDashboardStats = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * ***********************************************************************************************************************************
- ************************************************************************************************************************************
- ***********************************************************************************************************************************
- ************************************************************************************************************************************
- ************************************************************************************************************************************ 
- */
+
