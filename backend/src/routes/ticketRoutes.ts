@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  addTicket, closeTicket, getMytickets, getTicketByid, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.js";
+import {  addOrganisation, addTicket, closeTicket, getMytickets, getTicketByid, getTickets, relanceTicket, takeTicketInCharge } from "../controllers/ticketController.js";
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);
@@ -10,6 +10,7 @@ ticketRouter.post("/close/:id",closeTicket)
 ticketRouter.post("/relance/:id",relanceTicket)
 ticketRouter.post("/me/:status",getMytickets);
 ticketRouter.post("/",addTicket);
+ticketRouter.post("/add_organisation/:id",addOrganisation)
 
 
 export default ticketRouter;

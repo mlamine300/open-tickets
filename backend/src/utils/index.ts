@@ -78,7 +78,7 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
   }
 }
 
- export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]
+ export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close","subscribe"]
 
     export const COMMENT_ACTIONS_DICTIONNAIRE=
       {

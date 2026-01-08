@@ -102,8 +102,9 @@ if(recipientOrganizationId){
   baseFilter.recipientOrganizationId=new mongoose.Types.ObjectId(recipientOrganizationId);
 }
     const searchFilter=getSearchFilter(search)
-
-
+console.log("\n\n\n\n-----------------------------------")
+    console.log(JSON.stringify(baseFilter))
+console.log("\n\n\n\n-----------------------------------")
     const pipeline: any[] = [
       { $match: { ...baseFilter,...searchFilter
         //  ...searchQuery
@@ -631,6 +632,38 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     return res.status(500).json({message:"server error",error})
   }
 }
+export const addOrganisation=async(req:Request,res:Response)=>{
+   try {
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+      const organisation=req.body.organisationId;
+     if(!organisation)return res.status(400).json({message:"organisation is required"})
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      if(!checkIfUSerCanPerformAction(ticket,user))return res.status(409).json({message:"you don't have permission"})
+      ticket.associatedOrganizations.push(new mongoose.Types.ObjectId(organisation));
+    const message=req.body.message;
+    const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"subscribe",
+      message,
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.comments.push(comment._id)
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    return res.status(500).json({message:"server error",error})
+  }
+}
 export const relanceTicket=async (req:Request,res:Response)=>{
   try {
   
@@ -686,22 +719,23 @@ switch(type){
 
 const getResponsablitiesFilterFromRole:(user:TokenPayload)=>any=(user)=>{
    const role=user.role;
-   const organisation=new mongoose.Types.ObjectId(user.organisation);
+   const organisation=user.organisation ;
     const organisationsList=user.organisationsList.map(o=>new mongoose.Types.ObjectId(o))||[];
     if(role==="admin"){
 return {}
     }
     else if(role==="supervisor"){
      return {$or: [
-    { emitterOrganizationId:{ $in: [organisation,...organisationsList] } },
-    { recipientOrganizationId: { $in: [organisation,...organisationsList] }  },
+    { emitterOrganizationId:{ $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] } },
+    { recipientOrganizationId: { $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] }  },
     { associatedOrganizations: { $in: [organisation,...organisationsList] } },
   ]
 }   
     }
     else return{$or: [
-    { emitterOrganizationId: organisation },
-    { recipientOrganizationId: organisation }
+    { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
+    { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
+     { associatedOrganizations: { $in: [organisation] } },
   ]
 }
 
@@ -716,6 +750,7 @@ const getSearchFilter=(search:string)=>{
   ]}
 }
 
+
 /*
   *******************************************************************************************************************************
   *******************************************************************************************************************************
@@ -727,6 +762,7 @@ export const getTicketsByStatus = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
   const reponsabilities=getResponsablitiesFilterFromRole(user)
+  console.log(reponsabilities)
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
       
@@ -1081,10 +1117,11 @@ return isToUserOrganisation||isUnderUserSupervision;
 }
 
 const checkIfUSerCanPerformAction=(ticket:any,user:TokenPayload)=>{
+  console.log({ticket,user})
  if(!ticket.status||ticket.status==="pending")return false;
 
 if(ticket.creator.toString()===user.userId)return false;
-const isAssignedTome=user.userId.toString()===ticket.assignedTo.toString();
+const isAssignedTome=user.userId.toString()===ticket.assignedTo.userId.toString();
 const isAdmin=user.role==="admin";
 
 

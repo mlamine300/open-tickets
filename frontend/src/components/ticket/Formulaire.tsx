@@ -49,13 +49,13 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
      
           field.possibleValues=(organisationString)
           myForm.trigger();
-          //setTriggerRerender(Math.random());
+          
         }
           if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="wilaya"){
      
           field.possibleValues=(getWilayas())
           myForm.trigger();
-          //setTriggerRerender(Math.random());
+          
         }
       })
     }

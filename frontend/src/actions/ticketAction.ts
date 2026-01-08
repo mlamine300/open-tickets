@@ -166,6 +166,21 @@ toast.success("Ticket est relancé")
 }
 }
 
+export const subscribeOrganisationAction=async(ticketId:string,message:string,organisationId:string)=>{
+    try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.ADD_ORGANISATION(ticketId),{message,organisationId});
+     if(res.status!==200){
+    console.log("Error reopen ticket",res.data.message);
+    toast.error("impossible re relancer le ticket")
+return null; 
+}
+toast.success("Ticket est relancé")
+} catch (error) {
+    console.log(error);
+    
+}
+}
+
 
 
 

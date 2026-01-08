@@ -21,7 +21,7 @@ const TicketsPage = () => {
   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
   const [searchParams,setSearchParams]=useSearchParams();
   console.log(setSearchParams)
-  const [organisations,setOrganisations]=useState<Organisation[]>();
+  const [organisations,setOrganisations]=useState<Organisation[]>([]);
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
    const [pending,setPending]=useState(false);
    const [triggerRerender,setTriggerRerender]=useState(0);
@@ -126,7 +126,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
         </Modal>
       </div>
     
-   {selectedTicket&& <AddCommentSheetContent refresh={()=>{
+   {selectedTicket&& <AddCommentSheetContent organisations={organisations} refresh={()=>{
     setTriggerRerender(Math.random())
    }} ticket={selectedTicket} />}
     </Sheet>

@@ -1,18 +1,20 @@
 import React, { useRef, useState } from 'react';
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
-import type { ticket } from '@/types';
+import type { Organisation, ticket } from '@/types';
 import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from '../ui/select';
 import {  COMMENT_ACTIONS_DICTIONNAIRE } from '@/data/data';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import {  closeTicketAction, relanceeTicketAction, TakeTicketInchargeAction } from '@/actions/ticketAction';
+import {  closeTicketAction, relanceeTicketAction, subscribeOrganisationAction, TakeTicketInchargeAction } from '@/actions/ticketAction';
 import {AddCommentAction} from "@/actions/commentAction"
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
 import { Link } from 'react-router';
+import SelectWithSearch from '../ui/SelectWithSearch';
 
-const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void}) => {
+const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,refresh:()=>void,organisations:Organisation[]}) => {
     const [action,setAction]=useState<string>("comment");
+    const [organisation, setorganisation] = useState<string>("");
     const[pending,setPending]=useState(false);
     const [message,setMessage]=useState<string>("");
     const ref=useRef<HTMLButtonElement|null>(null);
@@ -34,6 +36,10 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
         }
          case "close":{
           handleClosing();
+          break;
+        }
+        case "subscribe":{
+          handleSubscribe();
           break;
         }
         default:{
@@ -112,6 +118,28 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
       refresh();
       }
         }
+        const handleSubscribe=async()=>{
+           setPending(true);
+        if(ticket.status!=="open"){
+          toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas ajouter une organisation`)
+          return
+        }
+        const organisationFilter=organisations.filter(o=>o.name===organisation);
+        if(ticket._id&&organisationFilter&&Array.isArray(organisationFilter)&&organisationFilter.length>0&&organisations.filter(o=>o.name===organisation).at(0)?._id){
+          const organisationId=organisations.filter(o=>o.name===organisation).at(0)?._id;
+          if(organisationId){
+      await  subscribeOrganisationAction(ticket._id,message,organisationId);
+          }
+          
+         setAction("comment");
+      setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      setPending(false)
+         refresh();
+        }
+        }
   return (
       <SheetContent className='h-full bg-background-base'>
     <SheetHeader>
@@ -164,6 +192,9 @@ const AddCommentSheetContent = ({ticket,refresh}:{ticket:ticket,refresh:()=>void
                 
               </Select>
                 </div>
+                {action==="subscribe"&&
+                <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={organisations.map(o=>o.name)} />
+                 }
                 <Input parentClassName='w-full' inputClassName='h-42' type='area' placeHolder='Ajouter votre commentaire ici...' label='Commentaire' onChange={(e)=>setMessage(e.target.value)} value={message} />
             
                   <Button disabled={pending} className='disabled:bg-gray-cold/50' type='button' text='Ajouter' variant='primary' onClick={(e)=>{

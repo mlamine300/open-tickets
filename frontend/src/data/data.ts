@@ -274,10 +274,11 @@ export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]
       {
       comment:"Commentaire",
 
-  in_charge: "pris en charge",
-  called: "le concerné a été appelé",
-  relancer: "relancer",
-  close:"traité"
+  in_charge: "Pris en charge",
+  called: "Le concerné a été appelé",
+  relancer: "Relancer",
+  close:"Traité",
+  subscribe:"Ajouter une organisation"
 }
 
 export const getWilayas=()=>{

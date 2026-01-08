@@ -212,7 +212,7 @@ export const updateUserProfile = async (
 
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    console.log("refreshing")
+   // console.log("refreshing")
     if (!req.cookies)
       return res.status(462).json({ messsage: "there is no cookies" });
     const token = req.cookies.refreshToken;
@@ -230,11 +230,11 @@ export const refreshToken = async (req: Request, res: Response) => {
      
     const hashedtoken = crypto.createHash("sha256").update(token).digest("hex");
 
-    user.refreshTokens.forEach((r) =>
-      console.log(r.token, " | ", hashedtoken, " = ", r.token === hashedtoken)
-    );
+    // user.refreshTokens.forEach((r) =>
+    //   console.log(r.token, " | ", hashedtoken, " = ", r.token === hashedtoken)
+    // );
     const idx = user.refreshTokens.findIndex((rt) => rt.token === hashedtoken);
-    console.log("index of token ========",idx);
+   // console.log("index of token ========",idx);
     
     if (idx === -1) {
       user.refreshTokens.splice(0, user.refreshTokens.length);

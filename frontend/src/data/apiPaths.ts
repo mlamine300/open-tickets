@@ -35,6 +35,7 @@ export const API_PATH = {
       TAKE_IN_CHARGE:(id:string)=>`/api/tickets/take_in_charge/${id}`,
       CLOSE_TICKET:(id:string)=>`/api/tickets/close/${id}`,
       REOPEN_TICKET:(id:string)=>`/api/tickets/relance/${id}`,
+      ADD_ORGANISATION:(id:string)=>`/api/tickets/add_organisation/${id}`
      
      
   },
