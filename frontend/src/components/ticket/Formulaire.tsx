@@ -15,7 +15,7 @@ import { addTicketAction } from "@/actions/ticketAction";
 import { useForm } from "react-hook-form";
 import SelectWithSearch from "../ui/SelectWithSearch";
 import SelectMultiple from "../ui/SelectMultiple";
-import { getStandardForm, StandartFierlds } from "@/data/data";
+import { getStandardForm, getWilayas, StandartFierlds } from "@/data/data";
 import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
 import AddAttachement from "./AddAttachement";
@@ -48,6 +48,12 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
         if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
      
           field.possibleValues=(organisationString)
+          myForm.trigger();
+          //setTriggerRerender(Math.random());
+        }
+          if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="wilaya"){
+     
+          field.possibleValues=(getWilayas())
           myForm.trigger();
           //setTriggerRerender(Math.random());
         }
@@ -129,14 +135,13 @@ setPending(false);
           //     containerClassName="w-full "
           //     type={field.type}
           //     value={myForm.watch(field.name) ?? ""}
-          //       // {...myForm.register(field.name)}
-          //       placeHolder={``}
-          //       label={field.label}
-          //       {...myForm.register(field.name)}
-          //       onChange={(e:any)=>{
-          //        myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
-          //      // myForm.setValue(field.name,e.target.value||"")
-          //       myForm.register(field.name)
+          //     placeHolder={``}
+          //     label={field.label}
+          //     {...myForm.register(field.name)}
+          //     onChange={(e:any)=>{
+          //     myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
+          //     myForm.setValue(field.name,e.target.value||"")
+          //     myForm.register(field.name)
           //     }}
           //       key={field.name}
           //     />

@@ -15,8 +15,8 @@ import { AxiosError } from "axios";
 import { tokenService } from "@/utils/tokenService";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("user2@example.com");
-  const [password, setPassword] = useState<string>("lamine123");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<any>({});
   const [pending, setpending] = useState(false);
   const { updateUser, user } = useUserContext();

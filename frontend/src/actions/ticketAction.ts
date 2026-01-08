@@ -141,6 +141,7 @@ try {
     const res=await axiosInstance.post(API_PATH.TICKETS.CLOSE_TICKET(ticketId),{message});
      if(res.status!==200){
     console.log("Error closing ticket",res.data.message);
+    toast.error("impossible de clotorer le ticket")
 return null; 
 }
 toast.success("Ticket a été clotoré")
@@ -155,6 +156,7 @@ try {
     const res=await axiosInstance.post(API_PATH.TICKETS.REOPEN_TICKET(ticketId),{message});
      if(res.status!==200){
     console.log("Error reopen ticket",res.data.message);
+    toast.error("impossible re relancer le ticket")
 return null; 
 }
 toast.success("Ticket est relancé")

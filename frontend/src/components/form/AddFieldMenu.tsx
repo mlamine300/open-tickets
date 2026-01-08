@@ -12,8 +12,8 @@ const AddFieldMenu = ({addFunction}:{addFunction:(data:FormFieldType)=>void}) =>
     //const [field,setField]=useState<FormFieldType|null>()
      type placeholder={placeholder:string};
     const addFieldMenuFormFields:(FormFieldType&placeholder)[]=[
-        {name:"name",type:"text",label:"Nom de champs",placeholder:"exemple: nom de client",required:true},
-          {name:"label",type:"text",label:"label in database",placeholder:"exemple : name",required:true},
+        {name:"name",type:"text",label:"Nom de champs (database)",placeholder:"exemple: client_name",required:true},
+          {name:"label",type:"text",label:"Nom de champs dans le formulaire",placeholder:"exemple : nom de client",required:true},
         {name:"type",type:"select",label:"type de champs",placeholder:"exemple : text ou number",required:true,possibleValues:["text","number","select","date","select-multiple","area","select-filter"]},
         {name:"possibleValues",type:"list",label:"valeur possibles",placeholder:"16-Alger",required:false},
         {name:"default",type:"text",label:"valeur par default",placeholder:"dans le cas d'un champs select, selectionner la valeur par default",required:false},

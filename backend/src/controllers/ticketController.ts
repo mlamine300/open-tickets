@@ -574,8 +574,11 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     if(!id)return res.status(400).json({message:"id is required"})
 
     const ticket=await ticketModel.findById(id).exec();
-    
+
+
     if(!ticket)return res.status(404).json({message:"ticket not found"})
+          const hasPermission=checkIfUserCanTakeInCharge(ticket,user);
+        if(!hasPermission)return res.status(409).json({message:"you don't have permission"})
       ticket.status="open";
       ticket.assignedTo={userId:new mongoose.Types.ObjectId(userId),date:new Date()}
     const history = ticket.assignementHistory
@@ -609,6 +612,7 @@ if (!token) return res.status(409).json({ message: "not autorized" });
 
     const ticket=await ticketModel.findById(id).exec();
     if(!ticket)return res.status(404).json({message:"ticket not found"})
+      if(!checkIfUSerCanPerformAction(ticket,user))return res.status(409).json({message:"you don't have permission"})
       ticket.status="complete";
     const message=req.body.message;
     const comment=await commentsModel.create({
@@ -1055,5 +1059,37 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "server error", error });
   }
 };
+
+ const checkIfUserCanTakeInCharge=(ticket:any,user:TokenPayload)=>{
+
+  if(!ticket.status||ticket.status!=="pending")return false;
+
+if(ticket.creator.toString()===user.userId)return false;
+const isToUserOrganisation=user.organisation.toString()===ticket.recipientOrganizationId.toString();
+let isUnderUserSupervision=false;
+if(user.role==="supervisor"){
+  user.organisationsList.forEach(o=>{
+    if(ticket.recipientOrganizationId.toString()===o.toString()){
+      isUnderUserSupervision=true;
+      return;
+    }
+  })
+};
+if(user.role==="admin")isUnderUserSupervision=true;
+console.log({isToUserOrganisation,isUnderUserSupervision,creator:{user:user.userId,ticketCreator:ticket.creator}})
+return isToUserOrganisation||isUnderUserSupervision;
+}
+
+const checkIfUSerCanPerformAction=(ticket:any,user:TokenPayload)=>{
+ if(!ticket.status||ticket.status==="pending")return false;
+
+if(ticket.creator.toString()===user.userId)return false;
+const isAssignedTome=user.userId.toString()===ticket.assignedTo.toString();
+const isAdmin=user.role==="admin";
+
+
+return isAssignedTome||isAdmin;
+} 
+
 
 
