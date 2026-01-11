@@ -123,16 +123,19 @@ export const getSpecificTicketAction:(t:string,params:any)=>Promise<{data:ticket
 }
 
 export const TakeTicketInchargeAction=async(ticketId:string,message:string)=>{
+    
 try {
     const res=await axiosInstance.post(API_PATH.TICKETS.TAKE_IN_CHARGE(ticketId),{message});
      if(res.status!==200){
     console.log("Error Pris en charge",res.data.message);
+  
 return null; 
 }
 toast.success("Ticket a été Pris en charge")
 } catch (error) {
     console.log(error);
-    
+    // console.log("Error Pris en charge",res.data.message);
+    toast.error(`Erreur Pris en charge `)
 }
 }
 
@@ -146,8 +149,9 @@ return null;
 }
 toast.success("Ticket a été clotoré")
 } catch (error) {
+
     console.log(error);
-    
+    toast.error("erreur en clotore de ticket")
 }
 }
 
@@ -162,6 +166,7 @@ return null;
 toast.success("Ticket est relancé")
 } catch (error) {
     console.log(error);
+    toast.error("erreur relance de ticket")
     
 }
 }
@@ -174,9 +179,10 @@ export const subscribeOrganisationAction=async(ticketId:string,message:string,or
     toast.error("impossible re relancer le ticket")
 return null; 
 }
-toast.success("Ticket est relancé")
+toast.success("Organisation ajoutée")
 } catch (error) {
     console.log(error);
+    toast.error("erreur ajout d'organisation")
     
 }
 }

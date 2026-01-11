@@ -26,6 +26,7 @@ export const addTicket=async(req:Request,res:Response)=>{
         const recipientOrganizationId=await getOrganisationId(organisationDest as string);
         const associatedOrganizations=(organisationTag&& Array.isArray(organisationTag)&& organisationTag.length)? (await getOrganisationsId(organisationTag) ):[]
         //getting form custom fields and check if request match the form
+        const associatedOrganizationsString=associatedOrganizations?.map(assOrg=>assOrg._id.toString()+"")
         const fields=await getFieldsFromFormName(formName);
         const specialFields:any={};
         if(fields!==null){
@@ -48,7 +49,7 @@ export const addTicket=async(req:Request,res:Response)=>{
        console.log(req.body);
        
         const ticket=await ticketModel.create({creator:userId,attachement,
-           emitterOrganizationId, recipientOrganizationId,associatedOrganizations,formName,message,specialFields,priority,commentsId,ref
+           emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,formName,message,specialFields,priority,commentsId,ref
         })
         return res.status(200).json({message:"success",data:ticket})
 
@@ -735,7 +736,7 @@ return {}
     else return{$or: [
     { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
     { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
-     { associatedOrganizations: { $in: [organisation] } },
+     { associatedOrganizations: { $in: [new mongoose.Types.ObjectId(organisation)] } },
   ]
 }
 

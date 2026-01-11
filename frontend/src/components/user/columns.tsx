@@ -100,7 +100,7 @@ export const columns:()=> ColumnDef<User>[] =()=> [
      cell: ({ row }) => {
         
         // const name=row.getValue("name") as string;
-        const id=row.original.id;
+        const id=row.original._id;
         
        
       

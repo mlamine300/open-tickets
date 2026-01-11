@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
 import { Link } from 'react-router';
 import SelectWithSearch from '../ui/SelectWithSearch';
+import { checkPermission } from '@/utils/functions';
 
 const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,refresh:()=>void,organisations:Organisation[]}) => {
     const [action,setAction]=useState<string>("comment");
@@ -22,7 +23,13 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
     
     const handleAction=(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{
       e.preventDefault();
-     setPending(true);
+     if(action!=="comment"&&(!user||!checkPermission(user,ticket))){
+
+      toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
+    //return; 
+    }
+      setPending(true);
+     
       switch(action){
         case "in_charge":{
           handleTakeInCharge();
