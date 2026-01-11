@@ -7,14 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { PRIORITY_DATA } from '@/data/data';
 
 import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import SelectWithSearch from '../ui/SelectWithSearch';
 
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
  const [searchParams,setSearchParams]=useSearchParams();
     const [search,setSearch]=useState(searchParams.get("search")||"");
-    const [emitterOrganization,setEmitterOrganization]=useState(searchParams.get("emitter_organization")||"");
-    const [recipientOrganization,setRecipientOrganization]=useState(searchParams.get("recipient_organization")||"");
-     const [priority,setPriority]=useState(searchParams.get("priority")||"");
 
+    const emmiterOrganisationName=searchParams.get("emitter_organization")?organisations?.filter(o=>o._id===searchParams.get("emitter_organization")).at(0)?.name||"----":""
+    const [emitterOrganization,setEmitterOrganization]=useState(emmiterOrganisationName);
+     const receiptientOrganisationName=searchParams.get("recipient_organization")?organisations?.filter(o=>o._id===searchParams.get("recipient_organization")).at(0)?.name||"----":""
+ 
+    const [recipientOrganization,setRecipientOrganization]=useState(receiptientOrganisationName);
+     const [priority,setPriority]=useState(searchParams.get("priority")||"");
+  const organisationsName=organisations?.map(o=>o.name);
     // Debounce all filter param updates
     useEffect(() => {
       const handler = setTimeout(() => {
@@ -27,13 +32,17 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         }
         // Emitter Organization
         if (emitterOrganization) {
-          params.set("emitter_organization", emitterOrganization);
+          const emitterOrganizationId=organisations?.filter(o=>o.name===emitterOrganization).at(0)?._id;
+          if(emitterOrganizationId)
+          params.set("emitter_organization", emitterOrganizationId);
         } else {
           params.delete("emitter_organization");
         }
         // Recipient Organization
         if (recipientOrganization) {
-          params.set("recipient_organization", recipientOrganization);
+          const recipientOrganizationId=organisations?.filter(o=>o.name===recipientOrganization).at(0)?._id;
+          if(recipientOrganizationId)
+          params.set("recipient_organization", recipientOrganizationId);
         } else {
           params.delete("recipient_organization");
         }
@@ -77,7 +86,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
    
                 <div className={" flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Emitrice" </label>
-                <Select 
+                {/* <Select 
                 value={emitterOrganization}
                 onValueChange={(value) => setEmitterOrganization( value)}
               >
@@ -100,15 +109,17 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                   
                 </SelectContent>
                 
-              </Select>
+              </Select> */}
+              
+              <SelectWithSearch label='Organisation Emitrice' name='organisation_emitrice' onValueChange={(o)=>setEmitterOrganization(o)} value={emitterOrganization} possibleValues={organisationsName} />
               </div>}
                  {organisations&&
                  
                   
 <div className={" flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Destinatrice" </label>
-             
-                 <Select 
+                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Organisation Destinatrice </label>
+             <SelectWithSearch label='Organisation Destinatrice' name='Organisation Destinatrice' onValueChange={(o)=>setRecipientOrganization(o)} value={recipientOrganization} possibleValues={organisationsName} />
+                 {/* <Select 
                 value={recipientOrganization}
                 onValueChange={(value) => setRecipientOrganization( value)}
               >
@@ -134,7 +145,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                   
                 </SelectContent>
                 
-              </Select>
+              </Select> */}
               </div>}
              
 

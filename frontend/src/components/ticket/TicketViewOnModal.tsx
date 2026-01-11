@@ -3,6 +3,8 @@ import type { Comment, ticket } from '@/types';
 import { AccordionItem,Accordion, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import CommentRow from '@/components/ticket/CommentRow';
 import { getTicketCommentsAction } from '@/actions/commentAction';
+import { Link } from 'react-router';
+import { Eye } from 'lucide-react';
 
 const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   const [showAllComment,setShowAllComment]=useState(false);
@@ -52,20 +54,24 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
 
  <div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>
     <p className='text-text-primary text-xs italic font-semibold'>Message :</p>
-    <p className='bg-gray-hot/20 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>
+    <p className='bg-gray-hot/10 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>
     {ticket.message||"basse"}
     {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas ea ullam molestiae possimus cupiditate architecto quod libero! Maiores cum omnis itaque suscipit temporibus blanditiis, consequuntur quam culpa libero. Hic, non. */}
     
      </p>
  </div>
- <div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>
+ {ticket.attachement&&<div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>
     <p className='text-text-primary text-xs italic font-semibold'>Attachement :</p>
-    <p className='bg-gray-hot/20 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>
-    {ticket.attachement||"basse"}
+    <Link target='_blank' to={ticket.attachement} className=' min-h-20 w-full text-start text-md px-2 py-1 rounded italic '>
+    <div className='relative max-h-40 w-fit'>
+
+    <img src={ticket.attachement} className='max-h-40 object-cover peer'  />
+    <Eye className='absolute right-[50%] translate-x-[50%] -translate-y-[50%] top-[50%] text-primary w-8/12 h-8/12 hidden peer-hover:flex'/>
+    </div>
     {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas ea ullam molestiae possimus cupiditate architecto quod libero! Maiores cum omnis itaque suscipit temporibus blanditiis, consequuntur quam culpa libero. Hic, non. */}
     
-     </p>
- </div>
+     </Link>
+ </div>}
  {ticket.specialFields&& <Accordion
       type="single"
       collapsible

@@ -237,8 +237,13 @@ export const refreshToken = async (req: Request, res: Response) => {
    // console.log("index of token ========",idx);
     
     if (idx === -1) {
+      
       user.refreshTokens.splice(0, user.refreshTokens.length);
       await user.save();
+    
+
+  // Remove refresh cookie from client
+  clearCookies(res);
       return res.status(403).json({ msg: "Reuse detected" });
     }
     user.refreshTokens.splice(idx, 1);

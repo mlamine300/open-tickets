@@ -2,6 +2,7 @@ import  { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import Input from './Input';
 import { HiXMark } from 'react-icons/hi2';
+import { X } from 'lucide-react';
 
 const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value:string;onValueChange:(value:string)=>void;label:string;name:string;possibleValues?:string[]}) => {
   const [search,setSearch]=useState("");
@@ -18,10 +19,16 @@ const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value
                 }}
               >
                 
-                <SelectTrigger className={"w-full"}>
+                <div className='flex w-full max-w-full gap-0'>
+
+                <SelectTrigger className={"w-11/12"}>
                   <SelectValue  placeholder={`Select a ${label}`} />
                   
                 </SelectTrigger>
+               {value&& <button onClick={()=>onValueChange("")} className='w-1/12'>
+                  <X className='text-red-500 hover:scale-150'/>
+                </button>}
+                </div>
                 
                 
                 <SelectContent  id={`select-${name}`} className="bg-background-base ">

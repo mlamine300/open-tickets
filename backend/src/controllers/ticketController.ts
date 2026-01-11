@@ -500,6 +500,7 @@ if(recipientOrganizationId){
         $project: {
           _id: 1,
           ref: 1,
+          attachement:1,
           formName: 1,
           message: 1,
           status: 1,
