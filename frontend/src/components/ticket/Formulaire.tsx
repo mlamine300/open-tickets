@@ -25,8 +25,8 @@ import { uploadFile } from "@/utils/UploadAttachement";
 
 
 export default function DynamicForm({ form,disabled }:{form:FormType|null,disabled?:boolean}) {
-  const [triggerRerender,setTriggerRerender]=useState(0);
-  
+  // const [triggerRerender,setTriggerRerender]=useState(0);
+  // console.log(triggerRerender);
   //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
   
   

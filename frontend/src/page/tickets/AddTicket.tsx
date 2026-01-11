@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormFieldType, FormType, Organisation } from '@/types';
+import type { FormFieldType, FormType } from '@/types';
 import { getStandardForm } from '@/data/data';
 import DynamicForm from '@/components/ticket/Formulaire';
 //import { getAllorganisationsAction } from '@/actions/organisationAction';
