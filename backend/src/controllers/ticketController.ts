@@ -728,7 +728,7 @@ return {}
      return {$or: [
     { emitterOrganizationId:{ $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] } },
     { recipientOrganizationId: { $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] }  },
-    { associatedOrganizations: { $in: [organisation,...organisationsList] } },
+    { associatedOrganizations: { $in: [organisation,...user.organisationsList] } },
   ]
 }   
     }
