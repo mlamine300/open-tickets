@@ -26,7 +26,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
      if(action!=="comment"&&(!user||!checkPermission(user,ticket))){
 
       toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
-    //return; 
+    return; 
     }
       setPending(true);
      
