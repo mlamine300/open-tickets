@@ -20,7 +20,7 @@ const TicketsPage = () => {
   const [showModal,setShowModal]=useState<string>("")
   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
   const [searchParams,setSearchParams]=useSearchParams();
-  console.log(setSearchParams)
+  
   const [organisations,setOrganisations]=useState<Organisation[]>([]);
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
    const [pending,setPending]=useState(false);
@@ -43,7 +43,7 @@ const TicketsPage = () => {
             const res=await getSpecificTicketAction(pathname,{page,search,emitterOrganizationId,recipientOrganizationId,priority});
             setTicket(res.data);
             setTotalTicketsSize(res.total);
-            console.log(res);
+        
             setPending(false)
         }
         const retrieveOrganisations=async()=>{

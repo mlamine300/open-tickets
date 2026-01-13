@@ -88,6 +88,7 @@ export const getTickets = async (req: Request, res: Response) => {
 
     // Filters
     const type = req.params.type || "pending";
+    console.log("-------------------------------------->",getFilterFromType(type, userId))
     const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user),
       ...getFilterFromType(type, userId),
@@ -712,8 +713,8 @@ switch(type){
     case "open_me":{
         return {status:"open","assignedTo.userId":new mongoose.Types.ObjectId(userId)}
     }
-    case "close":{
-        return {status:"close"}
+    case "complete":{
+        return {status:"complete"}
     }
     default: return {};
 }
