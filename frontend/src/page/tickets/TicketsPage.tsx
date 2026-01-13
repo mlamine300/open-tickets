@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 const TicketsPage = () => {
   const [showModal,setShowModal]=useState<string>("")
   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
-  const [searchParams,setSearchParams]=useSearchParams();
+  const [searchParams]=useSearchParams();
   
   const [organisations,setOrganisations]=useState<Organisation[]>([]);
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
