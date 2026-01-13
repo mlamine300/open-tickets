@@ -21,8 +21,8 @@ const SelectWithSearch = ({value,onValueChange,label,name,possibleValues}:{value
                 
                 <div className='flex w-full max-w-full gap-0'>
 
-                <SelectTrigger className={"w-11/12"}>
-                  <SelectValue  placeholder={`Select a ${label}`} />
+                <SelectTrigger className={"w-11/12 text-xs"}>
+                  <SelectValue  placeholder={`Sélectionner un(e) ${label}`} />
                   
                 </SelectTrigger>
                {value&& <button onClick={()=>onValueChange("")} className='w-1/12'>

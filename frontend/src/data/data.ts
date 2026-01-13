@@ -238,14 +238,14 @@ export const SIDE_MENU_USER_DATA = [
 ];
 
 export const PRIORITY_DATA = [
-  { label: "Low", value: "low" },
-  { label: "Medium", value: "medium" },
-  { label: "High", value: "high" },
+  { label: "Normal", value: "low" },
+  { label: "Important", value: "medium" },
+  { label: "Trés Important", value: "high" },
 ];
 export const STATUS_DATA = [
-  { label: "Pending", value: "Pending" },
-  { label: "In Progress", value: "In Progress" },
-  { label: "Completed", value: "Completed" },
+  { value: "pending", label: "En attente" },
+  { value: "open", label: "ouvert" },
+  { value: "complete", label: "cloturé" },
 ];
 
 export const getStandardForm=():FormType=>({
@@ -272,12 +272,12 @@ export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]
 
     export const COMMENT_ACTIONS_DICTIONNAIRE=
       {
-      comment:"Commentaire",
+      comment:"Commenter",
 
   in_charge: "Pris en charge",
   called: "Le concerné a été appelé",
   relancer: "Relancer",
-  close:"Traité",
+  close:"Traiter",
   subscribe:"Ajouter une organisation"
 }
 

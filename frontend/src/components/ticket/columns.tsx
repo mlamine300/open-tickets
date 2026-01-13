@@ -8,6 +8,7 @@ import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
+import { PRIORITY_DATA, STATUS_DATA } from "@/data/data";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -53,7 +54,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
   },
   {
     accessorKey: "creator",
-    header: "Created by",
+    header: "Creé par",
      cell: ({ row }) => {
         
         const obj=row.getValue("creator");
@@ -67,28 +68,29 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
   },
   {
     accessorKey: "emitterOrganizationId",
-    header: "from / to",
+    header: "Départ / Déstination",
      cell: ({ row }) => {
         const original=row.original;
         
       const emitterOrganization = (original.emitterOrganization as any).name as string
       const recipientOrganization = original.recipientOrganization?(original.recipientOrganization as any).name as string :"not yet"
       return <div className="flex flex-col justify-around items-center gap-1 w-fit">
-        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">from:</span> {emitterOrganization} </p>
+        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">De:</span> {emitterOrganization} </p>
         <ArrowUpDown/>
-         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">to:</span> {recipientOrganization} </p>
+         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">À:</span> {recipientOrganization} </p>
       </div>;
 }
   },
 
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Statut",
     cell:({row})=>{
       const status=row.getValue("status") as string;
-      const color=status==="pending"?"#f00":status==="open"?"#0f0":status==="close"?"#F4F754":"#eee"
+      const color=status==="pending"?"#f00":status==="open"?"#0f0":status==="close"?"#F4F754":"#eee";
+      const statusFr=STATUS_DATA.filter(s=>s.value===status).at(0)?.label;
       return <div>
-        <p className="lg:flex justify-center hidden px-2 py-px rounded-full text-white text-xs" style={{backgroundColor:color}}>{status}
+        <p className="lg:flex justify-center hidden px-2 py-px rounded-full text-white text-xs" style={{backgroundColor:color}}>{statusFr}
       </p>
       <p style={{backgroundColor:color}} className="rounded-full p-px flex w-2 h-2 lg:hidden"></p>
       </div>
@@ -97,12 +99,13 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
   },
   {
     accessorKey: "priority",
-    header: "Priority",
+    header: "Priorité",
      cell:({row})=>{
       const priority=row.getValue("priority") as string;
       const color=priority==="high"?"#f00":priority==="medium"?"#F4F754":priority==="low"?"#0f0":"#eee"
+      const priorityFr=PRIORITY_DATA.filter(p=>p.value===priority).at(0)?.label;
       return <div> <p style={{backgroundColor:color}} className="rounded-full p-px flex w-2 h-2 lg:hidden"></p> <p className="hidden lg:flex  justify-center w-full py-px rounded text-white text-xs" style={{backgroundColor:color}}>
-        {priority}
+        {priorityFr}
       </p></div>
     }
   },
@@ -110,13 +113,17 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
 
        {
     accessorKey: "assignedTo",
-    header: "Assigned To",
+    header: "Pris en charge par",
      cell: ({ row }) => {
         
         const obj=row.original.assignedTo?.user;
         
-      const assignedTo =obj? (obj as any).name:"no one" as string
-      return assignedTo||"no one";
+      const name =obj? (obj as any).name:"...." as string
+      const email=obj? (obj as any).email:"...." as string
+      return <div className="flex flex-col gap-1 items-center ">
+        <p className="font-semibold text-xs">{name} </p>
+        <p className="italic font-light text-xs">{email} </p>
+      </div>;
      },
     },
      {

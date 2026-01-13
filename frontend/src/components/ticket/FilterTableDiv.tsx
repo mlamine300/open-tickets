@@ -85,7 +85,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
    {organisations&&
    
                 <div className={" flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>"Organisation Emitrice" </label>
+                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Organisation Emitrice </label>
                 {/* <Select 
                 value={emitterOrganization}
                 onValueChange={(value) => setEmitterOrganization( value)}
@@ -150,7 +150,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
              
 
                <div className={"flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priority </label>
+                <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priorité </label>
              
             <Select 
                 value={priority}
@@ -158,7 +158,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
               >
                 
                 <SelectTrigger className={"w-full"}>
-                  <SelectValue  placeholder={`priority`} />
+                  <SelectValue  placeholder={`Priorité`} />
                   
                 </SelectTrigger>
                 
@@ -167,7 +167,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                   
                 
                   <p className='text-sm hover:cursor-pointer'  onClick={()=>setPriority("")}>
-                    Priority
+                    Priorité
                   </p>
                  
                   { PRIORITY_DATA?.map((val) => (
@@ -191,7 +191,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         setRecipientOrganization("");
         setPriority("");
         setSearch("");
-      }}>Reset</button>            
+      }}>Réinitialiser</button>            
       </div>
 </form>
    </div>

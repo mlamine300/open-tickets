@@ -253,22 +253,14 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
 };
 
 const getPermissableActions=(user:User|null,ticket:ticket)=>{
- /**
-  *   comment:"Commentaire",
 
-  in_charge: "Pris en charge",
-  called: "Le concerné a été appelé",
-  relancer: "Relancer",
-  close:"Traité",
-  subscribe:"Ajouter une organisation"
-  */
-const actions:Record<string, string>={comment:"Commentaire"};
+const actions:Record<string, string>={comment:"Commenter"};
  if(!user)return actions;
 const role=user.role||"standard";
 const userOrgaisation=user.organisation;
 const ticketORganisation=ticket.recipientOrganization?._id;
-// console.log(userOrgaisation)
-// console.log(ticketORganisation)
+ console.log(userOrgaisation)
+ console.log(ticketORganisation)
 if(ticket.status==="pending"){
   if(role==="admin"||userOrgaisation===ticketORganisation){
  actions["in_charge"]="Pris en charge";
@@ -283,7 +275,7 @@ if(ticket.status==="open"){
    if(role==="admin"||user._id===ticket.assignedTo?.user._id){
 
 actions["subscribe"]="Ajouter une organisation";
-actions["close"]="Traité";
+actions["close"]="Traiter";
 actions["relancer"]="Relancer";
    }
 
