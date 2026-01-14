@@ -26,7 +26,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   },
   {
     id: "02",
-    label: "Mes Tickets (réception)",
+    label: "Tickets Reçus",
     icon: LayoutList,
     path: "/tickets",
     hasChilds:true,
@@ -66,7 +66,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   },
    {
       id:"03",
-      label: "Ticket envoyés",
+      label: "Tickets envoyés",
       icon: LuClipboardCheck,
       path: "/tickets/sent",
       hasChilds:true,
@@ -163,7 +163,7 @@ export const SIDE_MENU_USER_DATA = [
   },
   {
     id: "02",
-    label: "Mes Tickets (réception)",
+    label: "Tickets Reçus",
     icon: LayoutList,
     path: "/tickets",
     hasChilds:true,
@@ -203,7 +203,7 @@ export const SIDE_MENU_USER_DATA = [
   },
    {
       id:"03",
-      label: "Ticket envoyés",
+      label: "Tickets envoyés",
       icon: LuClipboardCheck,
       path: "/tickets/sent",
       hasChilds:true,

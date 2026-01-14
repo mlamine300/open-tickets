@@ -21,6 +21,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
     const [message,setMessage]=useState<string>("");
     const ref=useRef<HTMLButtonElement|null>(null);
     const {user}=useUserContext();
+    console.log(user);
     const actions=getPermissableActions(user,ticket);
     const myform=useForm();
     const handleAction=(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>{

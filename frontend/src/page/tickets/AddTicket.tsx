@@ -56,8 +56,8 @@ const AddTicket = () => {
     
 
   return (
-    <div>
-      <div className='flex flex-col items-center gap-4'>
+    
+      <div className='flex flex-col items-center gap-4 w-full min-w-full'>
         <h1 className='text-2xl font-semibold italic text-primary'>Portail des réclamations</h1>
       <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
             
@@ -82,7 +82,7 @@ const AddTicket = () => {
         <DynamicForm form={standardForm}  />
       </div>}
       </div>
-    </div>
+    
   );
 };
 

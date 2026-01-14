@@ -92,7 +92,8 @@ export const getTickets = async (req: Request, res: Response) => {
     const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user),
       ...getFilterFromType(type, userId),
-      creator: { $ne: new mongoose.Types.ObjectId(userId) }
+      creator: { $ne: new mongoose.Types.ObjectId(userId) },
+      emitterOrganizationId:{ $ne: new mongoose.Types.ObjectId(user.organisation) },
     };
 if(priority){
   baseFilter["priority"]=priority;
@@ -357,7 +358,8 @@ console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user)}));
     const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user),
       ...getFilterFromType(type, userId),
-      creator:  new mongoose.Types.ObjectId(userId) 
+      //creator:  new mongoose.Types.ObjectId(userId) 
+      emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation) ,
     };
     if(status){
       baseFilter.status=status;

@@ -27,7 +27,7 @@ function FormNameRadarChart({data}:{data:any}) {
       <PolarAngleAxis dataKey="form"  tick={<WrappedTick />} />
       <PolarRadiusAxis />
       <Radar
-        name="type de réclamation"
+        name="types de réclamations"
         dataKey="value"
         stroke="#563da4"
         fill="#567df4"

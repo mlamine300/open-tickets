@@ -35,7 +35,7 @@ const SideBar = () => {
         className={`min-h-lvh  bg-background-base transition duration-300 ease-in-out  ${
           showed
             ? "fixed h-full  flex flex-col w-full z-10"
-            : "relative  mt-14 hidden xl:flex flex-col w-64 border-r gap-10 border-gray-hot "
+            : "relative  mt-14 hidden lg:flex flex-col w-64 border-r gap-10 border-gray-hot "
         }`}
       >
         <div className="flex  flex-col items-center w-64 gap-1 mt-8 max-md:mx-auto ">

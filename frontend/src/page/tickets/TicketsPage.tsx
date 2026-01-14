@@ -79,7 +79,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
   return (
     <Sheet>
     
-      <Card className='flex item-center   border-none shadow-2xl w-fit p-5 min-h-screen justify-start'>
+      <Card className='flex item-center   border-none shadow-2xl w-fit p-5 min-h-screen justify-start max-w-full'>
 
       {(tickets&&!pending)?(
         <div className='flex flex-col w-full h-full '>

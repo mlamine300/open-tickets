@@ -116,10 +116,10 @@ export const loginUser = async (req: Request, res: Response) => {
   const user = {
     id: foundUser._id,
     token: accessToken,
-    profileImageUrl: foundUser.organisation,
     email: foundUser.email,
     name: foundUser.name,
     role: foundUser.role,
+    organisation:foundUser.organisation
   };
   return res.status(200).json(user);
 };
