@@ -25,7 +25,7 @@ function App() {
 
     <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        {/* <Route path="/signup" element={<SignUp />} /> */}
 <Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
        <Route path="/" element={<Dashboard />} />
         <Route path="/form" element={<AddTicket />} />

@@ -123,7 +123,7 @@ console.log(user);
             <p className="text-sm text-red-500">{error.login}</p>
           )}
         </form>
-        <p className="mt-4">
+        {/* <p className="mt-4">
           Don't have an account?{" "}
           <Link
             className="cursor-pointer text-primary underline hover:font-semibold"
@@ -131,7 +131,7 @@ console.log(user);
           >
             SignUp
           </Link>
-        </p>
+        </p> */}
       </div>
     </AuthLayout>
   );

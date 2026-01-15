@@ -7,10 +7,12 @@ import Layout from './layouts/Layout.tsx'
 
 createRoot(document.getElementById('root')!).render(
  <StrictMode>
+  
     <BrowserRouter>
       <Layout>
         <App />
       </Layout>
     </BrowserRouter>
+  
   </StrictMode>
 )
