@@ -3,6 +3,8 @@ import OrganisationClassement from "@/components/dashboard/OrganisationClassemen
 import PriorityStatusChart from "@/components/dashboard/PriorityStatusChart";
 import Spinner from "@/components/main/Spinner";
 import Input from "@/components/ui/Input";
+import { API_PATH } from "@/data/apiPaths";
+import { exportNotCompletReport } from "@/lib/utils";
 
 import axiosInstance from "@/utils/axiosInstance";
 import { useEffect, useState } from "react";
@@ -36,8 +38,16 @@ const Dashboard = () => {
     return fills[name]||"#ffee33"
   }
 
-  const donwloadNotCompleteReport=()=>{
-    alert("en soufrrance!!!!!")
+  const donwloadNotCompleteReport=async()=>{
+    try {
+      const notCompleteTicketsResponse=await axiosInstance.get(API_PATH.REPORTS.NOT_COMPLETE);
+      if(notCompleteTicketsResponse.status===200){
+        const notCompleteTickets=notCompleteTicketsResponse.data.data;
+        exportNotCompletReport(notCompleteTickets);
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
   const donwloadDateReport=()=>{
     alert(reportDateStart+"\t"+reportDateStart)
