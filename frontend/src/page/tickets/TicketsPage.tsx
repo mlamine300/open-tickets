@@ -17,6 +17,7 @@ import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 
 const TicketsPage = () => {
+  
   const [showModal,setShowModal]=useState<string>("")
   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
   const [searchParams]=useSearchParams();

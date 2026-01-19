@@ -4,7 +4,7 @@ import { useState } from "react";
 import AuthLayout from "../../layouts/AuthLayout";
  import Button from "../../components/ui/Button";
 
-import { Link, useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { validateEmail, validatePassword } from "../../../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../data/apiPaths";

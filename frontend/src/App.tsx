@@ -2,7 +2,7 @@
 import './App.css'
 import { Route, Routes } from 'react-router'
 import Login from './page/auth/Login'
-import SignUp from './page/auth/SignUp'
+// import SignUp from './page/auth/SignUp'
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from './routes/PrivateRoute';
 import NotFound from './components/main/NotFound';
