@@ -77,6 +77,7 @@ export interface ticket{
     updatedAt?:Date;
     formName?:string;
     lastComment?:Comment;
+    createdAt?:Date;
 }
 
 export interface Comment{

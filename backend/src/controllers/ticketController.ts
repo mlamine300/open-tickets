@@ -1366,7 +1366,7 @@ return isAssignedTome||isAdmin;
 
 export const getNotCompleteReport = async (req: Request, res: Response) => {
   try {
-    // ================= AUTH =================
+    
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "not authorized" });
 
@@ -1374,11 +1374,10 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
     if (!user?.userId)
       return res.status(401).json({ message: "not authorized" });
 
-    const userId = user.userId;
+   
 
     // ================= INPUT =================
-    const search = req.body?.search || "";
-    const type = req.params.type || "pending";
+  
 
     // ================= DATE =================
     const yesterDay = new Date();
@@ -1387,14 +1386,14 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
     // ================= FILTERS =================
     const baseFilter: any = {
       ...getResponsablitiesFilterFromRole(user),
-      ...getFilterFromType(type, userId),
-      creator: { $ne: new mongoose.Types.ObjectId(userId) },
+     
+     // creator: { $ne: new mongoose.Types.ObjectId(userId) },
       emitterOrganizationId: {
         $ne: new mongoose.Types.ObjectId(user.organisation),
       },
     };
 
-    const searchFilter = getSearchFilter(search);
+    
 
     const notCompleteFilter = {
       $or: [
@@ -1403,13 +1402,14 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
           createdAt: { $lt: yesterDay },
         },
         {
-          status: "open",
+           status: "open",
           assignedTo: {
             $elemMatch: {
               date: { $lt: yesterDay },
             },
           },
         },
+        {status:"complete"}
       ],
     };
 
@@ -1418,8 +1418,8 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
       {
         $match: {
           ...baseFilter,
-          ...searchFilter,
-          ...notCompleteFilter,
+         
+        ...notCompleteFilter,
         },
       },
 

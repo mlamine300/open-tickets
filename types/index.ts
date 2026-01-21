@@ -53,13 +53,14 @@ export interface Organisation{
 }
 
 export interface ticket{
-  _id?:string;
-  creator?:{email:string,name:string,_id:string};
-  ref:string;
-  emitterOrganizationId:string;
-  recipientOrganizationId:string;
-  emitterOrganization?:{name:string,_id:string};
-  recipientOrganization?:{name:string,_id:string};
+  
+    _id?:string;
+    creator?:{email:string,name:string,_id:string};
+    ref:string;
+    emitterOrganizationId:string;
+    recipientOrganizationId:string;
+    emitterOrganization?:{name:string,_id:string};
+    recipientOrganization?:{name:string,_id:string};
     associatedOrganizations?:{name:string,_id:string}[];
     type:string;
     status?:string;
@@ -73,6 +74,8 @@ export interface ticket{
     updatedAt?:Date;
     formName?:string;
     lastComment?:Comment;
+    createdAt?:Date;
+    
 }
 
 export interface Comment{
