@@ -5,7 +5,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from 'file-saver';
 import type { ticket } from "@/types";
 declare module 'file-saver';
-
+import { differenceInDays } from 'date-fns';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -25,6 +25,11 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
        {
         header:"Date",
         key:"createdAt",
+        width:20
+      },
+        {
+        header:"NBR de jours",
+        key:"delay",
         width:20
       },
         {
@@ -74,29 +79,33 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
       },
     ]
       pendingSheet.columns = columns;
-
+      const pendingRows:any[]=[];
       // Add data rows
       pending.forEach(line => {
+        const createdAt=line.createdAt;
+        const delay=differenceInDays(new Date(),createdAt||new Date())
         const creator=`${line.creator?.name} (${line.creator?.email})`;
         const emitterOrganization=line.emitterOrganization?.name;
         const recipientOrganization=line.recipientOrganization?.name;
         const ref=line.ref;
         const formname=line.formName;
-        const status=line.status;
-        const priority=line.priority;
+      const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
+        const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
-        const createdAt=line.createdAt;
+        
         const lastComment=line.lastComment?.message;
-        const row={creator,emitterOrganization,recipientOrganization,ref,formname,
+        const row={creator,delay,emitterOrganization,recipientOrganization,ref,formname,
           status,
           priority,
           message,
           createdAt,
           lastComment
         };
-        pendingSheet.addRow(row)
-
+        //pendingSheet.addRow(row)
+        pendingRows.push(row);
       });
+      pendingRows.sort((r1,r2)=>(r2.delay-r1.delay))
+      pendingSheet.addRows(pendingRows);
     }
 
      const openSheet = workbook.addWorksheet('Open');
@@ -113,6 +122,11 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
        {
         header:"Date",
         key:"createdAt",
+        width:20
+      },
+       {
+        header:"NBR de jours",
+        key:"delay",
         width:20
       },
         {
@@ -169,28 +183,32 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
       openSheet.columns = columns;
 
       // Add data rows
+      const openRows:any[]=[];
       open.forEach(line => {
          const createdAt=line.createdAt;
+         const delay=differenceInDays(new Date(),createdAt||new Date())
         const creator=`${line.creator?.name} (${line.creator?.email})`;
         const assignedTo=`${line.assignedTo?.user.name} (${line.assignedTo?.user.email})`; 
         const emitterOrganization=line.emitterOrganization?.name;
         const recipientOrganization=line.recipientOrganization?.name;
         const ref=line.ref;
         const formname=line.formName;
-        const status=line.status;
-        const priority=line.priority;
+        const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
+        const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
         const lastComment=line.lastComment?.message;
-        const row={createdAt,creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,
+        const row={createdAt,delay,creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,
           status,
           priority,
           message,
          
           lastComment
         };
-        openSheet.addRow(row)
-
+        //openSheet.addRow(row)
+    openRows.push(row);
       })
+      openRows.sort((r1,r2)=>r2.delay-r1.delay)
+      openSheet.addRows(openRows);
     }
 
     // Generate Excel file as a buffer

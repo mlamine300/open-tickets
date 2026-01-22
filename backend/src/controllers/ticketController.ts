@@ -1133,251 +1133,17 @@ const isAdmin=user.role==="admin";
 return isAssignedTome||isAdmin;
 } 
 
-// export const getNotCompleteReport=async(req:Request,res:Response)=>{
-//    try {
-//     const token = req.headers.authorization?.split(" ")[1];
-//     if (!token) return res.status(409).json({ message: "not authorized" });
 
-//     const user = jwt.decode(token) as TokenPayload;
-//     if (!user?.userId) return res.status(409).json({ message: "not authorized" });
-
-//     const userId = user.userId;
-
-//     // Search
-//     const search = req.body?.search || "";
-
-
-//     // Filters
-//     const type = req.params.type || "pending";
-//     //console.log("-------------------------------------->",getFilterFromType(type, userId))
-//     const baseFilter:any = {
-//       ...getResponsablitiesFilterFromRole(user),
-//       ...getFilterFromType(type, userId),
-//       creator: { $ne: new mongoose.Types.ObjectId(userId) },
-//       emitterOrganizationId:{ $ne: new mongoose.Types.ObjectId(user.organisation) },
-//     };
-
-//     const searchFilter=getSearchFilter(search);
-    
-//     const yesterDay=new Date();
-//     yesterDay.setHours(0,0,0);
-    
-//     const notCompleteFilter={
-//   $or: [
-//     {
-//       status: "pending",
-//       createdAt: { $lt: yesterDay }
-//     },
-//  {
-//   status: "open",
-//   assignedTo: {
-//     $elemMatch: {
-//       date: { $lt: yesterDay }
-//     }
-//   }
-// }
-//   ]
-// }
-//     const pipeline: any[] = [
-//       { $match: { ...baseFilter,...searchFilter, ...notCompleteFilter
-//         //  ...searchQuery
-//          } },
-
-//       // Join user (creator)
-//       {
-//         $lookup: {
-//           from: "users",
-//           localField: "creator",
-//           foreignField: "_id",
-//           as: "creator"
-//         }
-//       },
-//       { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
-
-//       // emitter organization
-//       {
-//         $lookup: {
-//           from: "organisations",
-//           localField: "emitterOrganizationId",
-//           foreignField: "_id",
-//           as: "emitterOrganization"
-//         }
-//       },
-//       { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
-
-//       // recipient organization
-//       {
-//         $lookup: {
-//           from: "organisations",
-//           localField: "recipientOrganizationId",
-//           foreignField: "_id",
-//           as: "recipientOrganization"
-//         }
-//       },
-//       { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
-
-//       // associated organizations
-//       {
-//         $lookup: {
-//           from: "organisations",
-//           localField: "associatedOrganizations",
-//           foreignField: "_id",
-//           as: "associatedOrganizations"
-//         }
-//       },
-
-//       // assignedTo
-//       {
-//         $lookup: {
-//           from: "users",
-//           localField: "assignedTo.userId",
-//           foreignField: "_id",
-//           as: "assignedUsers"
-//         }
-//       },
-
-//       {
-//         $addFields: {
-//           assignedTo: {
-//             $map: {
-//               input: {
-//                 $cond: {
-//                   if: { $isArray: "$assignedTo" },
-//                   then: "$assignedTo",
-//                   else: {
-//                     $cond: {
-//                       if: { $eq: ["$assignedTo", null] },
-//                       then: [],
-//                       else: ["$assignedTo"]
-//                     }
-//                   }
-//                 }
-//               },
-//               as: "a",
-//               in: {
-//                 date: "$$a.date",
-//                 user: {
-//                   $arrayElemAt: [
-//                     {
-//                       $filter: {
-//                         input: "$assignedUsers",
-//                         as: "u",
-//                         cond: { $eq: ["$$u._id", "$$a.userId"] }
-//                       }
-//                     },
-//                     0
-//                   ]
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       },
-
-//       { $project: { assignedUsers: 0 } },
-
-//       // Populate lastComment.author (replace authorId with author doc)
-//       {
-//         $lookup: {
-//           from: "users",
-//           localField: "lastComment.authorId",
-//           foreignField: "_id",
-//           as: "lastCommentAuthor"
-//         }
-//       },
-//       {
-//         $addFields: {
-//           lastComment: {
-//             $cond: [
-//               { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
-//               {
-//                 $mergeObjects: [
-//                   "$lastComment",
-//                   { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
-//                 ]
-//               },
-//               "$lastComment"
-//             ]
-//           }
-//         }
-//       },
-//       { $project: { lastCommentAuthor: 0 } },
-
-//       // project only necessary fields for creator, organisations and assignedTo
-//       {
-//         $project: {
-//           _id: 1,
-//           ref: 1,
-//           formName: 1,
-//           message: 1,
-//           status: 1,
-//           priority: 1,
-//           createdAt: 1,
-//           updatedAt: 1,
-//           specialFields:1,
-//           lastComment: {
-//             _id: "$lastComment._id",
-//             message: "$lastComment.message",
-//             action: "$lastComment.action",
-//             ticketRef: "$lastComment.ticketRef",
-//             createdAt: "$lastComment.createdAt",
-//             author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
-//           },
-//           creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-//           emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
-//           recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
-//           associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-//           assignedTo: {
-//             $let: {
-//               vars: {
-//                 a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
-//               },
-//               in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-//             }
-//           }
-//         }
-//       },
-
-
-
-//       // Sorting
-//       { $sort: { ["createdAt"]: 1 } },
-
-      
-//     ];
-
-//     const result = await ticketModel.aggregate(pipeline).exec();
-
-//     const data = result[0].data;
-//     const totalCount = result[0].totalCount[0]?.count || 0;
-
-//     return res.status(200).json({
-//       message: "success",
-//       data,
-//       totalCount,
-      
-//     });
-
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({message:"server error",error})
-//   }
-// }
 
 export const getNotCompleteReport = async (req: Request, res: Response) => {
   try {
-    
+    // ================= AUTH =================
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "not authorized" });
 
     const user = jwt.decode(token) as TokenPayload;
-    if (!user?.userId)
+    if (!user?.userId || !user.organisation)
       return res.status(401).json({ message: "not authorized" });
-
-   
-
-    // ================= INPUT =================
-  
 
     // ================= DATE =================
     const yesterDay = new Date();
@@ -1386,14 +1152,10 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
     // ================= FILTERS =================
     const baseFilter: any = {
       ...getResponsablitiesFilterFromRole(user),
-     
-     // creator: { $ne: new mongoose.Types.ObjectId(userId) },
       emitterOrganizationId: {
         $ne: new mongoose.Types.ObjectId(user.organisation),
       },
     };
-
-    
 
     const notCompleteFilter = {
       $or: [
@@ -1402,24 +1164,42 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
           createdAt: { $lt: yesterDay },
         },
         {
-           status: "open",
-          assignedTo: {
-            $elemMatch: {
-              date: { $lt: yesterDay },
-            },
-          },
+          status: "open",
+            $or: [
+        { "assignedTo.date": { $lt: yesterDay } },
+        { assignedTo: { $exists: false } },
+        { assignedTo: null },
+      ],
         },
-        {status:"complete"}
       ],
     };
 
     // ================= PIPELINE =================
     const pipeline: any[] = [
+      // ===== match =====
       {
         $match: {
           ...baseFilter,
-         
-        ...notCompleteFilter,
+          ...notCompleteFilter,
+        },
+      },
+
+      // ===== normalize assignedTo =====
+      {
+        $addFields: {
+          assignedTo: {
+            $cond: [
+              { $isArray: "$assignedTo" },
+              "$assignedTo",
+              {
+                $cond: [
+                  { $eq: ["$assignedTo", null] },
+                  [],
+                  ["$assignedTo"],
+                ],
+              },
+            ],
+          },
         },
       },
 
@@ -1434,7 +1214,7 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
       },
       { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // ===== emitter organization =====
+      // ===== organizations =====
       {
         $lookup: {
           from: "organisations",
@@ -1449,8 +1229,6 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
           preserveNullAndEmptyArrays: true,
         },
       },
-
-      // ===== recipient organization =====
       {
         $lookup: {
           from: "organisations",
@@ -1465,8 +1243,6 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
           preserveNullAndEmptyArrays: true,
         },
       },
-
-      // ===== associated organizations =====
       {
         $lookup: {
           from: "organisations",
@@ -1486,25 +1262,45 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
         },
       },
 
+      // ===== enrich assignedTo =====
       {
         $addFields: {
           assignedTo: {
             $map: {
-              input: { $ifNull: ["$assignedTo", []] },
+              input: "$assignedTo",
               as: "a",
               in: {
                 date: "$$a.date",
                 user: {
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$assignedUsers",
-                        as: "u",
-                        cond: { $eq: ["$$u._id", "$$a.userId"] },
+                  $let: {
+                    vars: {
+                      u: {
+                        $arrayElemAt: [
+                          {
+                            $filter: {
+                              input: "$assignedUsers",
+                              as: "u",
+                              cond: {
+                                $eq: ["$$u._id", "$$a.userId"],
+                              },
+                            },
+                          },
+                          0,
+                        ],
                       },
                     },
-                    0,
-                  ],
+                    in: {
+                      $cond: [
+                        { $eq: ["$$u", null] },
+                        null,
+                        {
+                          _id: "$$u._id",
+                          name: "$$u.name",
+                          email: "$$u.email",
+                        },
+                      ],
+                    },
+                  },
                 },
               },
             },
@@ -1513,7 +1309,7 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
       },
       { $project: { assignedUsers: 0 } },
 
-      // ===== last comment author =====
+      // ===== last comment =====
       {
         $lookup: {
           from: "users",
@@ -1530,7 +1326,11 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
               {
                 $mergeObjects: [
                   "$lastComment",
-                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } },
+                  {
+                    author: {
+                      $arrayElemAt: ["$lastCommentAuthor", 0],
+                    },
+                  },
                 ],
               },
               "$lastComment",
@@ -1577,9 +1377,7 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
             },
           },
 
-          assignedTo: {
-            $arrayElemAt: ["$assignedTo", 0],
-          },
+          assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
 
           lastComment: {
             _id: "$lastComment._id",
@@ -1610,14 +1408,15 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "success",
-      data: result[0]?.data || [],
-      totalCount: result[0]?.totalCount[0]?.count || 0,
+      data: result[0]?.data ?? [],
+      totalCount: result[0]?.totalCount?.[0]?.count ?? 0,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "server error", error });
+    return res.status(500).json({ message: "server error" });
   }
 };
+
 
 
 
