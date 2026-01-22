@@ -4,10 +4,12 @@ import PriorityStatusChart from "@/components/dashboard/PriorityStatusChart";
 import Spinner from "@/components/main/Spinner";
 import Input from "@/components/ui/Input";
 import { API_PATH } from "@/data/apiPaths";
-import { exportNotCompletReport } from "@/lib/utils";
+import { exportNotCompletReport, exportReport } from "@/lib/utils";
 
 import axiosInstance from "@/utils/axiosInstance";
+import { differenceInDays } from "date-fns";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { FaFileExcel } from "react-icons/fa6";
 
 
@@ -49,8 +51,27 @@ const Dashboard = () => {
       console.log(error)
     }
   }
-  const donwloadDateReport=()=>{
-    alert(reportDateStart+"\t"+reportDateStart)
+  
+  const donwloadDateReport=async()=>{
+    if(!reportDateStart||!reportDateEnd){
+      toast.error("Merci de choisir les date avant procéder a l'action")
+      return;
+    }
+    if(differenceInDays(reportDateStart,reportDateEnd)>0){
+      toast.error("la Date de debut et plus grande que la date de fin")
+      return;
+    }
+    try {
+      const res=await axiosInstance.post(API_PATH.REPORTS.REPORT_FROM_DATES,{startday:reportDateStart,endday:reportDateEnd});
+      if(res.status===200){
+        const ticket=res.data.data;
+        exportReport(ticket);
+        
+      }
+    } catch (error) {
+      
+      console.log(error)
+    }
   }
   if(!stats)return <div>
     <Spinner/>

@@ -1417,6 +1417,282 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
   }
 };
 
+export const getTicketReport = async (req: Request, res: Response) => {
+  try {
+    // ================= AUTH =================
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "not authorized" });
+
+    const user = jwt.decode(token) as TokenPayload;
+    if (!user?.userId || !user.organisation)
+      return res.status(401).json({ message: "not authorized" });
+
+    // ================= DATE =================
+    const yesterDay = new Date();
+    yesterDay.setHours(0, 0, 0, 0);
+    const startdayString=req.body.startday;
+    const enddayString=req.body.endday;
+    if(!startdayString||!enddayString)return res.status(400).json({message:"Start day and end Day are required!!"})
+      const startday=new Date(startdayString);
+      const endday=new Date(enddayString);
+    // ================= FILTERS =================
+    const baseFilter: any = {
+      ...getResponsablitiesFilterFromRole(user),
+      emitterOrganizationId: {
+        $ne: new mongoose.Types.ObjectId(user.organisation),
+      },
+    };
+
+    const dateFilter = {
+     createdAt: {
+    $gte: startday,
+    $lte: endday
+  }
+    }
+
+    // ================= PIPELINE =================
+    const pipeline: any[] = [
+      // ===== match =====
+      {
+        $match: {
+          ...baseFilter,
+          ...dateFilter,
+        },
+      },
+
+      // ===== normalize assignedTo =====
+      {
+        $addFields: {
+          assignedTo: {
+            $cond: [
+              { $isArray: "$assignedTo" },
+              "$assignedTo",
+              {
+                $cond: [
+                  { $eq: ["$assignedTo", null] },
+                  [],
+                  ["$assignedTo"],
+                ],
+              },
+            ],
+          },
+        },
+      },
+
+      // ===== creator =====
+      {
+        $lookup: {
+          from: "users",
+          localField: "creator",
+          foreignField: "_id",
+          as: "creator",
+        },
+      },
+      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+
+      // ===== organizations =====
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "emitterOrganizationId",
+          foreignField: "_id",
+          as: "emitterOrganization",
+        },
+      },
+      {
+        $unwind: {
+          path: "$emitterOrganization",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "recipientOrganizationId",
+          foreignField: "_id",
+          as: "recipientOrganization",
+        },
+      },
+      {
+        $unwind: {
+          path: "$recipientOrganization",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "associatedOrganizations",
+          foreignField: "_id",
+          as: "associatedOrganizations",
+        },
+      },
+
+      // ===== assigned users =====
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo.userId",
+          foreignField: "_id",
+          as: "assignedUsers",
+        },
+      },
+
+      // ===== enrich assignedTo =====
+      {
+        $addFields: {
+          assignedTo: {
+            $map: {
+              input: "$assignedTo",
+              as: "a",
+              in: {
+                date: "$$a.date",
+                user: {
+                  $let: {
+                    vars: {
+                      u: {
+                        $arrayElemAt: [
+                          {
+                            $filter: {
+                              input: "$assignedUsers",
+                              as: "u",
+                              cond: {
+                                $eq: ["$$u._id", "$$a.userId"],
+                              },
+                            },
+                          },
+                          0,
+                        ],
+                      },
+                    },
+                    in: {
+                      $cond: [
+                        { $eq: ["$$u", null] },
+                        null,
+                        {
+                          _id: "$$u._id",
+                          name: "$$u.name",
+                          email: "$$u.email",
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $project: { assignedUsers: 0 } },
+
+      // ===== last comment =====
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastComment.authorId",
+          foreignField: "_id",
+          as: "lastCommentAuthor",
+        },
+      },
+      {
+        $addFields: {
+          lastComment: {
+            $cond: [
+              { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
+              {
+                $mergeObjects: [
+                  "$lastComment",
+                  {
+                    author: {
+                      $arrayElemAt: ["$lastCommentAuthor", 0],
+                    },
+                  },
+                ],
+              },
+              "$lastComment",
+            ],
+          },
+        },
+      },
+      { $project: { lastCommentAuthor: 0 } },
+
+      // ===== final projection =====
+      {
+        $project: {
+          _id: 1,
+          ref: 1,
+          formName: 1,
+          message: 1,
+          status: 1,
+          priority: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          specialFields: 1,
+
+          creator: {
+            _id: "$creator._id",
+            name: "$creator.name",
+            email: "$creator.email",
+          },
+
+          emitterOrganization: {
+            _id: "$emitterOrganization._id",
+            name: "$emitterOrganization.name",
+          },
+
+          recipientOrganization: {
+            _id: "$recipientOrganization._id",
+            name: "$recipientOrganization.name",
+          },
+
+          associatedOrganizations: {
+            $map: {
+              input: { $ifNull: ["$associatedOrganizations", []] },
+              as: "o",
+              in: { _id: "$$o._id", name: "$$o.name" },
+            },
+          },
+
+          assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
+
+          lastComment: {
+            _id: "$lastComment._id",
+            message: "$lastComment.message",
+            action: "$lastComment.action",
+            ticketRef: "$lastComment.ticketRef",
+            createdAt: "$lastComment.createdAt",
+            author: {
+              _id: "$lastComment.author._id",
+              name: "$lastComment.author.name",
+              email: "$lastComment.author.email",
+            },
+          },
+        },
+      },
+
+      // ===== pagination + count =====
+      {
+        $facet: {
+          data: [{ $sort: { createdAt: 1 } }],
+          totalCount: [{ $count: "count" }],
+        },
+      },
+    ];
+
+    // ================= EXEC =================
+    const result = await ticketModel.aggregate(pipeline).exec();
+
+    return res.status(200).json({
+      message: "success",
+      data: result[0]?.data ?? [],
+      totalCount: result[0]?.totalCount?.[0]?.count ?? 0,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "server error" });
+  }
+};
+
 
 
 

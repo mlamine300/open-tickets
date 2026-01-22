@@ -45,6 +45,7 @@ export const API_PATH = {
     UPLOAD: "/api/attachement/upload",
   },
   REPORTS:{
-    NOT_COMPLETE:'api/tickets/reports/notcomplete'
+    NOT_COMPLETE:'api/tickets/reports/notcomplete',
+    REPORT_FROM_DATES:"api/tickets/reports/date"
   }
 };
