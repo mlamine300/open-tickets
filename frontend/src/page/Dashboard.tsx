@@ -17,6 +17,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState<any>(null);
   const [reportDateStart, setReportDateStart] = useState<string>("");
   const [reportDateEnd, setreportDateEnd] = useState<string>("");
+  const [notCompletePending, setNotCompletePending] = useState(false);
+  const [reportPending, setReportPending] = useState(false);
   useEffect(()=>{
     const x=async()=>{
       const res=await axiosInstance.get(`/api/stat/status`)
@@ -42,6 +44,7 @@ const Dashboard = () => {
 
   const donwloadNotCompleteReport=async()=>{
     try {
+      setNotCompletePending(true);
       const notCompleteTicketsResponse=await axiosInstance.get(API_PATH.REPORTS.NOT_COMPLETE);
       if(notCompleteTicketsResponse.status===200){
         const notCompleteTickets=notCompleteTicketsResponse.data.data;
@@ -49,6 +52,8 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.log(error)
+    }finally{
+      setNotCompletePending(false);
     }
   }
   
@@ -62,15 +67,24 @@ const Dashboard = () => {
       return;
     }
     try {
+      setReportPending(true);
       const res=await axiosInstance.post(API_PATH.REPORTS.REPORT_FROM_DATES,{startday:reportDateStart,endday:reportDateEnd});
       if(res.status===200){
-        const ticket=res.data.data;
-        exportReport(ticket);
+        const tickets=res.data.data;
+        if(!tickets||!Array.isArray(tickets)||tickets.length<1){
+          toast.success("pas de tickets sur cette plage de date");
+          return;
+        }
+        exportReport(tickets);
+       setReportDateStart("");
+       setreportDateEnd("");
         
       }
     } catch (error) {
       
       console.log(error)
+    }finally{
+      setReportPending(false);
     }
   }
   if(!stats)return <div>
@@ -101,16 +115,16 @@ const Dashboard = () => {
         <div className="flex gap-4 w-8/12   items-center ">
           <Input inputClassName="text-xs" parentClassName="gap-0" labelClassName="text-xs italic" label="date de création (debut)" placeHolder="" type="date" value={reportDateStart} onChange={(e)=>setReportDateStart(e.target.value)} />
          <Input inputClassName="text-xs" parentClassName="gap-0" labelClassName="text-xs italic"  label="date de création (fin)" placeHolder="" type="date" value={reportDateEnd} onChange={(e)=>setreportDateEnd(e.target.value)} />
-         <button disabled={!reportDateStart||!reportDateEnd} onClick={()=>{
+         <button disabled={!reportDateStart||!reportDateEnd||reportPending} onClick={()=>{
            donwloadDateReport()
           }}   className="flex gap-4 items-center h-fit  px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold">
             Telecharger
             <FaFileExcel />
           </button>
           </div>
-          <button onClick={()=>{
+          <button disabled={notCompletePending} onClick={()=>{
             donwloadNotCompleteReport()
-          }}   className="flex gap-4 items-center max-h-20 h-fit  px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl">
+          }}   className="flex gap-4 items-center max-h-20 h-fit  px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-hot">
             ticket en soufrrance
             <FaFileExcel />
           </button>
