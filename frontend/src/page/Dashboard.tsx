@@ -108,11 +108,11 @@ const Dashboard = () => {
   return (
    
       <div className="grid grid-cols-1 w-full gap-1 justify h-full lg:grid-cols-2 min-h-screen xl:min-w-[70svw] ">
-          <div className="flex flex-col items-start min-w-full max-h-32 lg:col-span-2 py-4 bg-white rounded-3xl px-4">
+          <div className="flex flex-col items-start min-w-full lg:max-h-32 lg:col-span-2 py-4 bg-background-base rounded-3xl px-4">
             <p className="text-2xl font-semibold underline">Rapports</p>
         <div className="flex justify-between w-full  items-center pl-10 ">
 
-        <div className="flex gap-4 w-8/12   items-center ">
+        <div className=" flex flex-col lg:flex-row gap-4 w-8/12   items-center ">
           <Input inputClassName="text-xs" parentClassName="gap-0" labelClassName="text-xs italic" label="date de création (debut)" placeHolder="" type="date" value={reportDateStart} onChange={(e)=>setReportDateStart(e.target.value)} />
          <Input inputClassName="text-xs" parentClassName="gap-0" labelClassName="text-xs italic"  label="date de création (fin)" placeHolder="" type="date" value={reportDateEnd} onChange={(e)=>setreportDateEnd(e.target.value)} />
          <button disabled={!reportDateStart||!reportDateEnd||reportPending} onClick={()=>{
