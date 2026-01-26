@@ -128,25 +128,9 @@ setPending(false);
           <div key={field.name} className="space-y-2">
           {field.type==="file"&&
           <AddAttachement labelClassName={"w-full flex text-xs italic "}  label="attachement" image={myForm.watch(field.name)} setImage={(image:string)=>myForm.setValue(field.name,image)}/>
-          //  <Input
-          //     parentClassName="bg-background-base flex flex-col items-start gap-0"
-          //     labelClassName={"w-full flex text-xs italic "}
-          //     inputClassName="text-xs italic  hover:cursor-pointer"
-          //     containerClassName="w-full "
-          //     type={field.type}
-          //     value={myForm.watch(field.name) ?? ""}
-          //     placeHolder={``}
-          //     label={field.label}
-          //     {...myForm.register(field.name)}
-          //     onChange={(e:any)=>{
-          //     myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
-          //     myForm.setValue(field.name,e.target.value||"")
-          //     myForm.register(field.name)
-          //     }}
-          //       key={field.name}
-          //     />
+        
           }
-            {(field.type === "text"||field.type==="number"||field.type==="date") && (
+            {(field.type === "text"||field.type==="number"||field.type==="date"||field.type==="area") && (
               <Input
               parentClassName="bg-background-base flex flex-col items-start gap-0"
               labelClassName={"w-full flex text-xs italic "}

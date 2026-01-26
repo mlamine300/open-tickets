@@ -16,7 +16,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
     const pending=tickets.filter(t=>t.status==="pending");
     const open=tickets.filter(t=>t.status!=="pending");
     const workbook = new ExcelJS .Workbook();
-    const pendingSheet = workbook.addWorksheet('Pending');
+    const pendingSheet = workbook.addWorksheet('en attente');
 
     // Extract columns from the first row of data 
     if (pending.length > 0) {
@@ -108,7 +108,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
       pendingSheet.addRows(pendingRows);
     }
 
-     const openSheet = workbook.addWorksheet('Open');
+     const openSheet = workbook.addWorksheet('ouvert');
 
     // Extract columns from the first row of data 
     if (open.length > 0) {

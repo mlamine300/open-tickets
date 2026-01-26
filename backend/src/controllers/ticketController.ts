@@ -1156,7 +1156,8 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
         $ne: new mongoose.Types.ObjectId(user.organisation),
       },
     };
-
+  
+    
     const notCompleteFilter = {
       $or: [
         {
@@ -1179,8 +1180,10 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
       // ===== match =====
       {
         $match: {
-          ...baseFilter,
-          ...notCompleteFilter,
+         $and: [
+    { ...baseFilter }, // this may include $or
+    { ...notCompleteFilter } // this also includes $or
+  ]
         },
       },
 
