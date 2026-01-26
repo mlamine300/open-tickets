@@ -60,6 +60,7 @@ const Input = ({
         ) : (
           <>
             <input
+              lang="FR-fr"
               disabled={disabled}
               type={
                 type === "password"
