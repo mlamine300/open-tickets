@@ -36,24 +36,29 @@ const TicketsPage = () => {
   const {pathname}=useLocation();
   
       const [tickets,setTicket]=useState<ticket[]>([])
-    useEffect(()=>{
-     
-        const getMyTickets=async()=>{
-           setPending(true)
-           setTicket([]);
-            const res=await getSpecificTicketAction(pathname,{page,search,emitterOrganizationId,recipientOrganizationId,priority});
-            setTicket(res.data);
-            setTotalTicketsSize(res.total);
-        
-            setPending(false)
-        }
-        const retrieveOrganisations=async()=>{
-          const organisationsFromAction=await getAllorganisationsAction();
-          setOrganisations(organisationsFromAction)
-        }
-        getMyTickets();
-        retrieveOrganisations();
-    },[pathname,page,priority,emitterOrganizationId,recipientOrganizationId,search,triggerRerender])
+    useEffect(() => {
+      let intervalId;
+      const getMyTickets = async () => {
+        setPending(true);
+        setTicket([]);
+        const res = await getSpecificTicketAction(pathname, { page, search, emitterOrganizationId, recipientOrganizationId, priority });
+        setTicket(res.data);
+        setTotalTicketsSize(res.total);
+        setPending(false);
+      };
+      const retrieveOrganisations = async () => {
+        const organisationsFromAction = await getAllorganisationsAction();
+        setOrganisations(organisationsFromAction);
+      };
+      getMyTickets();
+      retrieveOrganisations();
+      intervalId = setInterval(() => {
+        setTriggerRerender(Math.random());
+      }, 1*60*1000); // 1 minute
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [pathname, page, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
 
 const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setShowModal(modalTitle);
