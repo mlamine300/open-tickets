@@ -1038,8 +1038,8 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             { $match: { "assignedTo.userId": { $ne: null } } },
             { $count: "assignedTickets" }
           ],
-          formName: [
-            { $group: { _id: "$formName", count: { $sum: 1 } } }
+          motif: [
+            { $group: { _id: "$motif", count: { $sum: 1 } } }
           ],
           emmiter: [
             {

@@ -273,6 +273,7 @@ export const MOTIFS=[
 "Conserver le colis / Garder le colis",
 "Réclamation financière",
 "Autre réclamation",
+"Surfacturation"
 
 ]
 
@@ -285,7 +286,7 @@ export const getStandardForm=():FormType=>({
 
 
     export const StandartFierlds=():FormFieldType[]=>[
-      {name:"motif",label:"Motif",type:"select",possibleValues:MOTIFS,required:true},
+      {name:"motif",label:"Motif",type:"select-filter",possibleValues:MOTIFS,required:true},
       {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
        {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},

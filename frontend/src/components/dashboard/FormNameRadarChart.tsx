@@ -4,7 +4,7 @@ import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, Tooltip 
 function FormNameRadarChart({data}:{data:any}) {
   return (
     <div className='flex flex-col gap-0 w-full'>
- <h3 className='w-full text-start px-8 italic font-semibold'>type des réclamations</h3>
+ <h3 className='w-full text-start px-8 italic font-semibold'>Motifs des réclamations</h3>
     <RadarChart
       style={{
         // width: '90%',
@@ -24,7 +24,7 @@ function FormNameRadarChart({data}:{data:any}) {
       }}
     >
       <PolarGrid />
-      <PolarAngleAxis dataKey="form"  tick={<WrappedTick />} />
+      <PolarAngleAxis dataKey="motif"  tick={<WrappedTick />} />
       <PolarRadiusAxis />
       <Radar
         name="types de réclamations"

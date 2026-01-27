@@ -95,8 +95,11 @@ const Dashboard = () => {
     return {name:bp._id,value:bp.count,fill:getFill(bp._id)}
   })
   const totaleCount=stats.total?.at(0)?.totalTickets;
-  const formData=stats.formName.map((fn:any)=>{
-    return {form:fn._id,value:fn.count,fullMark:totaleCount}
+  // const formData=stats.formName.map((fn:any)=>{
+  //   return {form:fn._id,value:fn.count,fullMark:totaleCount}
+  // })
+  const motifData=stats.motif.map((m:any)=>{
+    return {motif:m._id,value:m.count,fullMark:totaleCount}
   })
   const emmiterData=stats.emmiter.map((ed:any)=>{
     return {name:ed.name,count:ed.count}
@@ -136,7 +139,7 @@ const Dashboard = () => {
        
         <OrganisationClassement title="Classement Organisation réceptionniste" data={receiptionData} fill="#3fa9fc" fillActive="#aa39ff" strokeActive="#5500ee"/>
         <PriorityStatusChart isAnimationActive={true} statusData={statusData} priorityData={priorityData} />
-        <FormNameRadarChart data={formData} />
+        <FormNameRadarChart data={motifData} />
       </div>
     
   );
