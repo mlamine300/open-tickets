@@ -5,10 +5,13 @@ import toast from "react-hot-toast";
 import axiosInstance from "@/utils/axiosInstance";
 import { API_PATH } from "@/data/apiPaths";
 import type { ticket } from "@/types";
+import { PRIORITY_DATA } from "@/data/data";
 
 export const addTicketAction=async(ticket:ticket)=>{
 try {
- const res=await axiosInstance.post(API_PATH.TICKETS.ADD_TICKET,ticket);
+    const priority=PRIORITY_DATA.filter(x=>x.label===ticket.priority).at(0)?.value||"low";
+    const newTicket={...ticket,priority}
+ const res=await axiosInstance.post(API_PATH.TICKETS.ADD_TICKET,newTicket);
  if(res.status!==200){
     console.log("Error Adding ticket",res.data.message);
 return null; 

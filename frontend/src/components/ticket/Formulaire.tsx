@@ -133,12 +133,12 @@ setPending(false);
             {(field.type === "text"||field.type==="number"||field.type==="date"||field.type==="area") && (
               <Input
               parentClassName="bg-background-base flex flex-col items-start gap-0"
-              labelClassName={"w-full flex text-xs italic "}
+              labelClassName={"capitalize w-full flex text-xs italic "}
               containerClassName="w-full "
               type={field.type}
               value={myForm.watch(field.name) ?? ""}
                 // {...myForm.register(field.name)}
-                placeHolder={`please enter ${field.name}`}
+                placeHolder={`Merci de saisir le(a) ${field.name}`}
                 label={field.label}
                 isRequired={field.required}
                 {...myForm.register(field.name)}
@@ -152,7 +152,7 @@ setPending(false);
             )}
             {field.type === "select-filter" && (
               <div className={"bg-background-base flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+                <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
              <SelectWithSearch 
              name={field.name}
                value={myForm.watch(field.name) ?? field.default??""} label={field.label} possibleValues={field.possibleValues} onValueChange={(value) => myForm.setValue(field.name, value)} />
@@ -160,7 +160,7 @@ setPending(false);
             )}
  {field.type === "select-multiple" && (
               <div className={"bg-background-base flex flex-col items-start gap-0 "}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+                <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
              <SelectMultiple 
              name={field.name}
                value={myForm.watch(field.name) ?? field.default??[]} label={field.label} possibleValues={field.possibleValues} onValueChange={(value) => myForm.setValue(field.name, value)} />
@@ -168,14 +168,14 @@ setPending(false);
             )}
               {field.type === "select" && (
               <div className={"bg-background-base flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+                <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
            <Select 
                 value={myForm.watch(field.name) ?? field.default??""}
                 onValueChange={(value) => myForm.setValue(field.name, value)}
               >
                 
                 <SelectTrigger className={"w-full"}>
-                  <SelectValue  placeholder={`Select a ${field.label}`} />
+                  <SelectValue  placeholder={`Sélectionner un(e) ${field.label}`} />
                   
                 </SelectTrigger>
                 

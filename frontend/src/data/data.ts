@@ -258,7 +258,7 @@ export const getStandardForm=():FormType=>({
 
     export const StandartFierlds=():FormFieldType[]=>[
       {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
-      {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.value),required:false,default:"low"},
+      {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.label),required:false,default:"Normal"},
       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
         {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:[
