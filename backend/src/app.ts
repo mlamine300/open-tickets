@@ -19,6 +19,7 @@ import userRouter from "./routes/userRoute.js";
 import statRouter from "./routes/statRoutes.js";
 import attachementRouter from "./routes/attachement.js";
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -73,3 +74,4 @@ app.listen(PORT, (err?: Error) => {
   if (err) console.error("Server failed to start:", err);
   console.log(`Server running on port ${PORT}`);
 });
+

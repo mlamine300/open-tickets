@@ -44,11 +44,12 @@ export const addTicket=async(req:Request,res:Response)=>{
         //
         const priority=req.body?.priority?.toLowerCase()||"low";
         const attachement=req.body?.attachement||"";
+         const motif=req.body?.motif||"standart";
         const commentsId:any[]=[];
         
        console.log(req.body);
        
-        const ticket=await ticketModel.create({creator:userId,attachement,
+        const ticket=await ticketModel.create({creator:userId,attachement,motif,
            emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,formName,message,specialFields,priority,commentsId,ref
         })
         return res.status(200).json({message:"success",data:ticket})
@@ -75,6 +76,7 @@ export const getTickets = async (req: Request, res: Response) => {
     const priority=req.body?.priority||null;
     const emitterOrganizationId=req.body?.emitterOrganizationId||null;
      const recipientOrganizationId=req.body?.recipientOrganizationId||null;
+     const motif=req.body.motif||null;
     const skip = (page - 1) * limit;
 
 
@@ -104,10 +106,11 @@ if(emitterOrganizationId){
 if(recipientOrganizationId){
   baseFilter.recipientOrganizationId=new mongoose.Types.ObjectId(recipientOrganizationId);
 }
+if(motif){
+   baseFilter["motif"]=motif;
+}
     const searchFilter=getSearchFilter(search)
-console.log("\n\n\n\n-----------------------------------")
-    console.log(JSON.stringify(baseFilter))
-console.log("\n\n\n\n-----------------------------------")
+
     const pipeline: any[] = [
       { $match: { ...baseFilter,...searchFilter
         //  ...searchQuery
@@ -245,6 +248,7 @@ console.log("\n\n\n\n-----------------------------------")
           createdAt: 1,
           updatedAt: 1,
           specialFields:1,
+          motif:1,
           lastComment: {
             _id: "$lastComment._id",
             message: "$lastComment.message",
@@ -344,6 +348,7 @@ export const getMytickets = async (req: Request, res: Response) => {
      const recipientOrganizationId=req.body?.recipientOrganizationId||null;
     const skip = (page - 1) * limit;
     const status=req.params.status||"pending"
+    const motif=req.body.motif||"";
 
     // Sorting
     const sortField = req.body?.sortField || "createdAt";
@@ -364,8 +369,12 @@ console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user)}));
     if(status){
       baseFilter.status=status;
     }
+
 if(priority){
   baseFilter["priority"]=priority;
+}
+if(motif){
+  baseFilter["motif"]=motif;
 }
 
 if(recipientOrganizationId){
@@ -511,6 +520,7 @@ if(recipientOrganizationId){
           createdAt: 1,
           updatedAt: 1,
           specialFields:1,
+           motif:1,
           lastComment: {
             _id: "$lastComment._id",
             message: "$lastComment.message",

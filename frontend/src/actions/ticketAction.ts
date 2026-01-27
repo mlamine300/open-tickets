@@ -23,6 +23,7 @@ return null;
 }
 
 }
+
 export const getTicketByIdAction:(ticketId:string)=>Promise<ticket|null>=async(ticketId)=>{
     try {
         const res=await axiosInstance.get(API_PATH.TICKETS.GET_TICKET_BY_ID(ticketId));
@@ -37,14 +38,13 @@ export const getTicketByIdAction:(ticketId:string)=>Promise<ticket|null>=async(t
     }  
 }         
 
-
-
 export const getTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS(""),{...params});
     if(res.status===200) return {data:res.data.data as ticket[],total:res.data.totalCount};
    return {data:[],total:0};
     
 }
+
 export const getPendingTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
      console.log("pending");
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("pending"),{...params});
@@ -56,6 +56,7 @@ export const getPendingTicketsAction:(params:any)=>Promise<{data:ticket[],total:
    return {data:[],total:0};
     
 }
+
 export const getOpenByMeTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
     console.log("open by me");
     
@@ -64,6 +65,7 @@ export const getOpenByMeTicketsAction:(params:any)=>Promise<{data:ticket[],total
    return {data:[],total:0};
     
 }
+
 export const getOpenTicketAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
      console.log("open");
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("open"),{...params});
@@ -71,6 +73,7 @@ export const getOpenTicketAction:(params:any)=>Promise<{data:ticket[],total:numb
    return {data:[],total:0};
     
 }
+
 export const getClosedTicketAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
      console.log("closed");
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("complete"),{...params});
@@ -78,6 +81,7 @@ export const getClosedTicketAction:(params:any)=>Promise<{data:ticket[],total:nu
    return {data:[],total:0};
     
 }
+
 export const getSentTicketAction:(status:string,params:any)=>Promise<{data:ticket[],total:number}>=async(status,params)=>{
      console.log("sent");
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_MY_TICKETS(status),{...params});

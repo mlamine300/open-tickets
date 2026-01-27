@@ -248,6 +248,34 @@ export const STATUS_DATA = [
   { value: "complete", label: "cloturé" },
 ];
 
+export const MOTIFS=[
+  "Bureau injoignable",
+"Bureau fermé",
+"Colis défectueux",
+"Colis manquant",
+"Livraison manquante",
+"Retard de livraison",
+"Retard de retour",
+"Refus de livraison",
+"Faux statut / Scan",
+"Mauvais comportement",
+"Ouverture sans autorisation",
+"Demandes / Modifications",
+"Changement de prix",
+"Changement de numéro",
+"Changement de commune",
+"Changement du type de livraison",
+"Demande de localisation",
+"Demande de mise à jour",
+"Demande de livraison",
+"Demande de retour",
+"Demande d’information",
+"Conserver le colis / Garder le colis",
+"Réclamation financière",
+"Autre réclamation",
+
+]
+
 export const getStandardForm=():FormType=>({
         _id:"standard",
         name:"standard",
@@ -257,15 +285,19 @@ export const getStandardForm=():FormType=>({
 
 
     export const StandartFierlds=():FormFieldType[]=>[
+      {name:"motif",label:"Motif",type:"select",possibleValues:MOTIFS,required:true},
       {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
-      {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.label),required:false,default:"Normal"},
-      {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
+       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
       // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
         {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:[
                         "organisations"
                     ],required:false},
         {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:["organisations"],required:false},
+       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.label),required:false,default:"Normal"},
+    
         {name:"attachement",label:"attachement",type:"file",required:false},
+        
+    
     ]
 
 export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]

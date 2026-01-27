@@ -48,8 +48,8 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
  </div>
 
   <div className='flex items-center gap-2 text-xs 2xl:text-sm'>
-    <p className='text-primary text-xs 2xl:text-sm'>Priority :</p>
-    <p className='text-xs 2xl:text-sm'>{ticket.priority||"basse"} </p>
+    <p className='text-primary text-xs 2xl:text-sm'>Motif :</p>
+    <p className='text-xs 2xl:text-sm'>{ticket.motif||"Standart"} </p>
  </div>
 
  <div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>

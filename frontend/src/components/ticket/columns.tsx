@@ -67,6 +67,18 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
      }
   },
   {
+    accessorKey: "motif",
+    header: "Motif",
+     cell: ({ row }) => {
+        
+        const motif=row.original.motif||"standart";
+  
+      return <div className="flex justify-center items-center ">
+       <p className="uppercase italic text-sm font-semibold">{motif} </p>
+      </div>;
+     }
+  },
+  {
     accessorKey: "emitterOrganizationId",
     header: "Départ / Déstination",
      cell: ({ row }) => {

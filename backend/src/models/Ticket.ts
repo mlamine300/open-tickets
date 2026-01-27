@@ -13,6 +13,8 @@ const TicketSchema=new mongoose.Schema({
     formName:{type:String,required:true},
     status:{type:String,enum:["open","pending","complete"],default:"pending"},
     priority:{type:String,enum:["low","medium","high"],default:"low"},
+    motif:{type:String} ,
+    //----
     pj:{type:String,required:false},
     message:{type:String,required:true},
     comments:[{ type: Schema.Types.ObjectId, ref: 'Comment' }],

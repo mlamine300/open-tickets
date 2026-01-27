@@ -69,6 +69,7 @@ export interface ticket{
     status?:string;
     priority?:string;
     pj?:any;
+    motif:string;
     message:string;
     commentsId:string[];
     specialFields?:any;

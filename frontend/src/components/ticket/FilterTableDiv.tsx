@@ -4,7 +4,7 @@ import type { Organisation } from '@/types';
 import Input from '../ui/Input';
 import { useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { PRIORITY_DATA } from '@/data/data';
+import { MOTIFS, PRIORITY_DATA } from '@/data/data';
 
 import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import SelectWithSearch from '../ui/SelectWithSearch';
@@ -12,6 +12,7 @@ import SelectWithSearch from '../ui/SelectWithSearch';
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
  const [searchParams,setSearchParams]=useSearchParams();
     const [search,setSearch]=useState(searchParams.get("search")||"");
+    const [motif,setMotif]=useState(searchParams.get("motif")||"");
 
     const emmiterOrganisationName=searchParams.get("emitter_organization")?organisations?.filter(o=>o._id===searchParams.get("emitter_organization")).at(0)?.name||"----":""
     const [emitterOrganization,setEmitterOrganization]=useState(emmiterOrganisationName);
@@ -30,6 +31,12 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         } else {
           params.delete("search");
         }
+         // motif
+        if (motif) {
+          params.set("motif", motif);
+        } else {
+          params.delete("motif");
+        }
         // Emitter Organization
         if (emitterOrganization) {
           const emitterOrganizationId=organisations?.filter(o=>o.name===emitterOrganization).at(0)?._id;
@@ -46,12 +53,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         } else {
           params.delete("recipient_organization");
         }
-        // Status
-        if (status) {
-          params.set("status", status);
-        } else {
-          params.delete("status");
-        }
+       
         // Priority
         if (priority) {
           params.set("priority", priority);
@@ -61,7 +63,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         setSearchParams(params);
       }, 300);
       return () => clearTimeout(handler);
-    }, [search, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
+    }, [search,motif, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
     return (
 <Accordion
       type="single"
@@ -119,35 +121,14 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
 <div className={" flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Organisation Destinatrice </label>
              <SelectWithSearch label='Organisation Destinatrice' name='Organisation Destinatrice' onValueChange={(o)=>setRecipientOrganization(o)} value={recipientOrganization} possibleValues={organisationsName} />
-                 {/* <Select 
-                value={recipientOrganization}
-                onValueChange={(value) => setRecipientOrganization( value)}
-              >
-                
-                <SelectTrigger id='select-emitterOrganisations' className={"w-full"}>
-                  <SelectValue  placeholder={`station destinataire`} />
-                  
-                </SelectTrigger>
-                
-                
-                <SelectContent  id={`select-station-destinataire`} className="bg-background-base ">
-                  
-                 
-
-                 <p className='text-sm hover:cursor-pointer'  onClick={()=>setRecipientOrganization("")}>
-                    Organisation
-                  </p>
-                  { organisations?.map((val) => (
-                    <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val.name} value={val._id||"---"}>
-                      {val.name}
-                    </SelectItem>
-                  ))}
-                  
-                </SelectContent>
-                
-              </Select> */}
+               
               </div>}
-             
+
+       <div className={" flex flex-col items-start gap-0"}>
+                <label className={'w-full flex text-xs italic '} htmlFor={`motif`}>Motif </label>
+             <SelectWithSearch label='Motif' name='motif' onValueChange={(m)=>setMotif(m)} value={motif} possibleValues={MOTIFS} />
+          
+              </div>      
 
                <div className={"flex flex-col items-start gap-0"}>
                 <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priorité </label>

@@ -28,6 +28,7 @@ const TicketsPage = () => {
    const [triggerRerender,setTriggerRerender]=useState(0);
   const page=searchParams.get("page")||1;
     const search=searchParams.get("search")||"";
+    const motif=searchParams.get("motif")||"";
     const emitterOrganizationId=searchParams.get("emitter_organization")||"";
     const recipientOrganizationId=searchParams.get("recipient_organization")||"";
     
@@ -41,7 +42,7 @@ const TicketsPage = () => {
       const getMyTickets = async () => {
         setPending(true);
         setTicket([]);
-        const res = await getSpecificTicketAction(pathname, { page, search, emitterOrganizationId, recipientOrganizationId, priority });
+        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority });
         setTicket(res.data);
         setTotalTicketsSize(res.total);
         setPending(false);
@@ -58,7 +59,7 @@ const TicketsPage = () => {
       return () => {
         clearInterval(intervalId);
       };
-    }, [pathname, page, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
+    }, [pathname, page,motif, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
 
 const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setShowModal(modalTitle);
