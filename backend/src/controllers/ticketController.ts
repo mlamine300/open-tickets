@@ -77,6 +77,7 @@ export const getTickets = async (req: Request, res: Response) => {
     const emitterOrganizationId=req.body?.emitterOrganizationId||null;
      const recipientOrganizationId=req.body?.recipientOrganizationId||null;
      const motif=req.body.motif||null;
+     const notag=req.body.notag||null;
     const skip = (page - 1) * limit;
 
 
@@ -92,7 +93,7 @@ export const getTickets = async (req: Request, res: Response) => {
     const type = req.params.type || "pending";
     //console.log("-------------------------------------->",getFilterFromType(type, userId))
     const baseFilter:any = {
-      ...getResponsablitiesFilterFromRole(user),
+      ...getResponsablitiesFilterFromRole(user,notag),
       ...getFilterFromType(type, userId),
       creator: { $ne: new mongoose.Types.ObjectId(userId) },
       emitterOrganizationId:{ $ne: new mongoose.Types.ObjectId(user.organisation) },
@@ -349,19 +350,19 @@ export const getMytickets = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
     const status=req.params.status||"pending"
     const motif=req.body.motif||"";
-
+    const notag=req.body.notag||"false";
     // Sorting
     const sortField = req.body?.sortField || "createdAt";
     const sortOrder = req.body?.sortOrder === "asc" ? 1 : -1;
 
     // Search
     const search = req.body?.search || "";
-console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user)}));
+console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user,notag)}));
 
     // Filters
     const type = req.params.type || "pending";
     const baseFilter:any = {
-      ...getResponsablitiesFilterFromRole(user),
+      ...getResponsablitiesFilterFromRole(user,notag),
       ...getFilterFromType(type, userId),
       //creator:  new mongoose.Types.ObjectId(userId) 
       emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation) ,
@@ -732,7 +733,7 @@ switch(type){
 }
 }
 
-const getResponsablitiesFilterFromRole:(user:TokenPayload)=>any=(user)=>{
+const getResponsablitiesFilterFromRole:(user:TokenPayload,notag:string)=>any=(user,notag)=>{
    const role=user.role;
    const organisation=user.organisation ;
     const organisationsList=user.organisationsList.map(o=>new mongoose.Types.ObjectId(o))||[];
@@ -746,6 +747,13 @@ return {}
     { associatedOrganizations: { $in: [organisation,...user.organisationsList] } },
   ]
 }   
+    }
+    else if(notag==="true"){
+return{$or: [
+    { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
+    { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
+  ]
+}
     }
     else return{$or: [
     { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
@@ -776,7 +784,7 @@ const getSearchFilter=(search:string)=>{
 export const getTicketsByStatus = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
-  const reponsabilities=getResponsablitiesFilterFromRole(user)
+  const reponsabilities=getResponsablitiesFilterFromRole(user,"false")
   console.log(reponsabilities)
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
@@ -792,7 +800,7 @@ export const getTicketsByStatus = async (req:Request,res:Response) => {
 export const getTicketsByPriority = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
-  const reponsabilities=getResponsablitiesFilterFromRole(user)
+  const reponsabilities=getResponsablitiesFilterFromRole(user,"false")
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
       $group: {
@@ -805,7 +813,7 @@ export const getTicketsByPriority = async (req:Request,res:Response) => {
 export const getTicketsByEmitterOrg = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
-  const reponsabilities=getResponsablitiesFilterFromRole(user)
+  const reponsabilities=getResponsablitiesFilterFromRole(user,"false")
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
       $group: {
@@ -818,7 +826,7 @@ export const getTicketsByEmitterOrg = async (req:Request,res:Response) => {
 export const getAssignedVsUnassigned = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
-  const reponsabilities=getResponsablitiesFilterFromRole(user)
+  const reponsabilities=getResponsablitiesFilterFromRole(user,"false")
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
       $group: {
@@ -1005,7 +1013,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     const user = getToken(req);
     if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-    const reponsabilities = getResponsablitiesFilterFromRole(user);
+    const reponsabilities = getResponsablitiesFilterFromRole(user,"false");
 
     const now = new Date();
 
@@ -1161,7 +1169,7 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
 
     // ================= FILTERS =================
     const baseFilter: any = {
-      ...getResponsablitiesFilterFromRole(user),
+      ...getResponsablitiesFilterFromRole(user,"false"),
       emitterOrganizationId: {
         $ne: new mongoose.Types.ObjectId(user.organisation),
       },
@@ -1450,7 +1458,7 @@ export const getTicketReport = async (req: Request, res: Response) => {
       const endday=new Date(enddayString);
     // ================= FILTERS =================
     const baseFilter: any = {
-      ...getResponsablitiesFilterFromRole(user),
+      ...getResponsablitiesFilterFromRole(user,"false"),
       emitterOrganizationId: {
         $ne: new mongoose.Types.ObjectId(user.organisation),
       },

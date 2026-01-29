@@ -51,7 +51,10 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
     <p className='text-primary text-xs 2xl:text-sm'>Motif :</p>
     <p className='text-xs 2xl:text-sm'>{ticket.motif||"Standart"} </p>
  </div>
-
+ {(ticket.associatedOrganizations&&Array.isArray(ticket.associatedOrganizations)&&ticket.associatedOrganizations.length>0)&&<div className='flex items-center gap-2 text-xs 2xl:text-sm'>
+    <p className='text-primary text-xs 2xl:text-sm'>Organisations concernées :</p>
+    <p className='text-xs 2xl:text-sm'>{`(${ticket.associatedOrganizations.map(a=>a.name).join(" - ")})`} </p>
+ </div>}
  <div className='flex flex-col justify-start items-start gap-px lg:col-span-2 '>
     <p className='text-text-primary text-xs italic font-semibold'>Message :</p>
     <p className='bg-gray-hot/10 min-h-20 w-full text-start text-md px-2 py-1 rounded italic'>

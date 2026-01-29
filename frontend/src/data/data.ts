@@ -273,7 +273,14 @@ export const MOTIFS=[
 "Conserver le colis / Garder le colis",
 "Réclamation financière",
 "Autre réclamation",
-"Surfacturation"
+"Surfacturation",
+"Réacheminement",
+"Faux dispatch",
+"accélération de livraison",
+"retour vide",
+"litige et remboursement",
+"manque de prefessionnalisme",
+"colis vide",
 
 ]
 

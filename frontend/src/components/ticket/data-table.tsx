@@ -19,6 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useState } from "react"
+import type { ticket } from "@/types"
+import { useUserContext } from "@/context/user/userContext"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -41,7 +43,9 @@ export function DataTable<TData, TValue>({
       sorting,
     },
   });
-
+const {user}=useUserContext();
+const userOrganisation=user?.organisation;
+const role=user?.role;
   return (
     <div className="overflow-hidden rounded-md border flex items-center justify-center w-full  border-gray-hot">
       <Table className="bg-background-base border border-gray-hot">
@@ -65,9 +69,15 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row) => 
+            {
+              const ticket=row.original as ticket;
+              const emitterOrganization=ticket.emitterOrganization?._id;
+              const receiptionORganisation=ticket.recipientOrganization?._id;
+              const isConcernerd=role==="admin"||role==="supervisor"||userOrganisation===emitterOrganization||userOrganisation===receiptionORganisation;
+              return (
               <TableRow
-              className="border border-gray-hot cursor-pointer hover:bg-gray-hot/50 h-24"
+              className={`border border-gray-hot cursor-pointer hover:bg-gray-hot/50 h-24 ${isConcernerd?" ":" bg-gray-hot/90 text-gray-400"}`}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -77,7 +87,9 @@ export function DataTable<TData, TValue>({
                   </TableCell>
                 ))}
               </TableRow>
-            ))
+            )
+            }
+            )
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

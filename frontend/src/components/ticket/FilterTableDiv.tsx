@@ -12,8 +12,8 @@ import SelectWithSearch from '../ui/SelectWithSearch';
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
  const [searchParams,setSearchParams]=useSearchParams();
     const [search,setSearch]=useState(searchParams.get("search")||"");
-    const [motif,setMotif]=useState(searchParams.get("motif")||"");
-
+    const [motif,setMotif]=useState(searchParams.get("motif")||""); 
+    const [onlyMyOrganisation, setOnlyMyOrganisation] = useState(Boolean(searchParams.get("notag"))||false);
     const emmiterOrganisationName=searchParams.get("emitter_organization")?organisations?.filter(o=>o._id===searchParams.get("emitter_organization")).at(0)?.name||"----":""
     const [emitterOrganization,setEmitterOrganization]=useState(emmiterOrganisationName);
      const receiptientOrganisationName=searchParams.get("recipient_organization")?organisations?.filter(o=>o._id===searchParams.get("recipient_organization")).at(0)?.name||"----":""
@@ -53,6 +53,11 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         } else {
           params.delete("recipient_organization");
         }
+        if(onlyMyOrganisation){
+          params.set("notag","true")
+        }else{
+          params.delete("notag");
+        }
        
         // Priority
         if (priority) {
@@ -63,7 +68,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         setSearchParams(params);
       }, 300);
       return () => clearTimeout(handler);
-    }, [search,motif, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
+    }, [search,motif,onlyMyOrganisation, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
     return (
 <Accordion
       type="single"
@@ -161,6 +166,14 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 
               </Select>
               </div>
+     <div onClick={()=>setOnlyMyOrganisation(b=>!b)} className={` grid grid-cols-2 cursor-pointer rounded-2xl items-start gap-0 w-72 lg:max-w-72`}>
+            <div className={`flex items-center justify-center w-full h-full rounded-l-2xl  max-h-8/12 my-auto  ${onlyMyOrganisation?"bg-gray-hot":"bg-primary"}`}>
+               <p className='text-sm italic'>Tous</p> 
+            </div>
+           <div className={`flex items-center justify-center w-full h-full rounded-r-2xl  max-h-8/12 my-auto ${onlyMyOrganisation?"bg-primary":"bg-gray-hot"}`}>
+                  <p className='text-sm italic'>Me Concerne</p>
+                  </div>
+              </div>  
      
     </div>
     <form className='flex justify-end items-center'>
