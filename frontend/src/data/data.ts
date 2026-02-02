@@ -253,6 +253,7 @@ export const MOTIFS=[
 "Bureau fermé",
 "Colis défectueux",
 "Colis manquant",
+"------------------",
 "Livraison manquante",
 "Retard de livraison",
 "Retard de retour",
