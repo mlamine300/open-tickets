@@ -39,23 +39,16 @@ const SelectWithSearch = ({
     );
   }, [search, possibleValues]);
 
-  // Focus when opened
+  // Focus ONLY once when opened (mobile safe)
   useEffect(() => {
     if (open) {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         inputRef.current?.focus();
-      }, 0);
+      }, 200);
+
+      return () => clearTimeout(t);
     }
   }, [open]);
-
-  // Re-focus after list changes
-  useEffect(() => {
-    if (open) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 0);
-    }
-  }, [filtredValues, open]);
 
   return (
     <Select
@@ -84,7 +77,12 @@ const SelectWithSearch = ({
       </div>
 
       <SelectContent id={`select-${name}`} className="bg-background-base">
-        <div className="relative flex items-center">
+        {/* Stop propagation so Select doesn't close on mobile */}
+        <div
+          className="relative flex items-center"
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
           <input
             ref={inputRef}
             value={search}
