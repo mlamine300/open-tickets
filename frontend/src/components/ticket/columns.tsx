@@ -8,7 +8,7 @@ import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
-import { PRIORITY_DATA, STATUS_DATA } from "@/data/data";
+import { PRIORITY_DATA } from "@/data/data";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -52,6 +52,21 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       </Link>;
      }
   },
+   {
+    accessorKey: "emitterOrganizationId",
+    header: "Départ / Déstination",
+     cell: ({ row }) => {
+        const original=row.original;
+        
+      const emitterOrganization = (original.emitterOrganization as any).name as string
+      const recipientOrganization = original.recipientOrganization?(original.recipientOrganization as any).name as string :"not yet"
+      return <div className="flex flex-col justify-around items-center gap-1 w-fit">
+        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">De:</span> {emitterOrganization} </p>
+        <ArrowUpDown/>
+         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">À:</span> {recipientOrganization} </p>
+      </div>;
+}
+  },
   {
     accessorKey: "creator",
     header: "Creé par",
@@ -78,37 +93,9 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       </div>;
      }
   },
-  {
-    accessorKey: "emitterOrganizationId",
-    header: "Départ / Déstination",
-     cell: ({ row }) => {
-        const original=row.original;
-        
-      const emitterOrganization = (original.emitterOrganization as any).name as string
-      const recipientOrganization = original.recipientOrganization?(original.recipientOrganization as any).name as string :"not yet"
-      return <div className="flex flex-col justify-around items-center gap-1 w-fit">
-        <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">De:</span> {emitterOrganization} </p>
-        <ArrowUpDown/>
-         <p className="font-semibold text-xs flex gap-1"><span className="text-gray-cold italic">À:</span> {recipientOrganization} </p>
-      </div>;
-}
-  },
+ 
 
-  {
-    accessorKey: "status",
-    header: "Statut",
-    cell:({row})=>{
-      const status=row.getValue("status") as string;
-      const color=status==="pending"?"#f00":status==="open"?"#0f0":status==="close"?"#F4F754":"#eee";
-      const statusFr=STATUS_DATA.filter(s=>s.value===status).at(0)?.label;
-      return <div>
-        <p className="lg:flex justify-center hidden px-2 py-px rounded-full text-white text-xs" style={{backgroundColor:color}}>{statusFr}
-      </p>
-      <p style={{backgroundColor:color}} className="rounded-full p-px flex w-2 h-2 lg:hidden"></p>
-      </div>
-        
-    }
-  },
+ 
   {
     accessorKey: "priority",
     header: "Priorité",
@@ -121,7 +108,20 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       </p></div>
     }
   },
-  
+  {
+    accessorKey: "creator",
+    header: "Creé par",
+     cell: ({ row }) => {
+        
+        const obj=row.getValue("creator");
+      const name =obj? (obj as any).name as string:"no one"
+      const email =obj? (obj as any).email as string:""
+      return <div className="flex flex-col gap-1 items-center ">
+        <p className="font-semibold text-xs">{name} </p>
+        <p className="italic font-light text-xs">{email} </p>
+      </div>;
+     }
+  },
 
        {
     accessorKey: "assignedTo",

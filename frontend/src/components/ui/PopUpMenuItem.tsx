@@ -13,9 +13,10 @@ import { useLocation } from "react-router";
 const PopUpMenuItem = ({
   item,
   choosed,
+  colapsed
 }: {
   item: MenuItemType;
-
+colapsed: boolean;
   choosed: boolean;
 }) => {
      const { pathname } = useLocation();
@@ -36,14 +37,14 @@ const PopUpMenuItem = ({
       }`}>
        <div className="flex  gap-4">
 
-      <Icon className={""} />
-      <p className="text-sm font-normal">{item.label} </p>
+      <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
+      <p className={colapsed?"hidden":"text-sm font-normal"}>{item.label} </p>
        </div>
     
     </AccordionTrigger>
     <AccordionContent className="ml-4">
       <div className='flex flex-col gap-2'>
-      {item.childs?.map((c:SimpleMenuItemType)=><MenuItem item={c} choosed={isChoosed(c.path)} />)}
+      {item.childs?.map((c:SimpleMenuItemType)=><MenuItem colapsed={colapsed} item={c} choosed={isChoosed(c.path)} />)}
       </div>
     </AccordionContent>
   </AccordionItem>

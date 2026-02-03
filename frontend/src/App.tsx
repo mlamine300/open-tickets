@@ -21,7 +21,7 @@ function App() {
  
 
   return (
-     <div className="layout bg-background-screen">
+     <main className="layout bg-background-screen">
 
     <Routes>
         <Route path="/login" element={<Login />} />
@@ -43,7 +43,7 @@ function App() {
       </Routes>  
        
       <Toaster position="top-center" reverseOrder={false} />
-     </div>)
+     </main>)
 }
 
 export default App

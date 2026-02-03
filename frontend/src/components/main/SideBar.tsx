@@ -8,6 +8,7 @@ import { HiBars3 } from "react-icons/hi2";
 import PopUpMenuItem from "../ui/PopUpMenuItem";
 import { Accordion } from "../ui/accordion";
 import { getColorFromName } from "../../../../utils/helper";
+import { PanelLeftClose, PanelRightClose } from "lucide-react";
 
 const SideBar = () => {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ const SideBar = () => {
     type === "admin" ? SIDE_MENU_ADMIN_DATA : SIDE_MENU_USER_DATA;
   const { user } = useUserContext();
   const [showed, setShowed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
   return (
     <>
       {/* <button onClick={setShowed((s) => !s)}> */}
@@ -35,16 +37,29 @@ const SideBar = () => {
         className={`min-h-lvh  bg-background-base transition duration-300 ease-in-out  ${
           showed
             ? "fixed h-full  flex flex-col w-full z-10"
-            : "relative  mt-14 hidden lg:flex flex-col w-64 border-r gap-10 border-gray-hot "
+            : `relative  mt-14 hidden lg:flex flex-col border-r gap-10 border-gray-hot ${collapsed?"w-20":"w-64"}`
         }`}
       >
-        <div className="flex  flex-col items-center w-64 gap-1 mt-8 max-md:mx-auto ">
+        {collapsed ? (
+         <PanelRightClose
+        className={`fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-16 hover:scale-150 hover:cursor-pointer`}
+        style={{right:collapsed? '4rem':'1rem'}}
+        onClick={() => setCollapsed((b) => !b)}
+      />
+        ) : (
+          <PanelLeftClose
+        className={`fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-64 hover:scale-150 hover:cursor-pointer`}
+        style={{right:collapsed? '4rem':'1rem'}}
+        onClick={() => setCollapsed((b) => !b)}
+      />
+        )}
+        <div className={`flex  flex-col items-center gap-1 mt-8 max-md:mx-auto  ${collapsed?"w-20":"w-64"}`}>
            
             <p
               style={{
                 backgroundColor: getColorFromName(user?.name || "user"),
               }}
-              className="rounded-full text-background-base w-20 h-20 items-center justify-center flex text-7xl"
+              className={collapsed?"w-10 h-10 rounded-full flex items-center justify-center text-white text-lg":"w-20 h-20 rounded-full flex items-center justify-center text-white text-7xl"}
             >
               {user?.name.slice(0, 1).toUpperCase()}
             </p>
@@ -53,7 +68,7 @@ const SideBar = () => {
             {user?.role}
           </p>
           <p className="font-semibold text-xs">{user?.name} </p>
-          <p className="font-light text-gray-500 text-[10px]">{user?.email} </p>
+          <p className={collapsed?"hidden":"text-xs text-text-primary/70"}>{user?.email} </p>
         </div>
        
            <Accordion className=" w-full h-full flex flex-col"  type="single" collapsible>
@@ -61,6 +76,7 @@ const SideBar = () => {
           if(item.hasChilds){
               return (
               <PopUpMenuItem
+              colapsed={collapsed}
                 item={item}
                 key={index}
                 choosed={isShoosed(item.path)}
@@ -69,6 +85,7 @@ const SideBar = () => {
           }else{
               return (
               <MenuItem
+              colapsed={collapsed}
                 item={item}
                 key={index}
                 choosed={isShoosed(item.path)}
