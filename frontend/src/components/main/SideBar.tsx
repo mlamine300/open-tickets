@@ -29,7 +29,10 @@ const SideBar = () => {
       {/* <button onClick={setShowed((s) => !s)}> */}
       <HiBars3
         className="fixed z-20 left-2  top-6 rounded-full bg-gray-hot/20 p-2 text-primary lg:hidden w-8 h-8 active:rotate-30 transition"
-        onClick={() => setShowed((b) => !b)}
+        onClick={() => {
+          setShowed((b) => !b);
+          setCollapsed(false);
+        }}
       />
       {/* </button> */}
       <aside
@@ -42,13 +45,13 @@ const SideBar = () => {
       >
         {collapsed ? (
          <PanelRightClose
-        className={`fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-16 hover:scale-150 hover:cursor-pointer`}
+        className={`hidden lg:flex fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-16 hover:scale-150 hover:cursor-pointer`}
         style={{right:collapsed? '4rem':'1rem'}}
         onClick={() => setCollapsed((b) => !b)}
       />
         ) : (
           <PanelLeftClose
-        className={`fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-64 hover:scale-150 hover:cursor-pointer`}
+        className={`hidden lg:flex fixed z-20  top-20 rounded-full bg-gray-hot/20 p-2 text-primary  w-10 h-10 active:rotate-30 transition left-64 hover:scale-150 hover:cursor-pointer`}
         style={{right:collapsed? '4rem':'1rem'}}
         onClick={() => setCollapsed((b) => !b)}
       />
