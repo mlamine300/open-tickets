@@ -91,7 +91,8 @@ export const getTickets = async (req: Request, res: Response) => {
 
     // Filters
     const type = req.params.type || "pending";
-    //console.log("-------------------------------------->",getFilterFromType(type, userId))
+    
+    console.log("-------------------------------------->",getFilterFromType(type, userId))
     const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user,notag),
       ...getFilterFromType(type, userId),
@@ -629,7 +630,10 @@ if (!token) return res.status(409).json({ message: "not autorized" });
 
     const ticket=await ticketModel.findById(id).exec();
     if(!ticket)return res.status(404).json({message:"ticket not found"})
-      if(!checkIfUSerCanPerformAction(ticket,user))return res.status(409).json({message:"you don't have permission"})
+      if(ticket.creator?._id.toString()!==userId&&user.role!=="admin"){
+ return res.status(409).json({message:"you don't have permission"})
+      }
+      // if(!checkIfUSerCanPerformAction(ticket,user))return res.status(409).json({message:"you don't have permission"})
       ticket.status="complete";
     const message=req.body.message;
     const comment=await commentsModel.create({
@@ -645,6 +649,43 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
+    return res.status(500).json({message:"server error",error})
+  }
+}
+export const traitTicket=async (req:Request,res:Response)=>{
+  try {
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      if(!checkIfUSerCanPerformAction(ticket,user)){
+ return res.status(409).json({message:"you don't have permission"})
+      }
+       
+      ticket.status="traited";
+    const message=req.body.message;
+    const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"trait",
+      message,
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.comments.push(comment._id)
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    console.log("--------------------->")
+    console.log(error)
+console.log("--------------------->")
     return res.status(500).json({message:"server error",error})
   }
 }
@@ -728,6 +769,9 @@ switch(type){
     }
     case "complete":{
         return {status:"complete"}
+    }
+    case "traited":{
+        return {status:"traited"}
     }
     default: return {};
 }
@@ -1140,7 +1184,7 @@ return isToUserOrganisation||isUnderUserSupervision;
 }
 
 const checkIfUSerCanPerformAction=(ticket:any,user:TokenPayload)=>{
-  console.log({ticket,user})
+ // console.log({ticket,user})
  if(!ticket.status||ticket.status==="pending")return false;
 
 if(ticket.creator.toString()===user.userId)return false;

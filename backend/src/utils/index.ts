@@ -78,7 +78,7 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
   }
 }
 
- export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close","subscribe"]
+ export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","trait","close","subscribe"]
 
     export const COMMENT_ACTIONS_DICTIONNAIRE=
       {
@@ -86,7 +86,8 @@ export const getFieldsFromFormName:(t:string)=>Promise<FormFieldType[]|null>=asy
   in_charge: "pris en charge",
   called: "le concerné a été appelé",
   relancer: "relancer",
-  close:"traité"
+  close:"clôturé",
+  treat:"traité",
 }
 
 export const checkToken=(req:Request)=>{

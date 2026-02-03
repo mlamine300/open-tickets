@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from '..
 //import {  COMMENT_ACTIONS_DICTIONNAIRE } from '@/data/data';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import {  closeTicketAction, relanceeTicketAction, subscribeOrganisationAction, TakeTicketInchargeAction } from '@/actions/ticketAction';
+import {  closeTicketAction, relanceeTicketAction, subscribeOrganisationAction, TakeTicketInchargeAction, traitTicketAction } from '@/actions/ticketAction';
 import {AddCommentAction} from "@/actions/commentAction"
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
@@ -51,13 +51,13 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
          
           break;
         }
+         case "trait":{
+          
+          handleTraiting();
+          break;
+        }
          case "close":{
           
-            //     if((!user||!checkPermissionToDoAction(user,ticket))){
-
-            // toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
-            //        return; 
-            //     }
           handleClosing();
           break;
         }
@@ -118,10 +118,29 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
          refresh();
         }
         }
-        const handleClosing=async()=>{
+          const handleTraiting=async()=>{
           
            if(!user||!checkPermissionToDoAction(user,ticket)){  
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
+        return;
+        }
+        setPending(true)
+        if(ticket._id){
+           await traitTicketAction(ticket._id,`ticket traité par ${user?.name} \n${message}`);
+          setAction("comment");
+      setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      setPending(false);
+      refresh();
+        }
+        }
+
+        const handleClosing=async()=>{
+          
+           if(!user){  
+          toast.error("vous pouvez pas procéder a cette action (ticket a été creé par a une autre compte)")
         return;
         }
         setPending(true)
@@ -260,8 +279,8 @@ const actions:Record<string, string>={comment:"Commenter"};
 const role=user.role||"standard";
 const userOrgaisation=user.organisation;
 const ticketORganisation=ticket.recipientOrganization?._id;
- console.log(userOrgaisation)
- console.log(ticketORganisation)
+//  console.log(userOrgaisation)
+//  console.log(ticketORganisation)
 if(ticket.status==="pending"){
   if(role==="admin"||userOrgaisation===ticketORganisation){
  actions["in_charge"]="Pris en charge";
@@ -271,15 +290,21 @@ if(ticket.status==="pending"){
 
 }
 if(ticket.status==="open"){
-   console.log(user._id)
-   console.log(ticket.assignedTo?.user._id)
+  //  console.log(user._id)
+  //  console.log(ticket.assignedTo?.user._id)
    if(role==="admin"||user._id===ticket.assignedTo?.user._id){
 
 actions["subscribe"]="Ajouter une organisation";
-actions["close"]="Traiter";
+actions["trait"]="Traiter";
 actions["relancer"]="Relancer";
    }
 
+}else if(ticket.status==="traited"){
+  if(role==="admin"||user._id===ticket.creator?._id)
+  {
+
+    actions["close"]="Clôturer ";
+  }
 }
 return actions;
 }

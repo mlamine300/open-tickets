@@ -11,7 +11,7 @@ const TicketSchema=new mongoose.Schema({
     recipientOrganizationId:{ type: Schema.Types.ObjectId, ref: 'Organisation',required:true },
     associatedOrganizations: [{ type: Schema.Types.ObjectId, ref: 'Organisation' }],
     formName:{type:String,required:true},
-    status:{type:String,enum:["open","pending","complete"],default:"pending"},
+    status:{type:String,enum:["open","pending","traited","complete"],default:"pending"},
     priority:{type:String,enum:["low","medium","high"],default:"low"},
     motif:{type:String} ,
     //----

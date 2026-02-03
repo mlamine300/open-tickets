@@ -6,7 +6,7 @@ import {
 } from "react-icons/lu";
 import type { FormType, FormFieldType } from "../../../types";
 
-import { BookmarkCheck, CheckCheck, LayoutList, Loader, Plus, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Plus, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -54,6 +54,13 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
     {
       id:"24",
+      label: "Ticket traités ",
+      icon: Check,
+      path: "/tickets/traited",
+
+    },
+    {
+      id:"25",
       label: "Ticket clôturés ",
       icon: CheckCheck,
       path: "/tickets/close",
@@ -83,8 +90,14 @@ export const SIDE_MENU_ADMIN_DATA = [
       icon: BookmarkCheck,
       path: "/tickets/sent/open",
       },
-       {
+      {
       id:"33",
+      label: "Traités",
+      icon: Check,
+      path: "/tickets/sent/traited",
+      },
+       {
+      id:"34",
       label: "Clôturés",
       icon: CheckCheck,
       path: "/tickets/sent/close",
@@ -191,6 +204,13 @@ export const SIDE_MENU_USER_DATA = [
     },
     {
       id:"24",
+      label: "Ticket traités ",
+      icon: Check,
+      path: "/tickets/traited",
+
+    },
+    {
+      id:"25",
       label: "Ticket clôturés ",
       icon: CheckCheck,
       path: "/tickets/close",
@@ -222,6 +242,12 @@ export const SIDE_MENU_USER_DATA = [
       },
        {
       id:"33",
+      label: "Traités",
+      icon: Check,
+      path: "/tickets/sent/traited",
+      },
+       {
+      id:"34",
       label: "Clôturés",
       icon: CheckCheck,
       path: "/tickets/sent/close",
@@ -253,7 +279,6 @@ export const MOTIFS=[
 "Bureau fermé",
 "Colis défectueux",
 "Colis manquant",
-"------------------",
 "Livraison manquante",
 "Retard de livraison",
 "Retard de retour",

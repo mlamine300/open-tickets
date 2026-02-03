@@ -17,7 +17,7 @@ import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 
 const TicketsPage = () => {
-  
+   const [tickets,setTicket]=useState<ticket[]>([]);
   const [showModal,setShowModal]=useState<string>("")
   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
   const [searchParams]=useSearchParams();
@@ -36,7 +36,7 @@ const TicketsPage = () => {
     const priority=searchParams.get("priority")||"";
   const {pathname}=useLocation();
   
-      const [tickets,setTicket]=useState<ticket[]>([])
+     
     useEffect(() => {
       let intervalId;
       const getMyTickets = async () => {
@@ -66,23 +66,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setSelectedTicket(selectedticket);
           
          }
-    // const handleTakeInChargeConfirmation=()=>{
-    //   if(!selectedTicket){
-    //     alert("please select a ticket before action")
-    //     return;
-    //   } 
-    //  TakeTicketIncharge(selectedTicket._id);
-    //  setShowModal("");
-    //  setSelectedTicket(null);  
-    //  setTriggerRerender(Math.random()) 
-     
-    // }
-    // const handleClosing=()=>{
-
-    // }
-    // const handleFormward=()=>{
-
-    // }
+   
   return (
     <Sheet>
     

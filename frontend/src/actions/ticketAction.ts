@@ -81,9 +81,15 @@ export const getClosedTicketAction:(params:any)=>Promise<{data:ticket[],total:nu
    return {data:[],total:0};
     
 }
-
+export const getTraitedTicketAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
+    //  console.log("closed");
+    const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("traited"),{...params});
+    if(res.status===200) return {data:res.data.data as ticket[],total:res.data.totalCount};
+   return {data:[],total:0};
+    
+}
 export const getSentTicketAction:(status:string,params:any)=>Promise<{data:ticket[],total:number}>=async(status,params)=>{
-     console.log("sent");
+     
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_MY_TICKETS(status),{...params});
     if(res.status===200) return {data:res.data.data as ticket[],total:res.data.totalCount};
    return {data:[],total:0};
@@ -97,31 +103,39 @@ export const getSpecificTicketAction:(t:string,params:any)=>Promise<{data:ticket
            
             
             return await getPendingTicketsAction(params);
-            break;
+            
         }
         case "/tickets/open_me":{
             return getOpenByMeTicketsAction(params);
-            break;
+            
         }
         case "/tickets/open":{
             return getOpenTicketAction(params);
-            break;
+            
         }
         case "/tickets/close":{
             return getClosedTicketAction(params);
-            break;
+            
+        }
+        case "/tickets/traited":{
+            return getTraitedTicketAction(params);
+            
         }
          case "/tickets/sent/pending":{
             return getSentTicketAction("pending",params)
-            break;
+            
         }
          case "/tickets/sent/open":{
         return getSentTicketAction("open",params)
-            break;
+            
+        }
+        case "/tickets/sent/traited":{
+        return getSentTicketAction("traited",params)
+            
         }
          case "/tickets/sent/close":{
         return getSentTicketAction("complete",params)
-            break;
+            
         }
         default:{
             return getTicketsAction(params);
@@ -159,6 +173,22 @@ toast.success("Ticket a été clotoré")
 
     console.log(error);
     toast.error("erreur en clotore de ticket")
+}
+}
+
+export const traitTicketAction=async(ticketId:string,message:string)=>{
+try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.TRAIT_TICKET(ticketId),{message});
+     if(res.status!==200){
+    console.log("Error traiting ticket",res.data.message);
+    toast.error("impossible de traiter le ticket")
+return null; 
+}
+toast.success("Ticket a été traité")
+} catch (error) {
+
+    console.log(error);
+    toast.error("erreur en traitement de ticket")
 }
 }
 

@@ -28,8 +28,8 @@ config();
 
 app.use(express.json());
 app.use(cookieParser());
-
-app.use(
+// app.use(cors());
+ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],

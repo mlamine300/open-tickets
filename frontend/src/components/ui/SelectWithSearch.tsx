@@ -1,13 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./select";
-import { HiXMark } from "react-icons/hi2";
-import { X } from "lucide-react";
+import  { useEffect, useRef, useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
+import Input from './Input';
+import { HiXMark } from 'react-icons/hi2';
+import { X } from 'lucide-react';
 
 type Props = {
   value: string;
@@ -39,16 +34,23 @@ const SelectWithSearch = ({
     );
   }, [search, possibleValues]);
 
-  // Focus ONLY once when opened (mobile safe)
+  // Focus when opened
   useEffect(() => {
     if (open) {
-      const t = setTimeout(() => {
+      setTimeout(() => {
         inputRef.current?.focus();
-      }, 200);
-
-      return () => clearTimeout(t);
+      }, 50);
     }
   }, [open]);
+
+  // Re-focus after list changes
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [filtredValues, open]);
 
   return (
     <Select
@@ -77,12 +79,7 @@ const SelectWithSearch = ({
       </div>
 
       <SelectContent id={`select-${name}`} className="bg-background-base">
-        {/* Stop propagation so Select doesn't close on mobile */}
-        <div
-          className="relative flex items-center"
-          onPointerDown={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-        >
+        <div className="relative flex items-center">
           <input
             ref={inputRef}
             value={search}
