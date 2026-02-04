@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const SkeletonRow = ({ columns = 5 }: { columns?: number }) => {
   return (

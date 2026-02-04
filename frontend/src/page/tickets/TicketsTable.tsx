@@ -1,11 +1,11 @@
-import { getAllorganisationsAction } from '@/actions/organisationAction'
+
 import { getSpecificTicketAction } from '@/actions/ticketAction'
 import { columns } from '@/components/ticket/columns'
 import { DataTable } from '@/components/ticket/data-table'
 import SkeletonRow from '@/components/ticket/SkeletonRow'
 import TablePagination from '@/components/ticket/TablePAgination'
-import type { Organisation, ticket } from '@/types'
-import React, { useEffect, useState } from 'react'
+import type {  ticket } from '@/types'
+import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router'
 
 const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,triggerRerender}: {setTriggerRerender:(value:number)=>void,setShowModal:any; setSelectedTicket:(ticket:ticket|null)=>void,triggerRerender:number}) => {

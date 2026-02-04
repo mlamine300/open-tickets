@@ -67,20 +67,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       </div>;
 }
   },
-  {
-    accessorKey: "creator",
-    header: "Creé par",
-     cell: ({ row }) => {
-        
-        const obj=row.getValue("creator");
-      const name =obj? (obj as any).name as string:"no one"
-      const email =obj? (obj as any).email as string:""
-      return <div className="flex flex-col gap-1 items-center ">
-        <p className="font-semibold text-xs">{name} </p>
-        <p className="italic font-light text-xs">{email} </p>
-      </div>;
-     }
-  },
+ 
   {
     accessorKey: "motif",
     header: "Motif",
@@ -88,8 +75,8 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         
         const motif=row.original.motif||"standart";
   
-      return <div className="flex justify-center items-center ">
-       <p className="uppercase italic text-sm font-semibold">{motif} </p>
+      return <div className="flex items-center w-full">
+        <p className="uppercase italic text-sm font-semibold max-w-44 break-words whitespace-normal w-full">{motif} </p>
       </div>;
      }
   },
@@ -103,7 +90,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       const priority=row.getValue("priority") as string;
       const color=priority==="high"?"#f00":priority==="medium"?"#F4F754":priority==="low"?"#0f0":"#eee"
       const priorityFr=PRIORITY_DATA.filter(p=>p.value===priority).at(0)?.label;
-      return <div> <p style={{backgroundColor:color}} className="rounded-full p-px flex w-2 h-2 lg:hidden"></p> <p className="hidden lg:flex  justify-center w-full py-px rounded text-white text-xs" style={{backgroundColor:color}}>
+      return <div> <p style={{backgroundColor:color}} className="rounded-full p-px flex w-2 h-2 lg:hidden"></p> <p className="hidden lg:flex  justify-center w-full py-px rounded text-white text-[8px] font-semibold" style={{backgroundColor:color}}>
         {priorityFr}
       </p></div>
     }
@@ -116,9 +103,9 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         const obj=row.getValue("creator");
       const name =obj? (obj as any).name as string:"no one"
       const email =obj? (obj as any).email as string:""
-      return <div className="flex flex-col gap-1 items-center ">
+      return <div className="flex flex-col gap-1 items-center max-w-36 wrap-break-word whitespace-normal">
         <p className="font-semibold text-xs">{name} </p>
-        <p className="italic font-light text-xs">{email} </p>
+        <p className="italic font-light text-[8px]">{email} </p>
       </div>;
      }
   },
@@ -132,9 +119,9 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         
       const name =obj? (obj as any).name:"...." as string
       const email=obj? (obj as any).email:"...." as string
-      return <div className="flex flex-col gap-1 items-center ">
+      return <div className="flex flex-col gap-1 items-center max-w-36 wrap-break-word whitespace-normal">
         <p className="font-semibold text-xs">{name} </p>
-        <p className="italic font-light text-xs">{email} </p>
+        <p className="italic font-light text-[8px] ">{email} </p>
       </div>;
      },
     },

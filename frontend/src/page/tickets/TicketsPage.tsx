@@ -1,14 +1,11 @@
-import {  getSpecificTicketAction } from '@/actions/ticketAction';
+
 import {getAllorganisationsAction} from "@/actions/organisationAction";
 import { useEffect, useState } from 'react';
 
 import type { Organisation, ticket } from '@/types';
-import { useLocation, useSearchParams } from 'react-router';
-import { DataTable } from '@/components/ticket/data-table';
-import { columns } from '@/components/ticket/columns';
-import Spinner from '@/components/main/Spinner';
+
 import { Card } from '@/components/ui/card';
-import TablePagination from '@/components/ticket/TablePAgination';
+
 import FilterTableDiv from '@/components/ticket/FilterTableDiv';
 import Modal from '@/components/ui/Modal';
 import { Sheet } from '@/components/ui/sheet';
@@ -69,11 +66,7 @@ const TicketsPage = () => {
 //       };
 //     }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
 
-const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
-          setShowModal(modalTitle);
-          setSelectedTicket(selectedticket);
-          
-         }
+
    
   return (
     <Sheet>
