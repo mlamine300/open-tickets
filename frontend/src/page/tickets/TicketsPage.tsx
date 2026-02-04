@@ -15,51 +15,59 @@ import { Sheet } from '@/components/ui/sheet';
 import AddCommentSheetContent from '@/components/ticket/AddCommentSheetContent';
 import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
+import TicketsTable from './TicketsTable';
 
 const TicketsPage = () => {
-   const [tickets,setTicket]=useState<ticket[]>([]);
-  const [showModal,setShowModal]=useState<string>("")
-  const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
-  const [searchParams]=useSearchParams();
+//    const [tickets,setTicket]=useState<ticket[]>([]);
+   const [showModal,setShowModal]=useState<string>("")
+   const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
+//   const [searchParams]=useSearchParams();
   
-  const [organisations,setOrganisations]=useState<Organisation[]>([]);
-   const [totalTicketsSize,setTotalTicketsSize]=useState(0);
-   const [pending,setPending]=useState(false);
-   const [triggerRerender,setTriggerRerender]=useState(0);
-  const page=searchParams.get("page")||1;
-    const search=searchParams.get("search")||"";
-    const motif=searchParams.get("motif")||"";
-    const emitterOrganizationId=searchParams.get("emitter_organization")||"";
-    const recipientOrganizationId=searchParams.get("recipient_organization")||"";
-    const onlyMyOrganisation=searchParams.get("notag");
-    
-    const priority=searchParams.get("priority")||"";
-  const {pathname}=useLocation();
-  
-     
-    useEffect(() => {
-      let intervalId;
-      const getMyTickets = async () => {
-        setPending(true);
-        setTicket([]);
-        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation });
-        setTicket(res.data);
-        setTotalTicketsSize(res.total);
-        setPending(false);
-      };
-      const retrieveOrganisations = async () => {
+   const [organisations,setOrganisations]=useState<Organisation[]>([]);
+   useEffect(()=>{
+          const retrieveOrganisations = async () => {
         const organisationsFromAction = await getAllorganisationsAction();
         setOrganisations(organisationsFromAction);
       };
-      getMyTickets();
       retrieveOrganisations();
-      intervalId = setInterval(() => {
-        setTriggerRerender(Math.random());
-      }, 1*60*1000); // 1 minute
-      return () => {
-        clearInterval(intervalId);
-      };
-    }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
+   },[])
+   
+//    const [pending,setPending]=useState(false);
+    const [triggerRerender,setTriggerRerender]=useState(0);
+//   const page=searchParams.get("page")||1;
+//     const search=searchParams.get("search")||"";
+//     const motif=searchParams.get("motif")||"";
+//     const emitterOrganizationId=searchParams.get("emitter_organization")||"";
+//     const recipientOrganizationId=searchParams.get("recipient_organization")||"";
+//     const onlyMyOrganisation=searchParams.get("notag");
+    
+//     const priority=searchParams.get("priority")||"";
+//   const {pathname}=useLocation();
+  
+     
+//     useEffect(() => {
+//       let intervalId;
+//       const getMyTickets = async () => {
+//         setPending(true);
+//         setTicket([]);
+//         const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation });
+//         setTicket(res.data);
+//         setTotalTicketsSize(res.total);
+//         setPending(false);
+//       };
+//       const retrieveOrganisations = async () => {
+//         const organisationsFromAction = await getAllorganisationsAction();
+//         setOrganisations(organisationsFromAction);
+//       };
+//       getMyTickets();
+//       retrieveOrganisations();
+//       intervalId = setInterval(() => {
+//         setTriggerRerender(Math.random());
+//       }, 1*60*1000); // 1 minute
+//       return () => {
+//         clearInterval(intervalId);
+//       };
+//     }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
 
 const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setShowModal(modalTitle);
@@ -72,27 +80,12 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
     
       <Card className='flex item-center   border-none shadow-2xl w-fit p-5 min-h-screen justify-start max-w-full'>
 
-      {(tickets&&!pending)?(
+      
         <div className='flex flex-col w-full h-full '>
           <FilterTableDiv organisations={organisations} />
-         <DataTable  columns={columns({actions:{
-          addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-          // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
-          // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-         showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
-        //  handleClosing:(ticket:ticket)=>openConfirmation(ticket,"close"),
-        //  handleFormward:(ticket:ticket)=>openConfirmation(ticket,"forward"),
-        },
-         path:pathname
-         
-         })} data={tickets} />
-         <TablePagination maxPages={Math.ceil(totalTicketsSize/10)} className='mt-auto ml-auto gap-2 p-5'/>
-        </div>
-      ):
-      (<div className='w-full h-full flex items-center justify-center min-w-3xl'>
-        <Spinner size='xl'/>
-      </div>)
-      }
+        <TicketsTable setShowModal={setShowModal} setTriggerRerender={setTriggerRerender} setSelectedTicket={setSelectedTicket} triggerRerender={triggerRerender} />
+         </div>
+      
       </Card>
       <div>
         <Modal 
