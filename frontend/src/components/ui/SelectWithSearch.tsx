@@ -79,7 +79,7 @@ const SelectWithSearch = ({
       </div>
 
       <SelectContent id={`select-${name}`} className="bg-background-base">
-        <div className="relative flex items-center">
+        {!isIsItAPhone&&<div className="relative flex items-center">
           <input
             ref={inputRef}
             value={search}
@@ -92,7 +92,7 @@ const SelectWithSearch = ({
             onClick={() => setSearch("")}
             className="absolute right-2 text-red-500 cursor-pointer"
           />
-        </div>
+        </div>}
 
         {filtredValues?.map((val) => (
           <SelectItem key={val} value={val}>

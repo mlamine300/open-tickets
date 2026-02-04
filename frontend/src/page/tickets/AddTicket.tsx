@@ -78,7 +78,7 @@ const AddTicket = () => {
         
 
       </div>
-      {standardForm&&<div className='max-w-8/12 self-center hidden lg:flex'>
+      {standardForm&&<div className='w-8/12 self-center hidden lg:flex'>
         <DynamicForm form={standardForm}  />
       </div>}
       </div>
