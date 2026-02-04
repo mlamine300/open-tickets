@@ -109,7 +109,7 @@ setPending(false);
   return (
       <form
       onSubmit={myForm.handleSubmit(onSubmit)}
-      className="space-y-6   w-full bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
+      className="space-y-6   w-full max-w-[800px] bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
     >
       <div>
         <h2 className="text-2xl font-semibold text-primary">{formulaire.name}</h2>

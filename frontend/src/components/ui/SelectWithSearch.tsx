@@ -22,9 +22,9 @@ const SelectWithSearch = ({
   const [search, setSearch] = useState("");
   const [filtredValues, setFiltredValues] = useState(possibleValues);
   const [open, setOpen] = useState(false);
-
+  
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const isIsItAPhone=window.innerWidth<=768;
   // Filter values
   useEffect(() => {
     setFiltredValues(
@@ -45,7 +45,7 @@ const SelectWithSearch = ({
 
   // Re-focus after list changes
   useEffect(() => {
-    if (open) {
+    if (open&&!isIsItAPhone) {
       setTimeout(() => {
         inputRef.current?.focus();
       }, 0);
