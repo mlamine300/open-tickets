@@ -7,15 +7,18 @@ import { API_PATH } from "../../data/apiPaths";
 const MenuItem = ({
   item,
   choosed,
-  colapsed
+  colapsed,
+  count
 }: {
   item: {
     id: string;
     label: string;
     icon: any;
     path: string;
+    
    
   };
+  count:number|null;
  colapsed?: boolean;
   choosed: boolean;
 }) => {
@@ -46,7 +49,10 @@ const MenuItem = ({
       } ${item.path === "/logout" ? "mt-auto" : ""}`}
     >
       <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
-      <p className={colapsed?"hidden":"text-sm"} >{item.label} </p>
+      <div className={colapsed?"hidden":"flex justify-between w-full"}>
+        <p className={"text-sm"} >{item.label} </p>
+        {count&& <p className="text-primary text-sm font-bold italic">{count}</p>}
+      </div>
     </Link>
   );
 };

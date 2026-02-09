@@ -13,11 +13,13 @@ import { useLocation } from "react-router";
 const PopUpMenuItem = ({
   item,
   choosed,
-  colapsed
+  colapsed,
+  count
 }: {
   item: MenuItemType;
 colapsed: boolean;
   choosed: boolean;
+  count:number;
 }) => {
      const { pathname } = useLocation();
   const isChoosed = (link: string) => {
@@ -35,16 +37,19 @@ colapsed: boolean;
           ? "text-primary bg-primary/10 border-r-2 border-primary "
           : "text-text-primary/90"
       }`}>
-       <div className="flex  gap-4">
+       <div className="flex  gap-4 w-full">
 
       <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
-      <p className={colapsed?"hidden":"text-sm font-normal"}>{item.label} </p>
+      <div className={colapsed?"hidden":"flex justify-between w-full "}>
+        <p className={colapsed?"hidden":"text-sm font-normal"}>{item.label} </p>
+       {count&& <p className="text-primary text-sm font-bold italic">{count}</p>}
+      </div>
        </div>
     
     </AccordionTrigger>
     <AccordionContent className="ml-4">
       <div className='flex flex-col gap-2'>
-      {item.childs?.map((c:SimpleMenuItemType)=><MenuItem colapsed={colapsed} item={c} choosed={isChoosed(c.path)} />)}
+      {item.childs?.map((c:SimpleMenuItemType)=><MenuItem count={count} colapsed={colapsed} item={c} choosed={isChoosed(c.path)} />)}
       </div>
     </AccordionContent>
   </AccordionItem>

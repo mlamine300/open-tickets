@@ -224,6 +224,16 @@ toast.success("Organisation ajoutée")
 }
 }
 
+export const getTicketsStats=async()=>{
+    try {
+        const res=await axiosInstance.post(API_PATH.TICKETS.TICKETS_STATS);
+        if(res.status!==200)return null;
+        return res.data.data;
+    } catch (error) {
+      console.log(error)  
+    }
+}
+
 
 
 

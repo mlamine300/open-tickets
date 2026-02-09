@@ -1758,6 +1758,88 @@ export const getTicketReport = async (req: Request, res: Response) => {
   }
 };
 
+export const getTicketsStatsForSideBar=async(req:Request,res:Response)=>{
+   try {
+    console.log("-----------------------------")
+    const user = getToken(req);
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    
+const baseFilter: any = {
+      ...getResponsablitiesFilterFromRole(user,"false"),
+      emitterOrganizationId: {
+        $ne: new mongoose.Types.ObjectId(user.organisation),
+      },
+    };
+
+
+
+    const [received] = await ticketModel.aggregate([
+      { $match: { ...baseFilter } },
+      {
+        $facet: {
+          byStatus: [
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+          ],
+          assignedTome:[
+            {$match:{"assignedTo.userId":new mongoose.Types.ObjectId(user.userId) ,status:"open"}},
+             { $count: "assignedTickets" }
+          ],
+          
+
+          total: [{ $count: "totalReceivedTickets" }],
+          
+         
+        }
+      }
+    ]);
+    
+    let receivedData:any=[];
+    if(received.byStatus&&Array.isArray(received.byStatus)){
+      receivedData=received.byStatus;
+    }
+    if(received.assignedTome&&Array.isArray(received.assignedTome)){
+      receivedData.push({_id:"open_me",count:received.assignedTome.at(0)?.assignedTickets||0});
+    }
+    if(received.total){
+      receivedData.push({_id:"total",count:received.total.at(0)?.totalReceivedTickets||0})
+    }
+    const receivedResult = receivedData.reduce((acc:any, { _id, count }:any) => {
+  acc[_id] = count;
+  return acc;
+}, {});
+    const [sent] = await ticketModel.aggregate([
+      { $match: {emitterOrganizationId:new mongoose.Types.ObjectId(user.organisation)} },
+      {
+        $facet: {
+          byStatus: [
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+          ],
+          
+
+          total: [{ $count: "totalSentTickets" }],
+          
+         
+        }
+      }
+    ]);
+    let sentData:any=[];
+    if(sent.byStatus&&Array.isArray(sent.byStatus)){
+      sentData=sent.byStatus;
+    }if(sent.total){
+      sentData.push({_id:"total",count:sent.total.at(0)?.totalSentTickets})
+    }
+    
+    const sentResult = sentData.reduce((acc:any, { _id, count }:any) => {
+  acc[_id] = count;
+  return acc;
+}, {});
+    return res.status(200).json({ message: "success", data: {sent:sentResult,received:receivedResult} });
+  }catch (error) {
+    res.status(500).json({message:"server error",error});
+    console.log(error);
+  }
+}
 
 
 

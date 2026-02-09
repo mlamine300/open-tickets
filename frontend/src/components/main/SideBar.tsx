@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SIDE_MENU_ADMIN_DATA, SIDE_MENU_USER_DATA } from "../../data/data";
 import { useUserContext } from "../../context/user/userContext";
 import MenuItem from "../ui/MenuItem";
@@ -9,6 +9,8 @@ import PopUpMenuItem from "../ui/PopUpMenuItem";
 import { Accordion } from "../ui/accordion";
 import { getColorFromName } from "../../../../utils/helper";
 import { PanelLeftClose, PanelRightClose } from "lucide-react";
+import { getTicketsStats } from "@/actions/ticketAction";
+import { Value } from "@radix-ui/react-select";
 
 const SideBar = () => {
   const { pathname } = useLocation();
@@ -24,6 +26,76 @@ const SideBar = () => {
   const { user } = useUserContext();
   const [showed, setShowed] = useState<boolean>(false);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [TriggerRerender, setTriggerRerender] = useState(0);
+  const [stats, setStats] = useState<any|null>(null);
+
+  const statsArray=[{
+    path:"/tickets",
+    Value:stats?.received?.total??0,
+  },
+  {
+    path:"/tickets/pending",
+    Value:stats?.received?.pending??0,
+  },
+   {
+    path:"/tickets/open",
+    Value:stats?.received?.open??0,
+  },
+ {
+    path:"/tickets/open_me",
+    Value:stats?.received?.open_me??0,
+  },
+   {
+    path:"/tickets/traited",
+    Value:stats?.received?.traited??0,
+  },
+  {
+    path:"/tickets/close",
+    Value:stats?.received?.close??0,
+  },
+
+  {
+    path:"/tickets/sent",
+    Value:stats?.sent?.total??0,
+  },
+  {
+    path:"/tickets/sent/pending",
+    Value:stats?.sent?.pending??0,
+  },
+{
+    path:"/tickets/sent/open",
+    Value:stats?.sent?.open??0,
+  },
+{
+    path:"/tickets/sent/traited",
+    Value:stats?.sent?.open??0,
+  },
+{
+    path:"/tickets/sent/close",
+    Value:stats?.sent?.open??0,
+  },
+
+];
+
+console.log(statsArray)
+  useEffect(() => {
+        let intervalId;
+        const getStats = async () => {
+         const fetchedStat=await getTicketsStats();
+         console.log(fetchedStat)
+         if(fetchedStat)setStats(fetchedStat);
+        };
+       
+        getStats();
+       
+        intervalId = setInterval(() => {
+          setTriggerRerender(Math.random());
+        }, 5*60*1000); // 5 minute
+        return () => {
+          clearInterval(intervalId);
+        };
+      }, []);
+  
   return (
     <>
       {/* <button onClick={setShowed((s) => !s)}> */}
@@ -80,6 +152,7 @@ const SideBar = () => {
               return (
               <PopUpMenuItem
               colapsed={collapsed}
+              count={statsArray.find(s=>s.path===item.path)?.Value??null}
                 item={item}
                 key={index}
                 choosed={isShoosed(item.path)}
@@ -92,6 +165,7 @@ const SideBar = () => {
                 item={item}
                 key={index}
                 choosed={isShoosed(item.path)}
+                count={statsArray.find(s=>item.path===s.path)?.Value??null}
               />
             );
           }

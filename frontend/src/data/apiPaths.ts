@@ -36,7 +36,8 @@ export const API_PATH = {
       CLOSE_TICKET:(id:string)=>`/api/tickets/close/${id}`,
       TRAIT_TICKET:(id:string)=>`/api/tickets/trait/${id}`,
       REOPEN_TICKET:(id:string)=>`/api/tickets/relance/${id}`,
-      ADD_ORGANISATION:(id:string)=>`/api/tickets/add_organisation/${id}`
+      ADD_ORGANISATION:(id:string)=>`/api/tickets/add_organisation/${id}`,
+      TICKETS_STATS:"/api/tickets/stats"
      
      
   },

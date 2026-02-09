@@ -307,6 +307,11 @@ export const MOTIFS=[
 "litige et remboursement",
 "manque de prefessionnalisme",
 "colis vide",
+"Colis non validé",
+"Colis non dispatché",
+"Navette saturée",
+"Colis double",
+"Reçu par erreur"
 
 ]
 

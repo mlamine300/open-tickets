@@ -45,7 +45,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
      
       intervalId = setInterval(() => {
         setTriggerRerender(Math.random());
-      }, 1*60*1000); // 1 minute
+      }, 5*60*1000); // 5 minute
       return () => {
         clearInterval(intervalId);
       };
