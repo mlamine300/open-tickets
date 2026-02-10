@@ -13,13 +13,14 @@ import AddCommentSheetContent from '@/components/ticket/AddCommentSheetContent';
 import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 import TicketsTable from './TicketsTable';
+import { useUserContext } from "@/context/user/userContext";
 
 const TicketsPage = () => {
 //    const [tickets,setTicket]=useState<ticket[]>([]);
    const [showModal,setShowModal]=useState<string>("")
    const [selectedTicket,setSelectedTicket]=useState<ticket|null>(null);
 //   const [searchParams]=useSearchParams();
-  
+  const {setTriggerAppRender}=useUserContext()
    const [organisations,setOrganisations]=useState<Organisation[]>([]);
    useEffect(()=>{
           const retrieveOrganisations = async () => {
@@ -105,6 +106,7 @@ const TicketsPage = () => {
     
    {selectedTicket&& <AddCommentSheetContent organisations={organisations} refresh={()=>{
     setTriggerRerender(Math.random())
+    setTriggerAppRender(Math.random())
    }} ticket={selectedTicket} />}
     </Sheet>
   );

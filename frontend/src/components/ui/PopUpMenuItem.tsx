@@ -14,12 +14,12 @@ const PopUpMenuItem = ({
   item,
   choosed,
   colapsed,
-  count
+  stats
 }: {
   item: MenuItemType;
 colapsed: boolean;
   choosed: boolean;
-  count:number;
+  stats?:{path:string;value:number}[];
 }) => {
      const { pathname } = useLocation();
   const isChoosed = (link: string) => {
@@ -28,7 +28,7 @@ colapsed: boolean;
    // return pathname.includes(link);
   };
      const Icon = item.icon;
-     
+     const TotalCount=(stats&&Array.isArray(stats)&&stats.length>0)?stats.find(s=>s.path===item.path)?.value||null:null;
   return (
   
   <AccordionItem className="border-gray-hot/50" value={item.id}>
@@ -42,14 +42,20 @@ colapsed: boolean;
       <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
       <div className={colapsed?"hidden":"flex justify-between w-full "}>
         <p className={colapsed?"hidden":"text-sm font-normal"}>{item.label} </p>
-       {count&& <p className="text-primary text-sm font-bold italic">{count}</p>}
+         {TotalCount&& <p className="text-primary text-sm font-bold italic">{TotalCount}</p>}
+       
       </div>
        </div>
     
     </AccordionTrigger>
     <AccordionContent className="ml-4">
       <div className='flex flex-col gap-2'>
-      {item.childs?.map((c:SimpleMenuItemType)=><MenuItem count={count} colapsed={colapsed} item={c} choosed={isChoosed(c.path)} />)}
+      {item.childs?.map((c:SimpleMenuItemType)=>
+      {
+        const count=(stats&&Array.isArray(stats)&&stats.length>0)?stats.find(s=>s.path===c.path)?.value||null:null;
+        return <MenuItem count={count} colapsed={colapsed} item={c} choosed={isChoosed(c.path)} />
+      })
+      }
       </div>
     </AccordionContent>
   </AccordionItem>

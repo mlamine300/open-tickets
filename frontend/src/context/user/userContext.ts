@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
 import type { User } from "@/types/index";
 
 export interface UserContext {
@@ -6,6 +6,8 @@ export interface UserContext {
   loading: boolean;
   updateUser: (u: User) => void;
   clearUser: () => void;
+  setTriggerAppRender:Dispatch<SetStateAction<number>>;
+  triggerAppRender:number;
 }
 
 const initialState: UserContext = {
@@ -13,6 +15,8 @@ const initialState: UserContext = {
   loading: false,
   updateUser: () => {},
   clearUser: () => {},
+  setTriggerAppRender:()=>{},
+  triggerAppRender:0
 };
 
 export const userContext = createContext<UserContext>(initialState);

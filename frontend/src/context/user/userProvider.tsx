@@ -8,7 +8,7 @@ import { tokenService } from "../../utils/tokenService";
 const UserProvider = ({ children }: { children: React.ReactElement }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
-
+const [triggerAppRender, setTriggerAppRender] = useState(0);
   useEffect(() => {
     // const token = localStorage.getItem("token");
     const token = tokenService.getToken();
@@ -45,7 +45,7 @@ const UserProvider = ({ children }: { children: React.ReactElement }) => {
   };
 
   return (
-    <userContext.Provider value={{ user, loading, updateUser, clearUser }}>
+    <userContext.Provider value={{ user, loading, updateUser, clearUser,triggerAppRender,setTriggerAppRender }}>
       {children}
     </userContext.Provider>
   );
