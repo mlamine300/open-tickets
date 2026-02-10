@@ -4,6 +4,7 @@ import { columns } from '@/components/ticket/columns'
 import { DataTable } from '@/components/ticket/data-table'
 import SkeletonRow from '@/components/ticket/SkeletonRow'
 import TablePagination from '@/components/ticket/TablePAgination'
+import { useUserContext } from '@/context/user/userContext'
 import type {  ticket } from '@/types'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router'
@@ -14,7 +15,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
   //const [showModal,setShowModal]=useState<string>("")
 
   const [searchParams]=useSearchParams();
-  
+   const {setTriggerAppRender}=useUserContext()
  
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
    const [pending,setPending]=useState(false);
@@ -42,6 +43,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       };
      
       getMyTickets();
+      setTriggerAppRender(Math.random());
      
       intervalId = setInterval(() => {
         setTriggerRerender(Math.random());

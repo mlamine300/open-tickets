@@ -53,7 +53,7 @@ console.log(user);
         localStorage.setItem("role", response.data.role);
         console.log(response.data);
         
-        updateUser(response.data);
+        updateUser({...response.data,_id:response.data?.id});
 
         
           navigate("/");
