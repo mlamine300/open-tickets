@@ -6,6 +6,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import { API_PATH } from "@/data/apiPaths";
 import type { ticket } from "@/types";
 import { PRIORITY_DATA } from "@/data/data";
+import  { exportReport } from "@/lib/utils";
 
 export const addTicketAction=async(ticket:ticket)=>{
 try {
@@ -234,6 +235,19 @@ export const getTicketsStats=async()=>{
     }
 }
 
+export const donwloadExcel=async(pathname:string)=>{
+  
+  try {
+    const data=await getSpecificTicketAction(pathname,{maxPerPage:100});
+    if(data&&data.data&&Array.isArray(data.data)&&data.data.length>0){
+
+        await exportReport(data.data)
+    }else toast.error("pas de lignes a télécharger")
+  } catch (error) {
+    console.log(error);
+    toast.error("Erreur en telechargent le fichier excel")
+  }
+}
 
 
 

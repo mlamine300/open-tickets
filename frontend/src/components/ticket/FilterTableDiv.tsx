@@ -2,14 +2,17 @@ import { cn } from '@/lib/utils';
 import  { useState, useEffect } from 'react';
 import type { Organisation } from '@/types';
 import Input from '../ui/Input';
-import { useSearchParams } from 'react-router';
+import { useLocation, useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { MOTIFS, PRIORITY_DATA } from '@/data/data';
 
 import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import SelectWithSearch from '../ui/SelectWithSearch';
+import { FaFileExcel } from 'react-icons/fa6';
+import { donwloadExcel } from '@/actions/ticketAction';
 
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
+  const {pathname}=useLocation();
  const [searchParams,setSearchParams]=useSearchParams();
     const [search,setSearch]=useState(searchParams.get("search")||"");
     const [motif,setMotif]=useState(searchParams.get("motif")||""); 
@@ -20,6 +23,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
  
     const [recipientOrganization,setRecipientOrganization]=useState(receiptientOrganisationName);
      const [priority,setPriority]=useState(searchParams.get("priority")||"");
+     const [pending, setPending] = useState(false);
   const organisationsName=organisations?.map(o=>o.name);
     // Debounce all filter param updates
     useEffect(() => {
@@ -69,6 +73,20 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
       }, 300);
       return () => clearTimeout(handler);
     }, [search,motif,onlyMyOrganisation, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
+    
+    const handleDownloadExcel=async()=>{
+      try {
+        setPending(true);
+        await donwloadExcel(pathname);
+
+      } catch (error) {
+        console.log(error);
+      }finally{
+        setPending(false)
+      }
+      
+    }
+    
     return (
 <Accordion
       type="single"
@@ -173,21 +191,35 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
            <div className={`flex items-center justify-center w-full h-full rounded-r-2xl  max-h-8/12 my-auto ${onlyMyOrganisation?"bg-primary":"bg-gray-hot"}`}>
                   <p className='text-sm italic'>Me Concerne</p>
                   </div>
-              </div>  
+              </div> 
+              
      
     </div>
-    <form className='flex justify-end items-center'>
-    <div className='flex justify-between'>
+    <div className='flex flex-col-reverse max-lg:self-center  lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-5'>
 
-    <Input parentClassName='flex flex-row items-center gap-2' containerClassName='h-10' label=' Recherche :' labelClassName='' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e)=>setSearch(e.target.value)} />
+    <button 
+     onClick={()=>{
+               handleDownloadExcel();
+              }}
+              disabled={pending}
+                 className="flex w-fit gap-4 items-center h-fit  px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold">
+                Telecharger le tableau
+                <FaFileExcel />
+              </button>
+    <form className='flex flex-row lg:flex-col items-center'>
+      
+    
+
+    <Input parentClassName='flex flex-row items-center gap-2 items-center w-fit lg:w-full ' containerClassName='h-10' label='Recherche :' labelClassName='text-xs hidden lg:flex' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e)=>setSearch(e.target.value)} />
       <button className='hover:font-bold italic underline' onClick={()=>{
         setEmitterOrganization("");
         setRecipientOrganization("");
         setPriority("");
         setSearch("");
       }}>Réinitialiser</button>            
-      </div>
+      
 </form>
+      </div>
    </div>
         </AccordionContent>
       </AccordionItem>

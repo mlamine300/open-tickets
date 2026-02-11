@@ -46,12 +46,12 @@ console.log(user);
         password,
       });
       if (response.status === 200) {
-        console.log(response.data);
+       
         const token = response.data.token;
         // localStorage.setItem("token", token);
        tokenService.setToken(token);
         localStorage.setItem("role", response.data.role);
-        console.log(response.data);
+        
         
         updateUser({...response.data,_id:response.data?.id});
 
