@@ -57,6 +57,11 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         key:"formname",
         width:20
       },
+       {
+        header:"Motif",
+        key:"motif",
+        width:20
+      },
         {
         header:"Statut",
         key:"status",
@@ -89,12 +94,13 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         const recipientOrganization=line.recipientOrganization?.name;
         const ref=line.ref;
         const formname=line.formName;
+         const motif=line?.motif??"-";
       const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
         const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
         
         const lastComment=line.lastComment?.message;
-        const row={creator,delay,emitterOrganization,recipientOrganization,ref,formname,
+        const row={creator,delay,emitterOrganization,recipientOrganization,ref,formname,motif,
           status,
           priority,
           message,
@@ -159,6 +165,11 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         key:"formname",
         width:20
       },
+       {
+        header:"Motif",
+        key:"motif",
+        width:20
+      },
         {
         header:"Statut",
         key:"status",
@@ -193,11 +204,12 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         const recipientOrganization=line.recipientOrganization?.name;
         const ref=line.ref;
         const formname=line.formName;
+        const motif=line?.motif??"-";
         const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
         const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
         const lastComment=line.lastComment?.message;
-        const row={createdAt,delay,creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,
+        const row={createdAt,delay,creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,motif,
           status,
           priority,
           message,
@@ -264,6 +276,11 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         key:"formname",
         width:20
       },
+       {
+        header:"Motif",
+        key:"motif",
+        width:20
+      },
         {
         header:"Statut",
         key:"status",
@@ -296,12 +313,13 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         const recipientOrganization=line.recipientOrganization?.name;
         const ref=line.ref;
         const formname=line.formName;
+        const motif=line?.motif??"-"
       const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
         const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
         
         const lastComment=line.lastComment?.message;
-        const row={creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,
+        const row={creator,assignedTo,emitterOrganization,recipientOrganization,ref,formname,motif,
           status,
           priority,
           message,
