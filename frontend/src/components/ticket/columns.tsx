@@ -4,14 +4,11 @@ import type{ ColumnDef } from "@tanstack/react-table"
 import type { ticket } from "@/types"
 import { Link } from "react-router";
 import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
-//import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
 import { PRIORITY_DATA } from "@/data/data";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
 export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<ticket>[] =({actions})=> [
