@@ -42,7 +42,7 @@ export const API_PATH = {
      
   },
   COMMENT:{ADD_COMMENT:(id:string)=>`/api/comments/${id}`,GET_COMMENTS_OF_TICKETS:(id:string)=>`/api/comments/${id}`},
-  
+  INFO:"api/info",
   ATTACHEMENT: {
     UPLOAD: "/api/attachement/upload",
   },

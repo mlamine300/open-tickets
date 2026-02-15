@@ -6,7 +6,7 @@ import {
 } from "react-icons/lu";
 import type { FormType, FormFieldType } from "../../../types";
 
-import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Plus, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, Plus, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -149,8 +149,16 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
+      {id:"06",
+      label:"Alert",
+      icon: Megaphone,
+      path:"/alert",
+      hasChilds:false,
+     
+
+    },
   {
-    id: "06",
+    id: "07",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",

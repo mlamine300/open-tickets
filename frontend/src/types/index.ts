@@ -7,6 +7,13 @@ export interface SimpleMenuItemType {
     path: string;
 }
 
+export interface Info{
+  _id?:string;
+  message:string;
+  isLatin?:boolean;
+
+}
+
 export interface MenuItemType{
   
     id: string;

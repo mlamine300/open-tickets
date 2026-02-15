@@ -23,6 +23,11 @@
   --color-gray-too-cold: var(--gray-too-cold);
 
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+
+
+
+  
+
 }
 
 :root {
@@ -109,4 +114,21 @@
     color: var(--color-text-accent);
     transition: background-color 0.3s var(--ease-fluid);
   }
+
+ @keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes inverseslide {
+   0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 }

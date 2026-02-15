@@ -17,6 +17,7 @@ import FormsPages from './page/forms/FormsPage';
 import AddTicketFormPage from './page/tickets/AddTicketFormPage';
 import UsersPage from './page/users/UsersPage';
 import AddEditUserPage from './page/users/AddEditUserPage';
+import AlertPage from './page/alert/AlertPage';
 function App() {
  
 
@@ -39,6 +40,7 @@ function App() {
          <Route path="/forms/:id" element={<AddFormPage />} />
           <Route path="/users/list" element={<UsersPage />} />
          <Route path="/users/:id" element={<AddEditUserPage />} />
+           <Route path="/alert" element={<AlertPage />} />
          </Route>
       </Routes>  
        
