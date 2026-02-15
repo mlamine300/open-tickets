@@ -13,7 +13,7 @@ const InfoBar = () => {
    useEffect(() => {
            let intervalId;
            
-           const getStats = async () => {
+           const fetchLastInfo = async () => {
             const fetchedInfo=await getLastInfo();
             
             if(fetchedInfo)
@@ -24,7 +24,7 @@ const InfoBar = () => {
             }
            };
           
-           getStats();
+           fetchLastInfo();
           
            intervalId = setInterval(() => {
              setTriggerRerender(Math.random());
@@ -35,9 +35,9 @@ const InfoBar = () => {
          }, [triggerRerender]);
          if(!info||!info.message||info.message==="")return;
   return (
-    <div className="fixed top-11/12 lg:top-10/12 w-full h-16 bg-gray-hot/20 flex items-center cursor-pointer">
-     <div className={cn("w-full hover:[animation-play-state:paused]",info.isLatin?" animate-[inverseslide_20s_linear_infinite] ":"animate-[slide_20s_linear_infinite] ") }>
-    <p className="text-lg text-text-primary line-clamp-1 ">
+    <div className="fixed top-11/12 w-full h-16 bg-gray-hot/90 flex items-center cursor-pointer group">
+     <div className={cn("w-full min-w-fit group-hover:[animation-play-state:paused]",info.isLatin?" animate-[inverseslide_40s_linear_infinite] ":"animate-[slide_40s_linear_infinite] ") }>
+    <p className="text-lg text-text-primary text-nowrap ">
       {info.message}
 </p>
     </div>

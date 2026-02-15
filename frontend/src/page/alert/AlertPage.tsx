@@ -1,15 +1,18 @@
-import { addInfo, removeInfo } from "@/actions/infoAction";
+import { addInfo, getLastInfo, removeInfo } from "@/actions/infoAction";
 import Button from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import Input from "@/components/ui/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
 
 const AlertPage = () => {
+  
+
       const form = useForm<{message:string,isLatin:boolean}>({
         resolver:zodResolver(z.object({message:z.string(),isLatin:z.boolean()})),
         defaultValues: {
@@ -29,6 +32,25 @@ const AlertPage = () => {
             addInfo({message,isLatin})
         }
     }
+    useEffect(() => {
+             
+             
+             const getTheLastInfo = async () => {
+              const fetchedInfo=await getLastInfo();
+              
+              if(fetchedInfo)
+              {
+                form.setValue("message",fetchedInfo.message);
+                form.setValue("isLatin",fetchedInfo.isLatin)
+                
+               
+              }
+             };
+            
+             getTheLastInfo();
+            
+             
+           }, []);
   return (
     <div className="w-full h-full flex justify-start">
        <Card className="max-w-2xl  mt-10  bg-background-base shadow-2xl rounded-xl border-none w-full">
@@ -52,7 +74,7 @@ const AlertPage = () => {
                   
                   <FormControl>
                    
-                    <Input  label="Message :" placeHolder="Écrit votre message pour annoncer ou laissez vide pour désactiver l'annonce"
+                    <Input inputClassName="h-64 lg:h-96 text-lg"  label="Message :" placeHolder="Écrit votre message pour annoncer ou laissez vide pour désactiver l'annonce"
                      type="area"{...field} />
 
                    
