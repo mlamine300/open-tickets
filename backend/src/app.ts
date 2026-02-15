@@ -18,6 +18,7 @@ import commentRouter from "./routes/commentRoutes.js";
 import userRouter from "./routes/userRoute.js";
 import statRouter from "./routes/statRoutes.js";
 import attachementRouter from "./routes/attachement.js";
+import infoRouter from "./routes/infoRoutes.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,8 +52,9 @@ app.use("/api/forms",protect, formRouter);
 app.use("/api/tickets",protect, ticketRouter);
 app.use("/api/comments",protect, commentRouter);
 app.use("/api/users",protect, userRouter);
-app.use("/api/stat",protect,statRouter)
-app.use("/api/attachement",protect,attachementRouter)
+app.use("/api/stat",protect,statRouter);
+app.use("/api/attachement",protect,attachementRouter);
+app.use("/api/info",protect,infoRouter)
 app.get("/api/test",(req:Request,res:Response)=>{
   console.log("test")
   return res.status(200).json({message:"test"});
