@@ -150,7 +150,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 
     },
       {id:"06",
-      label:"Alert",
+      label:"Annonce",
       icon: Megaphone,
       path:"/alert",
       hasChilds:false,

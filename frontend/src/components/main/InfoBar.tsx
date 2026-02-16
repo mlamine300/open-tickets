@@ -8,7 +8,7 @@ const InfoBar = () => {
     
     const [info, setInfo] = useState<Info>({message:"",isLatin:true});
     const [triggerRerender, setTriggerRerender] = useState<number>(0);
-    const timeTorefresh=import.meta.env.DEV? 5*1000: 5*1000;
+    const timeTorefresh=import.meta.env.DEV? 5*1000: 5*60*1000;
     
    useEffect(() => {
            let intervalId;
