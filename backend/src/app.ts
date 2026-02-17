@@ -57,7 +57,7 @@ app.use("/api/attachement",protect,attachementRouter);
 app.use("/api/info",protect,infoRouter)
 app.get("/api/test",(req:Request,res:Response)=>{
   console.log("test")
-  return res.status(200).json({message:"test"});
+  return res.status(200).json({message:"test",client:process.env.CLIENT_URL,requiestIp:req.ip});
 })
 
 app.use(
