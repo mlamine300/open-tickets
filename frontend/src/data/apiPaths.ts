@@ -22,8 +22,12 @@ export const API_PATH = {
      UPDATE_FORM_BY_ID:(id:string)=>`/api/forms/${id}`
   },
   ORGANISATIONS:{
+    DELETE_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`,
     GET_ALL_ORGANISATIONS:'/api/organisations',
-    GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`
+    GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`,
+    ADD_ORGANISATION:'/api/organisations',
+    UPDATE_ORGANISATION:(id:string)=>`/api/organisations/${id}`,
+    GET_ORGANISATIONS:"/api/organisations/list"
   },
   TICKETS:{
     //GET_ALL_TICKETS:"/api/tickets",

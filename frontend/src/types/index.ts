@@ -55,10 +55,12 @@ export type statusType = "Pending" | "In Progress" | "Completed";
 
 export interface Organisation{
   _id?:string;
+  wilaya?:string;
   name:string;
    head?:string;
     address?:string;
      description?:string;
+     phone?:string;
    
 }
 
@@ -109,4 +111,15 @@ export const UserSchema=z.object({
   role: z.enum(["standard","supervisor","admin"],`role doit etre : standard ou supervisor ou admin`),
 })
 export type userFormType= z.infer<typeof UserSchema>
+
+export const organisationSchema=z.object({
+        name:z.string(),
+        wilaya:z.string(),
+         address:z.string(),
+          phone:z.string(),
+           head:z.string(),
+            description:z.string(),
+
+    });
+export type organisationFormType=z.infer<typeof organisationSchema>
 

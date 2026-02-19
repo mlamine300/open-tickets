@@ -18,6 +18,8 @@ import AddTicketFormPage from './page/tickets/AddTicketFormPage';
 import UsersPage from './page/users/UsersPage';
 import AddEditUserPage from './page/users/AddEditUserPage';
 import AlertPage from './page/alert/AlertPage';
+import OrganisationsPage from './page/organisations/OrganisationsPage';
+import AddOrganisation from './page/organisations/AddOrganisation';
 function App() {
  
 
@@ -40,6 +42,8 @@ function App() {
          <Route path="/forms/:id" element={<AddFormPage />} />
           <Route path="/users/list" element={<UsersPage />} />
          <Route path="/users/:id" element={<AddEditUserPage />} />
+         <Route path="/organisations/list" element={<OrganisationsPage />} />
+         <Route path="/organisations/:id" element={<AddOrganisation />} />
            <Route path="/alert" element={<AlertPage />} />
          </Route>
       </Routes>  

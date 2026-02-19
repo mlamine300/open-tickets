@@ -4,6 +4,7 @@ import {
   LuLogOut,
   LuPlus,
 } from "react-icons/lu";
+import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
 import type { FormType, FormFieldType } from "../../../types";
 
 import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, Plus, UserRoundPen, Users } from "lucide-react";
@@ -128,19 +129,41 @@ export const SIDE_MENU_ADMIN_DATA = [
 
     },
     {id:"05",
+      label:"Organisations",
+      icon: BsHouseDoor ,
+      path:"/organisations",
+      hasChilds:true,
+      childs:[
+        {
+          id:"51",
+      label:"Modifier Organisation",
+      icon:BsHouses,
+      path:"/organisations/list",
+        },
+        {
+          id:"52",
+      label:"Ajouter Organisation",
+      icon:BsHouseAdd,
+      path:"/organisations/new",
+        },
+        
+      ]
+
+    },
+    {id:"06",
       label:"Formulaires",
       icon: FaWpforms,
       path:"/forms",
       hasChilds:true,
       childs:[
         {
-          id:"51",
+          id:"61",
       label:"Formulaires",
       icon:FaWpforms,
       path:"/forms/list",
         },
         {
-          id:"52",
+          id:"62",
       label:"Ajouter Formulaires",
       icon:LuPlus,
       path:"/forms/new",
@@ -149,7 +172,7 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
-      {id:"06",
+      {id:"07",
       label:"Annonce",
       icon: Megaphone,
       path:"/alert",
@@ -158,7 +181,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 
     },
   {
-    id: "07",
+    id: "08",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
