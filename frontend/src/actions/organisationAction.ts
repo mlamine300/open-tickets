@@ -70,6 +70,7 @@ export const addOrganisationAction=async(o:Organisation)=>{
         const res=await axiosInstance.post(API_PATH.ORGANISATIONS.ADD_ORGANISATION,{...o});
     if(res.status===200){
       toast.success("Organisation Ajouté!!");
+      localStorage.removeItem("organisations")
     return res.data.data;
     }
     else toast.error("Error en ajoutant l'organisation")
@@ -85,6 +86,7 @@ export const updateOrganisationAction=async(id:string,o:any)=>{
         const res=await axiosInstance.put(API_PATH.ORGANISATIONS.UPDATE_ORGANISATION(id),{...o});
     if(res.status===200){
       toast.success("Organisation Updated!!");
+        localStorage.removeItem("organisations")
     return res.data.data;
     }
     else toast.error("Error en update l'organisation")
@@ -98,7 +100,11 @@ export const updateOrganisationAction=async(id:string,o:any)=>{
 export const deleteOrganisationAction=async(id:string)=>{
   try {
     const res=await axiosInstance.delete(API_PATH.ORGANISATIONS.DELETE_ORGANISATION_BY_ID(id));
-    if(res.status===200)toast.success(`Organisation a été supprimé`);
+    if(res.status===200){
+      toast.success(`Organisation a été supprimé`);
+      localStorage.removeItem("organisations")
+    }
+      
     else toast.error(res.data.message);
   } catch (error) {
     toast.error("impossible de supprimer cette organisation elle est liés a des tickets ou a des utilisateurs");
