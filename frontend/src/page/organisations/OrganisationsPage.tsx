@@ -2,6 +2,7 @@
 import { deleteOrganisationAction, fetchOrganisationsAction } from "@/actions/organisationAction";
 import { columns } from "@/components/organisation/columns";
 import { DataTable } from "@/components/organisation/data-table";
+import FilterTableDiv from "@/components/organisation/FilterTableDiv";
 import TablePagination from "@/components/ticket/TablePAgination";
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/card";
@@ -19,6 +20,7 @@ const OrganisationsPage = () => {
     const searchParams=x[0];
     const page=Number(searchParams.get("page"))||1;
     const search=searchParams.get("search")||"";
+    const wilaya=searchParams.get("wilaya")||"";
     const [toDeleteId, setToDeleteId] = useState<string|null>(null);
         const [showModal, setShowModal] = useState(false);
         const [triggerRerender, setTriggerRerender] = useState<number>(0);
@@ -27,18 +29,18 @@ const OrganisationsPage = () => {
         
             const fetchOrganisation=async()=>{
                 setPending(true);
-                const organisationsRes=await fetchOrganisationsAction({page,search});
+                const organisationsRes=await fetchOrganisationsAction({page,search,wilaya});
                 if(organisationsRes)setOrganisations(organisationsRes);
                 setPending(false);
             }
         
         fetchOrganisation();
        
-    },[page,search,triggerRerender])
+    },[page,search,wilaya,triggerRerender])
     return (
         <div className="flex w-full h-full">
             <Card className='flex item-center bg-background-base border-none shadow-2xl w-full p-5 min-h-screen justify-start'>
-               
+                <FilterTableDiv/>
                 <DataTable pending={pending} columns={columns({setToDeleteId,setShowModal})} data={organisations} />
                  <TablePagination maxPages={Math.ceil(10)} className='mt-auto ml-auto gap-2 p-5'/>
             </Card>

@@ -4,9 +4,9 @@ import { API_PATH } from "@/data/apiPaths";
 import toast from "react-hot-toast";
 
 
-export const fetchOrganisationsAction:({page,search}:{page:number,search:string})=>Promise<Organisation[]> =async({page,search})=>{
+export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:string,wilaya:string})=>Promise<Organisation[]> =async({page,search,wilaya})=>{
   try {
-    const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{page,search});
+    const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{page,search,wilaya});
   if(res.status===200){
   return res.data.data;
 } 

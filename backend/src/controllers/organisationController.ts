@@ -23,12 +23,18 @@ try {
 
     const page=req.body.page??1;
     const search=req.body.search as string||"";
-    const params=search.length>1 ?{
-        $or:[
-    {ref:{ $regex: search, $options: "i" }}
-   
-  ]
-}:{};
+    const wilaya=req.body.wilaya as string ||"";
+    const filterSearch= {name:{ $regex: search, $options: "i" }}
+    const filterWilaya={wilaya:wilaya};
+    let params:any={};
+    if(search.length>1&&wilaya){
+        params["$and"]=[filterSearch,filterWilaya];
+    }
+    else if(search.length>1)params=filterSearch;
+    else if(wilaya)params=filterWilaya;
+    
+    console.log(params);
+
     const organisations=await organisationModel.find(params).skip((page-1)*maxPerPage).limit(maxPerPage);
     if(!organisations||organisations.length<1){
         return res.status(404).json({message:"there are no organisation in the database"});
