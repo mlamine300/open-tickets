@@ -5,7 +5,7 @@ import {
   LuPlus,
 } from "react-icons/lu";
 import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
-import type { FormType, FormFieldType } from "../../../types";
+import type { FormType, FormFieldType } from "@/types";
 
 import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, Plus, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
@@ -308,7 +308,7 @@ export const STATUS_DATA = [
 export const MOTIFS=[
   "Bureau injoignable - مكتب مُتعذِّر الوصول إليه",
 "Bureau fermé - المكتب مغلق",
-"Colis défectueux - طرد تالف",
+"Colis endommagé - طرد تالف",
 "Colis manquant - طرد مفقود",
 "Livraison manquante - تسليم مفقود",
 "Retard de livraison - تأخر في التسليم",

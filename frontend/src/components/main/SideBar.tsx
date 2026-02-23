@@ -7,7 +7,7 @@ import { HiBars3 } from "react-icons/hi2";
 
 import PopUpMenuItem from "../ui/PopUpMenuItem";
 import { Accordion } from "../ui/accordion";
-import { getColorFromName } from "../../../../utils/helper";
+import { getColorFromName } from "../../utils/helper";
 import { PanelLeftClose, PanelRightClose } from "lucide-react";
 import { getTicketsStats } from "@/actions/ticketAction";
 
