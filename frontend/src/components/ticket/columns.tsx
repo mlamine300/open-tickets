@@ -42,7 +42,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         
         const tracking=row.getValue("ref") as string;
       
-      return <Link className="underline italix text-xs hover:text-amber-300 flex items-center justify-around"  target="_blank" to={`${TRACKING_PREFIX}/${tracking}`}>
+      return <Link className="underline italix text-xs hover:text-amber-300 flex items-center justify-around max-w-36 truncate"  target="_blank" to={`${TRACKING_PREFIX}/${tracking}`}>
         {tracking||"none"}
         <ExternalLink size={20}/>
         
