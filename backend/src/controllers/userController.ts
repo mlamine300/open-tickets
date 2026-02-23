@@ -71,7 +71,7 @@ export const addUser=async(req:Request,res:Response)=>{
         if(!organisation)return res.status(400).json("invalid organisation id")
         const foundUser=await userModel.find({email}, { password: 0,refreshTokens:0 }).lean().exec();
     
-    if(foundUser&&foundUser.length>0&&foundUser.at(0)?._id)return res.status(400).json({message:`user with this id ${foundUser.at(0)?._id} already exist`});
+    if(foundUser&&foundUser.length>0&&foundUser.at(0)?._id)return res.status(400).json({message:`user with this email ${foundUser.at(0)?.email} already exist`});
     const hashedPassword=await bcrypt.hash(password, 10);
     const newUser=await userModel.create({...informations,password:hashedPassword});
     if(newUser._id)return res.status(200).json({message:"success",data:{name:newUser.name,
@@ -104,8 +104,8 @@ export const updateUser=async(req:Request,res:Response)=>{
         
         if(email){
             const emailUser=await userModel.findOne({email})
-           
-            if(!emailUser||(emailUser._id!==foundUser._id&&t.user.role!=="admin"))return res.status(409).json({message:"you don't have permission"});
+          
+            if(emailUser&&emailUser._id!==foundUser._id)return res.status(409).json({message:"this email already exist"});
             if(!validateEmail(email))return res.status(400).json({message:"this email is invalid"});
             foundUser.email=email;
         }
