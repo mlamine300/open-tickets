@@ -217,7 +217,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
       </div>
       <div className='flex items-center gap-2 '>
         <p className='italic font-semibold text-sm'>Ref/Tracking:</p>
-        <p className='text-sm'>{ticket.ref}</p>
+        <p className='text-sm truncate'>{ticket.ref}</p>
       </div>
       </div>
             <div className={"flex flex-col items-start gap-0"}>
