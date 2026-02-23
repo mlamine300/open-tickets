@@ -80,7 +80,8 @@ return (<div className="flex justify-center items-center">
   });
   const { errors } = myForm.formState;
 const onSubmit = async(data: z.infer<typeof schema>) => {
-  setPending(true)
+ try {
+   setPending(true)
     console.log(data);
     let attachmentUrl;
     const attachmentFile=myForm.getValues("attachement");
@@ -95,10 +96,15 @@ const onSubmit = async(data: z.infer<typeof schema>) => {
   if(ticket){
 toast.success("ticket créé!!!!")
 myForm.reset();
-setPending(false);
+
   //navigate("/form")
   }
   
+ } catch (error) {
+  toast.error("Erreur lors de création de ticket!!")
+ }finally{
+  setPending(false);
+ }
   
 
 }

@@ -358,16 +358,16 @@ export const getStandardForm=():FormType=>({
     export const StandartFierlds=():FormFieldType[]=>[
       {name:"motif",label:"Motif",type:"select-filter",possibleValues:MOTIFS,required:true},
       {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
-       {name:"message",label:"Message",type:"text",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
-      // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
+        // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
         {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:[
                         "organisations"
-                    ],required:false},
+                    ],required:true},
         {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:["organisations"],required:false},
-       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.label),required:false,default:"Normal"},
+       {name:"priority",label:"priorité",type:"select",possibleValues:PRIORITY_DATA.map(x=>x.label),required:true,default:"Normal"},
     
         {name:"attachement",label:"attachement",type:"file",required:false},
-        
+        {name:"message",label:"Message",type:"area",possibleValues:PRIORITY_DATA.map(x=>x.value),required:true},
+     
     
     ]
 
