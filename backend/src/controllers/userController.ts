@@ -102,14 +102,14 @@ export const updateUser=async(req:Request,res:Response)=>{
         if(!foundUser)return res.status(404).json({message:"ther is no user with such id"});
         const {name,email,password,organisation,role,organisationsList}=req.body;
         
-        if(email){
+        if(email&&foundUser.email!==email){
             const emailUser=await userModel.findOne({email})
           
-            if(emailUser&&emailUser._id!==foundUser._id)return res.status(409).json({message:"this email already exist"});
+            if((emailUser&&emailUser._id!==foundUser._id))return res.status(409).json({message:"this email already exist"});
             if(!validateEmail(email))return res.status(400).json({message:"this email is invalid"});
             foundUser.email=email;
         }
-        if(name){
+        if(name&&foundUser.name!==name){
             if(!validateName(name))return res.status(400).json({message:"this name is invalid"});
             foundUser.name=name;
         }if(password){
@@ -118,11 +118,11 @@ export const updateUser=async(req:Request,res:Response)=>{
             foundUser.password=hashedPassword;
             foundUser.refreshTokens.splice(0,0)
         }
-        if(role){
+        if(role&&foundUser.role!==role){
             if(role!="standard"&&role!="supervisor")return res.status(400).json({message:"invalid role"});
             foundUser.role=role;
         }
-        if(organisation){
+        if(organisation&&foundUser.organisation!==organisation){
            const foundOrganisation=await organisationModel.findById(organisation);
            if(!foundOrganisation) return res.status(400).json({message:"invalid organisation id"});
            foundUser.organisation=organisation;
@@ -138,7 +138,7 @@ export const updateUser=async(req:Request,res:Response)=>{
             }
             const x=organisationsList.map(o=>new mongoose.Types.ObjectId(o));
                 foundUser.organisationsList=x;
-                console.log(foundUser.organisationsList)
+                //console.log(foundUser.organisationsList)
             }
         await foundUser.save();
         return res.status(200).json({message:"success",data:{foundUser,password:null,refreshToken:null}});
@@ -148,6 +148,7 @@ export const updateUser=async(req:Request,res:Response)=>{
         
     }
 }
+
 export const deleteUser=async(req:Request,res:Response)=>{
     try {
          const t=checkToken(req);
