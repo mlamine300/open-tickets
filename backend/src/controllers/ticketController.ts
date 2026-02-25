@@ -47,11 +47,20 @@ export const addTicket=async(req:Request,res:Response)=>{
          const motif=req.body?.motif||"standart";
         const commentsId:any[]=[];
         
-       console.log(req.body);
+       
        
         const ticket=await ticketModel.create({creator:userId,attachement,motif,
            emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,formName,message,specialFields,priority,commentsId,ref
-        })
+        });
+          const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"create",
+      message:"Ticket Créer",
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.save();
         return res.status(200).json({message:"success",data:ticket})
 
     } catch (error) {

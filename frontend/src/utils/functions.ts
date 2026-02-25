@@ -14,5 +14,6 @@ export const checkPermissionToDoAction=(user:User,ticket:ticket)=>{
 export const checkPermissionToRelanceOrClotorer=(user:User,ticket:ticket)=>{
     
     const role=user.role||"standard";
+    
     return ticket.creator?._id===user._id||role==="admin";
 }

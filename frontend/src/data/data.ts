@@ -306,43 +306,43 @@ export const STATUS_DATA = [
 ];
 
 export const MOTIFS=[
-  "Bureau injoignable  -------- مكتب مُتعذِّر الوصول إليه",
-"Bureau fermé  -------- المكتب مغلق",
-"Colis endommagé  -------- طرد تالف",
-"Colis manquant  -------- طرد مفقود",
-"Livraison manquante  -------- تسليم مفقود",
-"Retard de livraison  -------- تأخر في التسليم",
-"Retard de retour  -------- تأخر في الإرجاع",
-"Refus de livraison  -------- رفض التسليم",
-"Faux statut / Scan  -------- حالة / مسح غير صحيح",
-"Mauvais comportement  -------- سوء السلوك",
-"Ouverture sans autorisation  -------- فتح بدون إذن",
-"Demandes / Modifications  -------- طلبات / تعديلات",
-"Changement de prix  -------- تغيير السعر",
-"Changement de numéro  -------- تغيير الرقم",
-"Changement de commune  -------- تغيير البلدية",
-"Changement du type de livraison  -------- تغيير نوع التسليم",
-"Demande de localisation  -------- طلب تحديد الموقع",
-"Demande de mise à jour  -------- طلب تحديث",
-"Demande de livraison  -------- طلب تسليم",
-"Demande de retour  -------- طلب إرجاع",
-"Demande d’information  -------- طلب معلومات",
-"Conserver le colis / Garder le colis  -------- الاحتفاظ بالطرد",
-"Réclamation financière  -------- شكوى مالية",
-"Autre réclamation  -------- شكوى أخرى",
-"Surfacturation  -------- فواتير زائدة",
-"Réacheminement  -------- إعادة التوجيه",
-"Faux dispatch  -------- توزيع خاطئ",
-"accélération de livraison  -------- تسريع التسليم",
-"retour vide  -------- إرجاع فارغ",
-"litige et remboursement  -------- نزاع واسترجاع الأموال",
-"manque de prefessionnalisme  -------- نقص الاحترافية",
-"colis vide  -------- طرد فارغ",
-"Colis non validé  -------- طرد غير مُعتمد",
-"Colis non dispatché  -------- طرد غير مُوزَّع",
-"Navette saturée  -------- الشاحنة ممتلئة",
-"Colis double  -------- طرد مكرر",
-"Reçu par erreur  -------- تم الاستلام عن طريق الخطأ",
+  "Bureau injoignable - مكتب مُتعذِّر الوصول إليه",
+"Bureau fermé - المكتب مغلق",
+"Colis endommagé - طرد تالف",
+"Colis manquant - طرد مفقود",
+"Livraison manquante - تسليم مفقود",
+"Retard de livraison - تأخر في التسليم",
+"Retard de retour - تأخر في الإرجاع",
+"Refus de livraison - رفض التسليم",
+"Faux statut / Scan - حالة / مسح غير صحيح",
+"Mauvais comportement - سوء السلوك",
+"Ouverture sans autorisation - فتح بدون إذن",
+"Demandes / Modifications - طلبات / تعديلات",
+"Changement de prix - تغيير السعر",
+"Changement de numéro - تغيير الرقم",
+"Changement de commune - تغيير البلدية",
+"Changement du type de livraison - تغيير نوع التسليم",
+"Demande de localisation - طلب تحديد الموقع",
+"Demande de mise à jour - طلب تحديث",
+"Demande de livraison - طلب تسليم",
+"Demande de retour - طلب إرجاع",
+"Demande d’information - طلب معلومات",
+"Conserver le colis / Garder le colis - الاحتفاظ بالطرد",
+"Réclamation financière - شكوى مالية",
+"Autre réclamation - شكوى أخرى",
+"Surfacturation - فواتير زائدة",
+"Réacheminement - إعادة التوجيه",
+"Faux dispatch - توزيع خاطئ",
+"accélération de livraison - تسريع التسليم",
+"retour vide - إرجاع فارغ",
+"litige et remboursement - نزاع واسترجاع الأموال",
+"manque de prefessionnalisme - نقص الاحترافية",
+"colis vide - طرد فارغ",
+"Colis non validé - طرد غير مُعتمد",
+"Colis non dispatché - طرد غير مُوزَّع",
+"Navette saturée - الشاحنة ممتلئة",
+"Colis double - طرد مكرر",
+"Reçu par erreur - تم الاستلام عن طريق الخطأ",
 
 
 ]
@@ -371,16 +371,17 @@ export const getStandardForm=():FormType=>({
     
     ]
 
-export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close"]
+export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close","create"]
 
     export const COMMENT_ACTIONS_DICTIONNAIRE=
       {
       comment:"Commenter",
-
+      create:"Créer",
   in_charge: "Pris en charge",
   called: "Le concerné a été appelé",
   relancer: "Relancer",
-  close:"Traiter",
+  close:"Clôturer",
+   trait:"Traiter",
   subscribe:"Ajouter une organisation"
 }
 

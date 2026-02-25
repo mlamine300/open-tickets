@@ -34,7 +34,7 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
       
       <h1 className=' lg:col-span-2 flex justify-center text-text-primary font-bold gap-2'>
         <span className='italic font-semibold text-primary'>Ref/Tracking :</span> 
-        <Link className='underline  italic font-l'  target="_blank" to={`${TRACKING_PREFIX}/${ticket.ref}`}>  
+        <Link className='underline  italic font-l'  target="_blank" to={`${TRACKING_PREFIX}/${ticket.ref.trim()}`}>  
          {ticket.ref}
         </Link>
          </h1>
@@ -118,7 +118,7 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
 {ticket.lastComment&& (<div className='col-span-2 flex flex-col items-start'>
     {showAllComment&&<div className='flex flex-col gap-2 w-full min-h-96 overflow-y-auto px-4 '>
       {allComment.map((c,index)=>
-        <CommentRow className='shadow-sm lg:min-h-40' comment={c} key={index}/>
+        <CommentRow className='shadow-sm lg:min-h-28' comment={c} key={index}/>
       )}
     </div>}
 </div>)}

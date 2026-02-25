@@ -129,7 +129,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
 
         const handleClosing=async()=>{
           
-           if(!user||checkPermissionToRelanceOrClotorer(user,ticket)){  
+           if(!user||!checkPermissionToRelanceOrClotorer(user,ticket)){  
           toast.error("vous pouvez pas procéder a cette action (ticket a été creé par a une autre compte)")
         return;
         }
