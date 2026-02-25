@@ -9,7 +9,10 @@ export const checkPermissionToTakeInCharge=(user:User,ticket:ticket)=>{
 export const checkPermissionToDoAction=(user:User,ticket:ticket)=>{
     
     const role=user.role||"standard";
-    console.log(ticket.assignedTo?.user._id)
-    console.log(user._id)
     return ticket.assignedTo?.user._id===user._id||role==="admin";
+}
+export const checkPermissionToRelanceOrClotorer=(user:User,ticket:ticket)=>{
+    
+    const role=user.role||"standard";
+    return ticket.creator?._id===user._id||role==="admin";
 }

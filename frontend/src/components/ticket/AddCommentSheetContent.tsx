@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
 import { Link } from 'react-router';
 import SelectWithSearch from '../ui/SelectWithSearch';
-import {  checkPermissionToDoAction, checkPermissionToTakeInCharge } from '@/utils/functions';
+import {  checkPermissionToDoAction, checkPermissionToRelanceOrClotorer, checkPermissionToTakeInCharge } from '@/utils/functions';
 import { useForm } from 'react-hook-form';
 
 const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,refresh:()=>void,organisations:Organisation[]}) => {
@@ -32,21 +32,13 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
      
       switch(action){
         case "in_charge":{
-           if((!user||!checkPermissionToTakeInCharge(user,ticket))){
-
-      toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
-    return; 
-    }
           handleTakeInCharge();
+          
           break;
         }
         
          case "relancer":{
-                if((!user||!checkPermissionToDoAction(user,ticket))){
-
-      toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
-    return; 
-    }
+          
           handleRelance();
          
           break;
@@ -62,12 +54,6 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           break;
         }
         case "subscribe":{
-
-            if((!user||!checkPermissionToDoAction(user,ticket))){
-
-      toast.error("Il est impossible d'effectuer cette opération car l'organisation prévue diffère de votre organisation.")
-    return; 
-                }
           handleSubscribe();
           break;
         }
@@ -75,14 +61,18 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           handleComment();
         }
          refresh();
+         
       } 
       } catch (error) {
         console.log(error)
 
-      }
-     
+      }finally{
       myform.reset({});
       setPending(false);
+      
+      }
+     
+    
     }
 
     const handleComment=async()=>{
@@ -91,7 +81,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
         toast.error("tu devrais ecrir un message et choisir une action")
       }
       if(ticket._id){
-  await AddCommentAction(ticket._id,action,message);
+      await AddCommentAction(ticket._id,action,message);
       setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -102,7 +92,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
      
     }
       const handleTakeInCharge=async()=>{
-        setPending(true);
+       
         if(ticket.status!=="pending"){
           toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas le prendre en charge`)
           return
@@ -114,13 +104,13 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
       if(ref&&ref.current){
       ref.current.click();
       }
-      setPending(false)
-         refresh();
+      refresh();
+     
         }
         }
           const handleTraiting=async()=>{
           
-           if(!user||!checkPermissionToDoAction(user,ticket)){  
+           if(!user||!checkPermissionToTakeInCharge(user,ticket)){  
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
         return;
         }
@@ -139,11 +129,11 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
 
         const handleClosing=async()=>{
           
-           if(!user){  
+           if(!user||checkPermissionToRelanceOrClotorer(user,ticket)){  
           toast.error("vous pouvez pas procéder a cette action (ticket a été creé par a une autre compte)")
         return;
         }
-        setPending(true)
+        
         if(ticket._id){
            await closeTicketAction(ticket._id,`ticket cloturer par ${user?.name} \n${message}`);
           setAction("comment");
@@ -151,16 +141,15 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
       if(ref&&ref.current){
       ref.current.click();
       }
-      setPending(false);
-      refresh();
+    refresh();
         }
         }
         const handleRelance=async()=>{
-            if(!user||!checkPermissionToDoAction(user,ticket)){  
-          toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
+            if(!user||!checkPermissionToRelanceOrClotorer(user,ticket)){  
+          toast.error("vous pouvez pas procéder a cette action (seul le créateur de ticket qui peut faire cette action)")
         return;
         }
-        setPending(true)
+        
            
        
       if(ticket._id){
@@ -170,7 +159,6 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
       if(ref&&ref.current){
       ref.current.click();
       }
-      setPending(false)
       refresh();
       }
         }
@@ -179,9 +167,9 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           toast.error("vous pouvez pas procéder a cette action (ticket est prise en charge par a une autre compte)")
         return;
         }
-        setPending(true)
+       
         if(ticket.status!=="open"){
-          toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas ajouter une organisation`)
+          toast.error(`le status de ticket: (${ticket.status}), vous pouvez pas ajouter une organisation`)
           return
         }
         const organisationFilter=organisations.filter(o=>o.name===organisation);
@@ -196,8 +184,8 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
       if(ref&&ref.current){
       ref.current.click();
       }
-      setPending(false)
-         refresh();
+      
+      
         }
         }
   return (
@@ -296,7 +284,7 @@ if(ticket.status==="open"){
 
 actions["subscribe"]="Ajouter une organisation";
 actions["trait"]="Traiter";
-actions["relancer"]="Relancer";
+//actions["relancer"]="Relancer";
    }
 
 }else if(ticket.status==="traited"){
@@ -304,6 +292,7 @@ actions["relancer"]="Relancer";
   {
 
     actions["close"]="Clôturer ";
+    actions["relancer"]="Relancer";
   }
 }
 return actions;

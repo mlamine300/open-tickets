@@ -728,14 +728,17 @@ export const relanceTicket=async (req:Request,res:Response)=>{
       const token = req.headers.authorization?.split(" ")[1];
 if (!token) return res.status(409).json({ message: "not autorized" });
     const user = (await jwt.decode(token)) as TokenPayload;
-    const { userId }=user;
+    const { userId,role }=user;
     if (!userId) return res.status(409).json({ message: "not autorized" });
     const id=req.params.id;
     if(!id)return res.status(400).json({message:"id is required"})
 
     const ticket=await ticketModel.findById(id).exec();
-    if(!ticket)return res.status(404).json({message:"ticket not found"})
-      ticket.status="pending";
+    if(!ticket)return res.status(404).json({message:"ticket not found"});
+    if(role!=="admin"&&(!ticket.creator||ticket.creator._id.toString()!==userId)){
+      return res.status(409).json({message:"you should be admin or the créatorof the tocket to be able to perform relanceTicket"})
+    }
+      ticket.status="open";
     const message=req.body.message;
     const comment=await commentsModel.create({
       ticketId:ticket._id,
