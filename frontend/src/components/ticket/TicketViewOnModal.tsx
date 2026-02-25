@@ -9,6 +9,7 @@ import { Eye } from 'lucide-react';
 const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   const [showAllComment,setShowAllComment]=useState(false);
   const [allComment,setAllComment]=useState<Comment[]>([]);
+  const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
   useEffect(()=>{
     const getAllCommentFromServer=async()=>{
      if(showAllComment&&(!allComment||allComment.length===0)){
@@ -24,8 +25,22 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   },[showAllComment])
   return (
     <div className='flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-2 h-fit w-full bg-background-base pb-20 px-5'>
-      <h1 className=' lg:col-span-2 flex justify-center text-text-primary font-bold gap-2'><span className='italic font-semibold'>Ref/Tracking :</span> {ticket.ref} </h1>
+      <h1 className=' lg:col-span-2 flex justify-center  gap-2'>
+        <span className='italic text-primary font-semibold'>Id Ticket :</span> 
+        <Link className='underline  italic font-l' to={`/ticket/${ticket._id}`}>  
+         {ticket._id}
+        </Link>
+         </h1>
+      
+      <h1 className=' lg:col-span-2 flex justify-center text-text-primary font-bold gap-2'>
+        <span className='italic font-semibold text-primary'>Ref/Tracking :</span> 
+        <Link className='underline  italic font-l'  target="_blank" to={`${TRACKING_PREFIX}/${ticket.ref}`}>  
+         {ticket.ref}
+        </Link>
+         </h1>
+         
  <div className='flex items-center gap-2 text-xs 2xl:text-sm justify-start w-full'>
+  
     <p className='text-primary text-xs 2xl:text-sm'>Créer par :</p>
     <p className='text-xs 2xl:text-sm'>{ticket.creator?.name||"non mentionné"} </p>
  </div>

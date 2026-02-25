@@ -27,9 +27,16 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     cell:({row})=>{
       const date=row.getValue("createdAt") as string;
       const dateStr=format(date,"dd/MM/yyyy");
-      return <p className="italic text-xs">
+      const dateTime=format(date,"hh:mm:ss");
+      return <div className="flex flex-col">
+        <p className="italic text-xs">
         {dateStr}
       </p>
+      <p className="w-10/12 mx-auto bg-gray-cold/80 h-px"></p>
+      <p className="italic text-xs">
+        {dateTime}
+      </p>
+      </div>
       
     }
 
