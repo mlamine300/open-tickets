@@ -7,15 +7,17 @@ import TablePagination from '@/components/ticket/TablePAgination'
 import { useUserContext } from '@/context/user/userContext'
 import type {  ticket } from '@/types'
 import { useEffect, useState } from 'react'
-import { useLocation, useSearchParams } from 'react-router'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,triggerRerender}: {setTriggerRerender:(value:number)=>void,setShowModal:any; setSelectedTicket:(ticket:ticket|null)=>void,triggerRerender:number}) => {
-
+useEffect(() => {
+  console.log("LOCATION:", window.location.href);
+});
  const [tickets,setTicket]=useState<ticket[]>([]);
   //const [showModal,setShowModal]=useState<string>("")
 
   const [searchParams]=useSearchParams();
-   const {setTriggerAppRender}=useUserContext()
+   //const {setTriggerAppRender}=useUserContext()
  
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
    const [pending,setPending]=useState(false);
@@ -43,7 +45,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       };
      
       getMyTickets();
-      setTriggerAppRender(Math.random());
+     // setTriggerAppRender(Math.random());
      
       intervalId = setInterval(() => {
         setTriggerRerender(Math.random());

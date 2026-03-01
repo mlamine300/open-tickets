@@ -24,6 +24,8 @@ const MenuItem = ({
 }) => {
   const logout = async () => {
     try {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
       const data = await axiosInstance.post(API_PATH.AUTH.LOGOUT);
       console.log(data);
     } catch (error) {
@@ -36,8 +38,7 @@ const MenuItem = ({
     <Link
       onClick={() => {
         if (item.path === "/logout") {
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
+  
           logout();
         }
       }}

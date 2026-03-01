@@ -180,8 +180,17 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
+    {id:"08",
+      isSearch:true,
+      label:"Recherche",
+      icon: null,
+      path:"/",
+      hasChilds:false,
+     
+
+    },
   {
-    id: "08",
+    id: "09",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -286,8 +295,18 @@ export const SIDE_MENU_USER_DATA = [
     ]
 
     },
+     
+    {id:"06",
+      isSearch:true,
+      label:"Recherche",
+      icon: null,
+      path:"/",
+      hasChilds:false,
+     
+
+    },
   {
-    id: "06",
+    id: "07",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",

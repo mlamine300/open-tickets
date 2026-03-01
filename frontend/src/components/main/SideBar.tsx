@@ -10,6 +10,7 @@ import { Accordion } from "../ui/accordion";
 import { getColorFromName } from "../../utils/helper";
 import { PanelLeftClose, PanelRightClose } from "lucide-react";
 import { getTicketsStats } from "@/actions/ticketAction";
+import SearchMenuForSideBar from "./SearchMenuForSideBar";
 
 
 const SideBar = () => {
@@ -165,7 +166,9 @@ const SideBar = () => {
                 choosed={isShoosed(item.path)}
               />
             );
-          }else{
+          }else if(item?.isSearch){
+            return <SearchMenuForSideBar/>
+          }else {
               return (
               <MenuItem
               colapsed={collapsed}
