@@ -41,7 +41,8 @@ export const API_PATH = {
       TRAIT_TICKET:(id:string)=>`/api/tickets/trait/${id}`,
       REOPEN_TICKET:(id:string)=>`/api/tickets/relance/${id}`,
       ADD_ORGANISATION:(id:string)=>`/api/tickets/add_organisation/${id}`,
-      TICKETS_STATS:"/api/tickets/stats"
+      TICKETS_STATS:"/api/tickets/stats",
+       SEARCH_TICKETS:"/api/tickets/search/list",
      
      
   },

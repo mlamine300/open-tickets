@@ -101,7 +101,7 @@ export const getTickets = async (req: Request, res: Response) => {
     // Filters
     const type = req.params.type || "pending";
     
-    console.log("-------------------------------------->",getFilterFromType(type, userId))
+
     const baseFilter:any = {
       ...getResponsablitiesFilterFromRole(user,notag),
       ...getFilterFromType(type, userId),
@@ -316,7 +316,213 @@ if(motif){
   }
 };
 
+export const searchTickets=async(req:Request,res:Response)=>{
+   try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(409).json({ message: "not authorized" });
 
+    const user = jwt.decode(token) as TokenPayload;
+    if (!user?.userId) return res.status(409).json({ message: "not authorized" });
+
+    
+
+   
+
+
+   
+    const search = req.body.search || "";
+    if(!search||search.length<3)return res.json(200).json({data:[],message:"search less then 3"}) ;
+
+  
+   
+    // const baseFilter:any = {
+    //   ...getResponsablitiesFilterFromRole(user,"false"),
+    // };
+
+    const searchFilter=getSearchFilter(search.trim())
+
+    const pipeline: any[] = [
+      { $match: { ...searchFilter
+        //  ...searchQuery
+         } },
+
+      // Join user (creator)
+      {
+        $lookup: {
+          from: "users",
+          localField: "creator",
+          foreignField: "_id",
+          as: "creator"
+        }
+      },
+      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+
+      // emitter organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "emitterOrganizationId",
+          foreignField: "_id",
+          as: "emitterOrganization"
+        }
+      },
+      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+
+      // recipient organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "recipientOrganizationId",
+          foreignField: "_id",
+          as: "recipientOrganization"
+        }
+      },
+      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+
+      // associated organizations
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "associatedOrganizations",
+          foreignField: "_id",
+          as: "associatedOrganizations"
+        }
+      },
+
+      // assignedTo
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo.userId",
+          foreignField: "_id",
+          as: "assignedUsers"
+        }
+      },
+
+      {
+        $addFields: {
+          assignedTo: {
+            $map: {
+              input: {
+                $cond: {
+                  if: { $isArray: "$assignedTo" },
+                  then: "$assignedTo",
+                  else: {
+                    $cond: {
+                      if: { $eq: ["$assignedTo", null] },
+                      then: [],
+                      else: ["$assignedTo"]
+                    }
+                  }
+                }
+              },
+              as: "a",
+              in: {
+                date: "$$a.date",
+                user: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$assignedUsers",
+                        as: "u",
+                        cond: { $eq: ["$$u._id", "$$a.userId"] }
+                      }
+                    },
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+
+      { $project: { assignedUsers: 0 } },
+
+      // Populate lastComment.author (replace authorId with author doc)
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastComment.authorId",
+          foreignField: "_id",
+          as: "lastCommentAuthor"
+        }
+      },
+      {
+        $addFields: {
+          lastComment: {
+            $cond: [
+              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+              {
+                $mergeObjects: [
+                  "$lastComment",
+                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+                ]
+              },
+              "$lastComment"
+            ]
+          }
+        }
+      },
+      { $project: { lastCommentAuthor: 0 } },
+
+      // project only necessary fields for creator, organisations and assignedTo
+      {
+        $project: {
+          _id: 1,
+          ref: 1,
+          formName: 1,
+          message: 1,
+          status: 1,
+          priority: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          specialFields:1,
+          motif:1,
+          lastComment: {
+            _id: "$lastComment._id",
+            message: "$lastComment.message",
+            action: "$lastComment.action",
+            ticketRef: "$lastComment.ticketRef",
+            createdAt: "$lastComment.createdAt",
+            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+          },
+          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+          assignedTo: {
+            $let: {
+              vars: {
+                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+              },
+              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+            }
+          }
+        }
+      },
+
+
+
+     
+    ];
+
+    const data = await ticketModel.aggregate(pipeline).exec();
+    
+
+   
+    
+
+    return res.status(200).json({
+      message: "success",
+      data,
+    });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "server error" });
+  }
+}
 
 
 export const getTicketByid=async(req:Request,res:Response)=>{
@@ -942,128 +1148,7 @@ export const getHighPriorityOpenTickets = async () => {
     status: { $ne: "complete" }
   });
 };
-// export const getDashboardStats = async (req:Request,res:Response) => {
-//     try {
-//       const user=getToken(req);
-//   if(!user)return res.status(404).json({message:"there is no user"});
-//   const reponsabilities=getResponsablitiesFilterFromRole(user) 
-//   const [stats] = await ticketModel.aggregate([
-//     {
-//       $facet: {
-//         byStatus: [
-//           {$match:{...reponsabilities}},
-//           { $group: { _id: "$status", count: { $sum: 1 } } }
-//         ],
-//         byPriority: [
-//           {$match:{...reponsabilities}},
-//           { $group: { _id: "$priority", count: { $sum: 1 } } }
-//         ],
-//         total: [
-//           {$match:{...reponsabilities}},
-//           { $count: "totalTickets" }
-//         ],
-//         assigned: [
-//           { $match: { "assignedTo.userId": { $ne: null },...reponsabilities } },
-//           { $count: "assignedTickets" }
-//         ],
-//         formName:[
-//            {$match:{...reponsabilities}},
-//           { $group: { _id: "$formName", count: { $sum: 1 } } }
-//         ],
-//         emmiter:[
-//            {$match:{...reponsabilities}},
-//           { $group: { _id: "$emitterOrganizationId", count: { $sum: 1 } } }
-//         ],
-//         recipient:[
-//            {$match:{...reponsabilities}},
-//           { $group: { _id: "$recipientOrganizationId", count: { $sum: 1 } } }
-//         ]
-//       }
-//     }
-//   ]);
-// if(!stats)return res.status(404).json({message:"stat not found"});
-//   return res.status(200).json({message:"success",data:stats});
-//     } catch (error) {
-//       console.log(error);
-//       return res.status(500).json({message:"server error",error});
-      
-      
-//     }
-// };
-// export const getDashboardStats=async(req:Request,res:Response)=>{
-//   try {
-//       const user=getToken(req);
-//    if(!user)return res.status(404).json({message:"there is no user"});
-//    const reponsabilities=getResponsablitiesFilterFromRole(user) 
-//     const [stats] = await ticketModel.aggregate([
-//   { $match: { ...reponsabilities } },
-//   {
-//     $facet: {
-//       byStatus: [
-//         { $group: { _id: "$status", count: { $sum: 1 } } }
-//       ],
-//       byPriority: [
-//         { $group: { _id: "$priority", count: { $sum: 1 } } }
-//       ],
-//       total: [
-//         { $count: "totalTickets" }
-//       ],
-//       assigned: [
-//         { $match: { "assignedTo.userId": { $ne: null } } },
-//         { $count: "assignedTickets" }
-//       ],
-//       formName: [
-//         { $group: { _id: "$formName", count: { $sum: 1 } } }
-//       ],
-//       emmiter: [
-//         {
-//           $lookup: {
-//             from: "organisations",
-//             localField: "emitterOrganizationId",
-//             foreignField: "_id",
-//             as: "emitterOrg"
-//           }
-//         },
-//         { $unwind: "$emitterOrg" },
-//         {
-//           $group: {
-//             _id: "$emitterOrg._id",
-//             name: { $first: "$emitterOrg.name" },
-//             count: { $sum: 1 }
-//           }
-//         }
-//       ],
-//       recipient: [
-//         {
-//           $lookup: {
-//             from: "organisations",
-//             localField: "recipientOrganizationId",
-//             foreignField: "_id",
-//             as: "recipientOrg"
-//           }
-//         },
-//         { $unwind: "$recipientOrg" },
-//         {
-//           $group: {
-//             _id: "$recipientOrg._id",
-//             name: { $first: "$recipientOrg.name" },
-//             count: { $sum: 1 }
-//           }
-//         }
-//       ]
-//     }
-//   }
-// ]);
 
-//   if(!stats)return res.status(404).json({message:"stat not found"});
-//   return res.status(200).json({message:"success",data:stats});
-//      } catch (error) {
-//        console.log(error);
-//        return res.status(500).json({message:"server error",error});
-      
-      
-//     }
-// }
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const user = getToken(req);
@@ -1103,7 +1188,9 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             { $count: "assignedTickets" }
           ],
           motif: [
-            { $group: { _id: "$motif", count: { $sum: 1 } } }
+            { $group: { _id: "$motif", count: { $sum: 1 } } },
+            //  { $sort: { count: -1 } },
+            // {$limit:10}
           ],
           emmiter: [
             {

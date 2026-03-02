@@ -72,7 +72,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
         setSearchParams(params);
       }, 300);
       return () => clearTimeout(handler);
-    }, [search,motif,onlyMyOrganisation, emitterOrganization, recipientOrganization, priority, setSearchParams, searchParams]);
+    }, [search,motif,onlyMyOrganisation, emitterOrganization, recipientOrganization, priority]);
     
     const handleDownloadExcel=async()=>{
       try {
@@ -101,10 +101,10 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
             </h3>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <div className='flex flex-col gap-0 justify-around my-8'>
+          <div className='flex flex-col gap-0 justify-around my-2'>
 
 
- <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:min-h-24 md:gap-4",className)}>
+ <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:min-h-24 md:gap-2",className)}>
      
         
    {organisations&&

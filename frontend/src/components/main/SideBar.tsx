@@ -167,7 +167,7 @@ const SideBar = () => {
               />
             );
           }else if(item?.isSearch){
-            return <SearchMenuForSideBar/>
+           if(!collapsed)  return <SearchMenuForSideBar/>
           }else {
               return (
               <MenuItem

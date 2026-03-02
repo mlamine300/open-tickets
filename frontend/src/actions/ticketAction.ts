@@ -46,6 +46,20 @@ export const getTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}
     
 }
 
+export const searchTicketsAction:(search:string)=>Promise<ticket[]>=async(search)=>{
+    if(!search||search.length<3)return[];
+    try {
+        const res=await axiosInstance.post(API_PATH.TICKETS.SEARCH_TICKETS,{search});
+        if(res.status===200)return res.data.data as ticket[];
+        return [];
+    } catch (error) {
+        console.log(error);
+        
+        
+    }
+    return [];
+}
+
 export const getPendingTicketsAction:(params:any)=>Promise<{data:ticket[],total:number}>=async(params)=>{
      console.log("pending");
     const res=await axiosInstance.post(API_PATH.TICKETS.GET_SPECIFIC_TICKETS("pending"),{...params});

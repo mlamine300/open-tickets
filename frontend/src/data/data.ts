@@ -323,7 +323,9 @@ export const STATUS_DATA = [
   { value: "open", label: "ouvert" },
   { value: "complete", label: "cloturé" },
 ];
-
+export const translateStatus=(v:string)=>{
+  return STATUS_DATA.find(s=>s.value===v)?.label??v;
+}
 export const MOTIFS=[
   "Bureau injoignable - مكتب مُتعذِّر الوصول إليه",
 "Bureau fermé - المكتب مغلق",

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  addOrganisation, addTicket, closeTicket, getMytickets, getNotCompleteReport, getTicketByid, getTicketReport, getTickets, getTicketsStatsForSideBar, relanceTicket, takeTicketInCharge, traitTicket } from "../controllers/ticketController.js";
+import {  addOrganisation, addTicket, closeTicket, getMytickets, getNotCompleteReport, getTicketByid, getTicketReport, getTickets, getTicketsStatsForSideBar, relanceTicket, searchTickets, takeTicketInCharge, traitTicket } from "../controllers/ticketController.js";
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);
@@ -15,6 +15,6 @@ ticketRouter.post("/add_organisation/:id",addOrganisation);
 ticketRouter.get("/reports/notcomplete",getNotCompleteReport);
 ticketRouter.post("/reports/date",getTicketReport);
 ticketRouter.post("/stats",getTicketsStatsForSideBar)
-
+ticketRouter.post("/search/list",searchTickets)
 
 export default ticketRouter;
