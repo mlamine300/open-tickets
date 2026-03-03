@@ -22,7 +22,9 @@ import OrganisationsPage from './page/organisations/OrganisationsPage';
 import AddOrganisation from './page/organisations/AddOrganisation';
 function App() {
  
-
+ const favicon = document.querySelector("link[rel='icon']") as any;
+ if(favicon) favicon.href = import.meta.env.VITE_MINI_LOGO
+ 
   return (
      <main className="layout bg-background-screen">
 
