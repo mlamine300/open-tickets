@@ -4,7 +4,7 @@ npm-debug.log
 .env
 build/
 dist/
-
+uploads/
 # MongoDB
 data/db/
 dump/
