@@ -5,6 +5,7 @@ export interface TokenPayload extends JwtPayload {
   userId: string;
   role: "admin" | "standard"|"supervisor";
   organisation:string;
+  organisationName?:string;
   organisationsList:string[];
   activeStatus:boolean;
   iat?: number;

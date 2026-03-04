@@ -28,13 +28,13 @@ console.log(user);
     e.preventDefault();
     if (!validateEmail(email)) {
       setError((err: any) => {
-        return { ...err, email: "Please enter a valid email address." };
+        return { ...err, email: "Merci d'entrer votre email" };
       });
       return;
     }
     if (!validatePassword(password)) {
       setError((err: any) => {
-        return { ...err, password: "Please enter a valid password." };
+        return { ...err, password: "Merci d'entrer votre Mot de passe" };
       });
       return;
     }
@@ -61,7 +61,7 @@ console.log(user);
       }
     } catch (error: any) {
       console.log(error);
-      let errResponse = "error on the server";
+      let errResponse = "error dans le serveur";
       if (error instanceof AxiosError) {
         if (error.response?.data?.message) {
           errResponse = error.response?.data.message;
@@ -80,13 +80,13 @@ console.log(user);
   return (
     <AuthLayout>
       <div className="flex flex-col gap-3 h-[500px] ">
-        <h3>Welcome Back</h3>
-        <p className="text-secondary">Please enter your details to log in</p>
+        <h3>Bienvenue</h3>
+        <p className="text-secondary">Merci d'entrer vos informations pour ce connecter</p>
         <form className="flex flex-col gap-5 max-w-[500px]">
           <Input
             key="email"
-            placeHolder="name@xmail.com"
-            label="Email Address"
+            placeHolder="nom@xmail.com"
+            label="Address Email"
             type="email"
             value={email}
             onChange={(e) => {
@@ -100,7 +100,7 @@ console.log(user);
           <Input
             key="password"
             placeHolder="Min 8 Characters"
-            label="Password"
+            label="Mot de passe"
             type="password"
             value={password}
             onChange={(e) => {
@@ -114,7 +114,7 @@ console.log(user);
 
           <Button
             disabled={pending}
-            text={"LOGIN"}
+            text={"Connexion"}
             variant="primary"
             onClick={handleLogin}
           />

@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import { TokenPayload } from "../types/index.js";
 import { signAccessToken, signRefreshToken } from "../utils/token.js";
 import crypto from "crypto";
+import mongoose from "mongoose";
+import organisationModel from "../models/Organisation.js";
 
 export const registerUser = async (
   req: Request,
@@ -79,7 +81,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
   if (!email || !password)
     return res.status(404).json({ message: "email and password are required" });
-  const foundUser = await userModel.findOne({ email }).select("").exec();
+  const foundUser = await userModel.findOne({ email }).exec();
+  //.populate("organisation","_id name").exec();
 
   if (!foundUser || !foundUser.password)
     return res.status(409).json({ message: "incorrect email or password" });
@@ -94,9 +97,9 @@ export const loginUser = async (req: Request, res: Response) => {
   const refreshToken = signRefreshToken(foundUser);
 
   const hashed = crypto.createHash("sha256").update(refreshToken).digest("hex");
-  console.log("login token :", hashed);
+  //console.log("login token :", hashed);
   foundUser.refreshTokens.push({ token: hashed, ip: req.ip });
-
+  const organisationName=await organisationModel.findById(foundUser.organisation).lean().exec();
   await foundUser.save();
   {
     const secure = process.env.NODE_ENV === "production";
@@ -119,7 +122,8 @@ export const loginUser = async (req: Request, res: Response) => {
     email: foundUser.email,
     name: foundUser.name,
     role: foundUser.role,
-    organisation:foundUser.organisation
+    organisation:foundUser.organisation,
+    organisationName:organisationName?.name
   };
   return res.status(200).json(user);
 };

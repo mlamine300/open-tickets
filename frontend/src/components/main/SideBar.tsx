@@ -148,7 +148,7 @@ const SideBar = () => {
             </p>
           
           <p className="text-xs px-2 py-px text-text-accent bg-primary rounded">
-            {user?.role}
+            {user?.organisationName}
           </p>
           <p className="font-semibold text-xs">{user?.name} </p>
           <p className={collapsed?"hidden":"text-xs text-text-primary/70"}>{user?.email} </p>
