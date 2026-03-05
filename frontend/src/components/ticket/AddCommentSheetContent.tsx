@@ -116,7 +116,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
         }
         setPending(true)
         if(ticket._id){
-           await traitTicketAction(ticket._id,`ticket traité par ${user?.name} \n${message}`);
+           await traitTicketAction(ticket._id,`${message}`);
           setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -135,7 +135,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
         }
         
         if(ticket._id){
-           await closeTicketAction(ticket._id,`ticket cloturer par ${user?.name} \n${message}`);
+           await closeTicketAction(ticket._id,`${message}`);
           setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -153,7 +153,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
            
        
       if(ticket._id){
-         await relanceeTicketAction(ticket._id,`ticket relancé par ${user?.name} \n${message}`);
+         await relanceeTicketAction(ticket._id,`${message}`);
         setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -176,7 +176,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
         if(ticket._id&&organisationFilter&&Array.isArray(organisationFilter)&&organisationFilter.length>0&&organisations.filter(o=>o.name===organisation).at(0)?._id){
           const organisationId=organisations.filter(o=>o.name===organisation).at(0)?._id;
           if(organisationId){
-      await  subscribeOrganisationAction(ticket._id,`${user?.name} a ajouter ${organisation} \n${message}`,organisationId);
+      await  subscribeOrganisationAction(ticket._id,`${user?.name} a ajouté ${organisation} \n${message}`,organisationId);
           }
           
          setAction("comment");
