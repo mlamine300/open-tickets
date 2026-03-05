@@ -19,7 +19,7 @@ const CommentRow = ({comment,className}:{comment:Comment,className?:string}) => 
     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium quia alias inventore excepturi ducimus neque officia, maiores eum accusamus nobis nam voluptate ab beatae dolores dicta. Veritatis cum aperiam eum.
     */}
     </p>
-   <p className='text-text-primary font-bold italic text-xs mt-auto'>{format(comment.createdAt,"EEEE dd/MM/yyyy HH:mm:ss",{ locale: fr })} </p>
+   <p className='text-text-primary font-bold italic text-xs mt-auto'>{format(comment.updatedAt??comment.createdAt,"EEEE dd/MM/yyyy HH:mm:ss",{ locale: fr })} </p>
     </div>
   );
 };

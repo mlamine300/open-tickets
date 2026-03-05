@@ -89,6 +89,7 @@ export interface ticket{
     formName?:string;
     lastComment?:Comment;
     createdAt?:Date;
+    
 }
 
 export interface Comment{
@@ -99,6 +100,7 @@ export interface Comment{
   message:string;
   action:string;
   createdAt:Date;
+   updatedAt?:Date;
 
 }
 

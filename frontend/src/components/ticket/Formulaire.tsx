@@ -213,7 +213,7 @@ myForm.reset();
       })}
 
       <div  className="flex items-center w-full justify-center lg:col-span-2">
-        <Button disabled={pending||disabled} text="Submit" variant="primary" type="submit" className="px-4 min-w-36 disabled:bg-gray-cold/20">
+        <Button disabled={pending||disabled} text="Envoyer" variant="primary" type="submit" className="px-4 min-w-36 disabled:bg-gray-cold/20">
         
       </Button>
       </div>

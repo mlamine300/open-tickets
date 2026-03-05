@@ -94,9 +94,9 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
       className="w-full"
       defaultValue="item-1"
     >
-      <AccordionItem value="item-1">
-        <AccordionTrigger>
-            <h3 className='font-black text-text-primary text-lg italic underline hover:text-xl'>
+      <AccordionItem  value="item-1">
+        <AccordionTrigger className=' py-0' >
+            <h3 className='font-black text-text-primary text-lg italic underline hover:text-xl '>
                 Filtres et recherche
             </h3>
         </AccordionTrigger>
@@ -195,7 +195,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
               
      
     </div>
-    <div className='flex flex-col-reverse max-lg:self-center  lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-5'>
+    <div className='flex flex-col-reverse max-lg:self-center  lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8'>
 
     <button 
      onClick={()=>{
@@ -206,7 +206,7 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
                 Telecharger le tableau
                 <FaFileExcel />
               </button>
-    <form className='flex flex-row lg:flex-col items-center'>
+    <form className='flex flex-row items-center'>
       
     
 

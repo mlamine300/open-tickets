@@ -19,7 +19,10 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          <p>Date</p>
+          <div className="flex flex-col p-0 m-0">
+            <p className="text-xs">Ticket</p>
+            <p className="text-xs">Crée</p>
+          </div>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       )
@@ -33,6 +36,40 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
         {dateStr}
       </p>
       <p className="w-10/12 mx-auto bg-gray-cold/80 h-px"></p>
+      <p className="italic text-xs">
+        {dateTime}
+      </p>
+      </div>
+      
+    }
+
+  }
+  ,
+  {accessorKey:"updatedAt",
+   header: ({ column }) => {
+      return (
+        <div
+        className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="flex flex-col p-0 m-0">
+
+          <p className="text-xs">Derniere</p>
+           <p className="text-xs">action</p>
+          </div>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </div>
+      )
+    },
+    cell:({row})=>{
+      const date=row.getValue("updatedAt") as string;
+      const dateStr=format(date,"dd/MM/yyyy");
+      const dateTime=format(date,"hh:mm:ss");
+      return <div className="flex flex-col">
+        <p className="italic text-xs">
+        {dateStr}
+      </p>
+      <p className="w-6/12 mx-auto bg-gray-cold/80 h-px"></p>
       <p className="italic text-xs">
         {dateTime}
       </p>
@@ -58,7 +95,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
   },
    {
     accessorKey: "emitterOrganizationId",
-    header: "Départ / Déstination",
+    header: "Emmitrice / Déstinatrice",
      cell: ({ row }) => {
         const original=row.original;
         
