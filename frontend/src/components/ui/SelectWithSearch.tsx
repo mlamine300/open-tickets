@@ -78,27 +78,32 @@ const SelectWithSearch = ({
         )}
       </div>
 
-      <SelectContent id={`select-${name}`} className="bg-background-base">
-        {!isIsItAPhone&&<div className="relative flex items-center">
-          <input
-            ref={inputRef}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-2 py-1 text-xs border rounded-md"
-            placeholder={`Rechercher un(e) ${name}`}
-          />
-
-          <HiXMark
-            onClick={() => setSearch("")}
-            className="absolute right-2 text-red-500 cursor-pointer"
-          />
-        </div>}
+      <SelectContent id={`select-${name}`} className="bg-background-base relative">
+        <div className='sticky top-0 z-10 flex w-full h-10 bg-background-base'>
+          {!isIsItAPhone && (
+            <div className="relative flex items-center mb-8 w-full h-full">
+              <input
+                ref={inputRef}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-2 py-1 text-xs border-2 rounded-md h-10 focus:outline-primary"
+                placeholder={`Rechercher un(e) ${name}`}
+              />
+              <HiXMark
+                onClick={() => setSearch("")}
+                className="absolute right-2 text-red-500 cursor-pointer"
+              />
+            </div>
+          )}
+        </div>
+        <div className='mt-8'>
 
         {filtredValues?.map((val) => (
           <SelectItem key={val} value={val}>
             {val}
           </SelectItem>
         ))}
+        </div>
       </SelectContent>
     </Select>
   );

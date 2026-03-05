@@ -1,5 +1,3 @@
-
-
 import {
   type ColumnDef,
   flexRender,
@@ -24,12 +22,14 @@ import { useUserContext } from "@/context/user/userContext"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data: TData[],
+  showTicket:(t:ticket)=>void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  showTicket
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const table = useReactTable({
@@ -77,15 +77,33 @@ const role=user?.role;
               const isConcernerd=role==="admin"||role==="supervisor"||userOrganisation===emitterOrganization||userOrganisation===receiptionORganisation;
               return (
               <TableRow
+              onClick={()=>{showTicket(ticket)}}
               className={`border border-gray-hot cursor-pointer hover:bg-gray-hot/50 h-24 ${isConcernerd?" ":" bg-gray-hot/90 text-gray-400"}`}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {row.getVisibleCells().map((cell) => {
+                  // Identify action/link columns by id or header text
+                  const colId = cell.column.id;
+                  // For header, check if it's a string and matches known action columns
+                  let isActionCol = false;
+                  if (typeof cell.column.columnDef.header === "string") {
+                    isActionCol = ["Actions", "Voir", "Ref / Tracking"].includes(cell.column.columnDef.header);
+                  } else if (colId) {
+                    isActionCol = ["Actions", "Voir", "Ref / Tracking"].includes(colId);
+                  }
+                  return (
+                    <TableCell key={cell.id}
+                      {...(isActionCol ? {
+                        onClick: (e) => {
+                          e.stopPropagation();
+                        }
+                      } : {})}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             )
             }

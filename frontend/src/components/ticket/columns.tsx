@@ -31,7 +31,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       const date=row.getValue("createdAt") as string;
       const dateStr=format(date,"dd/MM/yyyy");
       const dateTime=format(date,"hh:mm:ss");
-      return <div className="flex flex-col">
+      return <div className="flex flex-col" >
         <p className="italic text-xs">
         {dateStr}
       </p>
@@ -170,10 +170,7 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     
     header: "Voir",
      cell: ({ row }) => {
-        
-        
-        
-      
+
       return <div onClick={()=>actions.showTicket(row.original)}> <Eye className="text-primary hover:text-gray-cold/50"/> </div>;
      },
     },

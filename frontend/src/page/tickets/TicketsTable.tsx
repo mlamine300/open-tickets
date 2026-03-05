@@ -82,7 +82,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
               ))}
             </tbody>
           </table>
-        </div>:<DataTable  columns={columns({actions:{
+        </div>:<DataTable showTicket={(ticket:ticket)=>openConfirmation(ticket,"ticket")}  columns={columns({actions:{
           addComment:(ticket:ticket)=>setSelectedTicket(ticket),
           // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
           // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
