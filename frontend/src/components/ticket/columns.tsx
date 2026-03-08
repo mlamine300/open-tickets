@@ -179,39 +179,11 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      //const id = row.original._id;
-      
 
-      
       return <SheetTrigger onClick={()=>actions.addComment(row.original)}  className="cursor-pointer" >
        <MessageCirclePlus className="text-primary bg-transparent hover:text-primary/50 hover:scale-150"/>
       </SheetTrigger>
               
-      // return (
-      //   <DropdownMenu >
-      //     <DropdownMenuTrigger asChild>
-      //       <button className="h-8 w-8 p-0">
-      //         <span className="sr-only">Open menu</span>
-      //         <MoreHorizontal />
-      //       </button>
-      //     </DropdownMenuTrigger>
-      //     <DropdownMenuContent align="end" className="bg-background-base ">
-      //       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            
-      //       {/* <DropdownMenuSeparator /> */}
-      //       <DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" >
-      //       <Link to={`/ticket/${id}`}>Voir Ticket</Link>
-      //       </DropdownMenuItem>
-      //           <DropdownMenuItem onClick={()=>actions.addComment(row.original)} className="hover:bg-gray-hot/50 cursor-pointer" >
-      //            <SheetTrigger className="hover:bg-gray-hot/50 cursor-pointer" >Ajouter un commentaire</SheetTrigger>
-      //            </DropdownMenuItem>
-      //              {/* {status==="pending"&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleTakeInCharge(row.original)}>prendre en charge</DropdownMenuItem>}
-      //             {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleClosing(row.original)}>marquer comme clotoré</DropdownMenuItem>}
-      //          {(path==="/tickets/open_me")&&<DropdownMenuItem className="hover:bg-gray-hot/50 cursor-pointer" onClick={()=>actions.handleFormward(row.original)}>transferer a un autre</DropdownMenuItem>}
-      //    */}
-      //     </DropdownMenuContent>
-      //   </DropdownMenu>
-      // )
     },
     
     }

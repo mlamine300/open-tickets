@@ -259,6 +259,7 @@ if(motif){
           createdAt: 1,
           updatedAt: 1,
           specialFields:1,
+          attachement:1,
           motif:1,
           lastComment: {
             _id: "$lastComment._id",
