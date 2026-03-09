@@ -53,7 +53,7 @@ const Login = () => {
         localStorage.setItem("role", response.data.role);
         
         const user={...response.data,_id:response.data?.id};
-        console.log(user)
+        
         updateUser(user);
 
         
