@@ -19,8 +19,8 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<any>({});
   const [pending, setpending] = useState(false);
-  const { updateUser, user } = useUserContext();
-console.log(user);
+  const { updateUser } = useUserContext();
+
   const navigate = useNavigate();
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -52,8 +52,9 @@ console.log(user);
        tokenService.setToken(token);
         localStorage.setItem("role", response.data.role);
         
-        
-        updateUser({...response.data,_id:response.data?.id});
+        const user={...response.data,_id:response.data?.id};
+        console.log(user)
+        updateUser(user);
 
         
           navigate("/");

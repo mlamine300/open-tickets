@@ -15,7 +15,7 @@ import SearchMenuForSideBar from "./SearchMenuForSideBar";
 
 const SideBar = () => {
   const { pathname } = useLocation();
-  const mode=import.meta.env.VITE_MODE;
+  
   const isShoosed = (link: string) => {
     return link === pathname;
     // if (link === "/") return link === pathname;
@@ -26,6 +26,7 @@ const SideBar = () => {
   const menuItems =
     type === "admin" ? SIDE_MENU_ADMIN_DATA : SIDE_MENU_USER_DATA;
   const { user } = useUserContext();
+  console.log(user)
   const [showed, setShowed] = useState<boolean>(false);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const {triggerAppRender}=useUserContext();

@@ -1,231 +1,205 @@
 import { cn } from '@/lib/utils';
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Organisation } from '@/types';
 import Input from '../ui/Input';
 import { useLocation, useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { MOTIFS, PRIORITY_DATA } from '@/data/data';
-
-import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { AccordionContent, Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import SelectWithSearch from '../ui/SelectWithSearch';
 import { FaFileExcel } from 'react-icons/fa6';
-import { donwloadExcel } from '@/actions/ticketAction';
+import { donwloadExcel } from '@/actions/ticketAction'; 
 
-const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
-  const {pathname}=useLocation();
- const [searchParams,setSearchParams]=useSearchParams();
-    const [search,setSearch]=useState(searchParams.get("search")||"");
-    const [motif,setMotif]=useState(searchParams.get("motif")||""); 
-    const [onlyMyOrganisation, setOnlyMyOrganisation] = useState(Boolean(searchParams.get("notag"))||false);
-    const emmiterOrganisationName=searchParams.get("emitter_organization")?organisations?.filter(o=>o._id===searchParams.get("emitter_organization")).at(0)?.name||"----":""
-    const [emitterOrganization,setEmitterOrganization]=useState(emmiterOrganisationName);
-     const receiptientOrganisationName=searchParams.get("recipient_organization")?organisations?.filter(o=>o._id===searchParams.get("recipient_organization")).at(0)?.name||"----":""
- 
-    const [recipientOrganization,setRecipientOrganization]=useState(receiptientOrganisationName);
-     const [priority,setPriority]=useState(searchParams.get("priority")||"");
-     const [pending, setPending] = useState(false);
-  const organisationsName=organisations?.map(o=>o.name);
-    // Debounce all filter param updates
-    useEffect(() => {
-      const handler = setTimeout(() => {
-        const params = new URLSearchParams(searchParams);
-        // Search
-        if (search) {
-          params.set("search", search);
-        } else {
-          params.delete("search");
-        }
-         // motif
-        if (motif) {
-          params.set("motif", motif);
-        } else {
-          params.delete("motif");
-        }
-        // Emitter Organization
-        if (emitterOrganization) {
-          const emitterOrganizationId=organisations?.filter(o=>o.name===emitterOrganization).at(0)?._id;
-          if(emitterOrganizationId)
-          params.set("emitter_organization", emitterOrganizationId);
-        } else {
-          params.delete("emitter_organization");
-        }
-        // Recipient Organization
-        if (recipientOrganization) {
-          const recipientOrganizationId=organisations?.filter(o=>o.name===recipientOrganization).at(0)?._id;
-          if(recipientOrganizationId)
-          params.set("recipient_organization", recipientOrganizationId);
-        } else {
-          params.delete("recipient_organization");
-        }
-        if(onlyMyOrganisation){
-          params.set("notag","true")
-        }else{
-          params.delete("notag");
-        }
-       
-        // Priority
-        if (priority) {
-          params.set("priority", priority);
-        } else {
-          params.delete("priority");
-        }
-        setSearchParams(params);
-      }, 300);
-      return () => clearTimeout(handler);
-    }, [search,motif,onlyMyOrganisation, emitterOrganization, recipientOrganization, priority]);
-    
-    const handleDownloadExcel=async()=>{
-      try {
-        setPending(true);
-        await donwloadExcel(pathname);
+const FilterTableDiv = ({ className, organisations }: { className?: string, organisations?: Organisation[] }) => {
+  const { pathname } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-      } catch (error) {
-        console.log(error);
-      }finally{
-        setPending(false)
-      }
-      
+  // 1. Initialize state directly from URL parameters
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [motif, setMotif] = useState(searchParams.get("motif") || "");
+  const [onlyMyOrganisation, setOnlyMyOrganisation] = useState(searchParams.get("notag") === "true");
+  
+  // Use .find() instead of .filter().at(0) for better performance
+  const emitterOrganisationName = searchParams.get("emitter_organization") 
+    ? organisations?.find(o => o._id === searchParams.get("emitter_organization"))?.name || "----" 
+    : "";
+  const [emitterOrganization, setEmitterOrganization] = useState(emitterOrganisationName);
+
+  const recipientOrganisationName = searchParams.get("recipient_organization") 
+    ? organisations?.find(o => o._id === searchParams.get("recipient_organization"))?.name || "----" 
+    : "";
+  const [recipientOrganization, setRecipientOrganization] = useState(recipientOrganisationName);
+  
+  const [priority, setPriority] = useState(searchParams.get("priority") || "");
+  const [pending, setPending] = useState(false);
+  
+  const organisationsName = organisations?.map(o => o.name);
+
+  // 2. Single effect to sync State -> URL Params (Debounced)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+
+      const updateParam = (key: string, value: string | boolean | undefined) => {
+        if (value) params.set(key, String(value));
+        else params.delete(key);
+      };
+
+      updateParam("search", search);
+      updateParam("motif", motif);
+      updateParam("priority", priority);
+      updateParam("notag", onlyMyOrganisation ? "true" : "");
+
+      const emitterId = organisations?.find(o => o.name === emitterOrganization)?._id;
+      updateParam("emitter_organization", emitterId);
+
+      const recipientId = organisations?.find(o => o.name === recipientOrganization)?._id;
+      updateParam("recipient_organization", recipientId);
+
+      setSearchParams(params);
+    }, 300);
+
+    return () => clearTimeout(handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, motif, onlyMyOrganisation, emitterOrganization, recipientOrganization, priority]);
+// Sync URL Params -> State (Handles browser Back/Forward or external URL changes)
+  useEffect(() => {
+    const pSearch = searchParams.get("search") || "";
+    const pMotif = searchParams.get("motif") || "";
+    const pPriority = searchParams.get("priority") || "";
+    const pNotag = searchParams.get("notag") === "true";
+
+    const pEmitterId = searchParams.get("emitter_organization");
+    const pEmitterName = pEmitterId 
+      ? organisations?.find(o => o._id === pEmitterId)?.name || "" 
+      : "";
+
+    const pRecipientId = searchParams.get("recipient_organization");
+    const pRecipientName = pRecipientId 
+      ? organisations?.find(o => o._id === pRecipientId)?.name || "" 
+      : "";
+
+    // The safe way: Only update state if the URL value is actually different!
+    setSearch(prev => prev !== pSearch ? pSearch : prev);
+    setMotif(prev => prev !== pMotif ? pMotif : prev);
+    setPriority(prev => prev !== pPriority ? pPriority : prev);
+    setOnlyMyOrganisation(prev => prev !== pNotag ? pNotag : prev);
+    setEmitterOrganization(prev => prev !== pEmitterName ? pEmitterName : prev);
+    setRecipientOrganization(prev => prev !== pRecipientName ? pRecipientName : prev);
+
+  }, [pathname]);
+  // Handle Reset cleanly
+  const handleReset = () => {
+    setEmitterOrganization("");
+    setRecipientOrganization("");
+    setPriority("");
+    setSearch("");
+    setMotif("");
+    setOnlyMyOrganisation(false);
+  };
+
+  const handleDownloadExcel = async () => {
+    try {
+      setPending(true);
+      await donwloadExcel(pathname);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPending(false);
     }
-    
-    return (
-<Accordion
-      type="single"
-      collapsible
-      className="w-full"
-      defaultValue="item-1"
-    >
-      <AccordionItem  value="item-1">
-        <AccordionTrigger className=' py-0' >
-            <h3 className='font-black text-text-primary text-lg italic underline hover:text-xl '>
-                Filtres et recherche
-            </h3>
+  };
+
+  return (
+    <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+      <AccordionItem value="item-1">
+        <AccordionTrigger className='py-0'>
+          <h3 className='font-black text-text-primary text-lg italic underline hover:text-xl'>
+            Filtres et recherche
+          </h3>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
           <div className='flex flex-col gap-0 justify-around my-2'>
-
-
- <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:min-h-24 md:gap-2",className)}>
-     
-        
-   {organisations&&
-   
-                <div className={" flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Organisation Emitrice </label>
-                {/* <Select 
-                value={emitterOrganization}
-                onValueChange={(value) => setEmitterOrganization( value)}
-              >
-                
-                <SelectTrigger className={"w-full"}>
-                  <SelectValue  placeholder={`station emmitrice`} />
-                  
-                </SelectTrigger>
-                
-                
-                <SelectContent  id={`select-station-emmitrice`} className="bg-background-base ">
-                   <p className='text-sm hover:cursor-pointer'  onClick={()=>setEmitterOrganization("")}>
-                    Organisation
-                  </p>
-                  { organisations?.map((val) => (
-                    <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val.name} value={val._id||"--"}>
-                      {val.name}
-                    </SelectItem>
-                  ))}
-                  
-                </SelectContent>
-                
-              </Select> */}
+            <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:min-h-24 md:gap-2", className)}>
               
-              <SelectWithSearch label='Organisation Emitrice' name='organisation_emitrice' onValueChange={(o)=>setEmitterOrganization(o)} value={emitterOrganization} possibleValues={organisationsName} />
-              </div>}
-                 {organisations&&
-                 
-                  
-<div className={" flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Organisation Destinatrice </label>
-             <SelectWithSearch label='Organisation Destinatrice' name='Organisation Destinatrice' onValueChange={(o)=>setRecipientOrganization(o)} value={recipientOrganization} possibleValues={organisationsName} />
-               
-              </div>}
+              {organisations && (
+                <div className="flex flex-col items-start gap-0">
+                  <label className='w-full flex text-xs italic'>Organisation Emémettrice</label>
+                  <SelectWithSearch label='Organisation Emémettrice' name='organisation_emitrice' onValueChange={setEmitterOrganization} value={emitterOrganization} possibleValues={organisationsName} />
+                </div>
+              )}
 
-       <div className={" flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`motif`}>Motif </label>
-             <SelectWithSearch label='Motif' name='motif' onValueChange={(m)=>setMotif(m)} value={motif} possibleValues={MOTIFS} />
-          
-              </div>      
+              {organisations && (
+                <div className="flex flex-col items-start gap-0">
+                  <label className='w-full flex text-xs italic'>Organisation Destinatrice</label>
+                  <SelectWithSearch label='Organisation Destinatrice' name='Organisation Destinatrice' onValueChange={setRecipientOrganization} value={recipientOrganization} possibleValues={organisationsName} />
+                </div>
+              )}
 
-               <div className={"flex flex-col items-start gap-0"}>
-                <label className={'w-full flex text-xs italic '} htmlFor={`select-priority`}>Priorité </label>
-             
-            <Select 
-                value={priority}
-                onValueChange={(value) => setPriority( value)}
-              >
-                
-                <SelectTrigger className={"w-full"}>
-                  <SelectValue  placeholder={`Priorité`} />
-                  
-                </SelectTrigger>
-                
-                 
-                <SelectContent  id={`select-status`} className="bg-background-base ">
-                  
-                
-                  <p className='text-sm hover:cursor-pointer'  onClick={()=>setPriority("")}>
-                    Priorité
-                  </p>
-                 
-                  { PRIORITY_DATA?.map((val) => (
-                    <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val.value} value={val.value}>
-                      {val.label}
-                    </SelectItem>
-                  ))}
-                  
-                </SelectContent>
-                
-              </Select>
+              <div className="flex flex-col items-start gap-0">
+                <label className='w-full flex text-xs italic'>Motif</label>
+                <SelectWithSearch label='Motif' name='motif' onValueChange={setMotif} value={motif} possibleValues={MOTIFS} />
               </div>
-     <div onClick={()=>setOnlyMyOrganisation(b=>!b)} className={` grid grid-cols-2 cursor-pointer rounded-2xl items-start gap-0 w-72 lg:max-w-72`}>
-            <div className={`flex items-center justify-center w-full h-full rounded-l-2xl  max-h-8/12 my-auto  ${onlyMyOrganisation?"bg-gray-hot":"bg-primary"}`}>
-               <p className='text-sm italic'>Tous</p> 
-            </div>
-           <div className={`flex items-center justify-center w-full h-full rounded-r-2xl  max-h-8/12 my-auto ${onlyMyOrganisation?"bg-primary":"bg-gray-hot"}`}>
-                  <p className='text-sm italic'>Me Concerne</p>
-                  </div>
-              </div> 
-              
-     
-    </div>
-    <div className='flex flex-col-reverse max-lg:self-center  lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8'>
 
-    <button 
-     onClick={()=>{
-               handleDownloadExcel();
-              }}
-              disabled={pending}
-                 className="flex w-fit gap-4 items-center h-fit  px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold">
-                Telecharger le tableau
+              <div className="flex flex-col items-start gap-0">
+                <label className='w-full flex text-xs italic'>Priorité</label>
+                <Select value={priority} onValueChange={setPriority}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Priorité" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background-base">
+                    <p className='text-sm hover:cursor-pointer p-2' onClick={() => setPriority("")}>
+                      Priorité
+                    </p>
+                    {PRIORITY_DATA?.map((val) => (
+                      <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val.value} value={val.value}>
+                        {val.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Accessible custom toggle */}
+              <div 
+                onClick={() => setOnlyMyOrganisation(b => !b)} 
+                onKeyDown={(e) => e.key === 'Enter' && setOnlyMyOrganisation(b => !b)}
+                role="button"
+                tabIndex={0}
+                className="grid grid-cols-2 cursor-pointer rounded-2xl items-start gap-0 w-72 lg:max-w-72 mt-4 md:mt-0"
+              >
+                <div className={`flex items-center justify-center w-full h-full rounded-l-2xl min-h-[32px] transition-colors ${onlyMyOrganisation ? "bg-gray-hot" : "bg-primary text-white"}`}>
+                  <p className='text-sm italic'>Tous</p>
+                </div>
+                <div className={`flex items-center justify-center w-full h-full rounded-r-2xl min-h-[32px] transition-colors ${onlyMyOrganisation ? "bg-primary text-white" : "bg-gray-hot"}`}>
+                  <p className='text-sm italic'>Me Concerne</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='flex flex-col-reverse max-lg:self-center lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-4'>
+              <button
+                onClick={handleDownloadExcel}
+                disabled={pending}
+                className="flex w-fit gap-4 items-center h-fit px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold transition-all"
+              >
+                Télécharger le tableau
                 <FaFileExcel />
               </button>
-    <form className='flex flex-row items-center'>
-      
-    
 
-    <Input parentClassName='flex flex-row items-center gap-2 items-center w-fit lg:w-full ' containerClassName='h-10' label='Recherche :' labelClassName='text-xs hidden lg:flex' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e)=>setSearch(e.target.value)} />
-      <button className='hover:font-bold italic underline' onClick={()=>{
-        setEmitterOrganization("");
-        setRecipientOrganization("");
-        setPriority("");
-        setSearch("");
-      }}>Réinitialiser</button>            
-      
-</form>
-      </div>
-   </div>
+              {/* Changed <form> to <div> to avoid accidental submissions, or use onSubmit={(e)=>e.preventDefault()} */}
+              <div className='flex flex-row items-center gap-4'>
+                <Input parentClassName='flex flex-row items-center gap-2 w-fit lg:w-full' containerClassName='h-10' label='Recherche :' labelClassName='text-xs hidden lg:flex' type='text' placeHolder='rechercher par ref, agent' value={search} onChange={(e) => setSearch(e.target.value)} />
+                
+                {/* Critical: type="button" added */}
+                <button type="button" className='hover:font-bold italic underline whitespace-nowrap' onClick={handleReset}>
+                  Réinitialiser
+                </button>
+              </div>
+            </div>
+          </div>
         </AccordionContent>
       </AccordionItem>
-      </Accordion>
-
-  
+    </Accordion>
   );
 };
 
