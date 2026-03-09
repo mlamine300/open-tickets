@@ -4,7 +4,7 @@ import type { Info } from "@/types";
 import { useEffect, useState } from "react";
 
 
-const InfoBar = () => {
+const InfoBar = ({className}:{className?:string}) => {
     
     const [info, setInfo] = useState<Info>({message:"",isLatin:true});
     const [triggerRerender, setTriggerRerender] = useState<number>(0);
@@ -35,7 +35,7 @@ const InfoBar = () => {
          }, [triggerRerender]);
          if(!info||!info.message||info.message==="")return;
   return (
-    <div className="fixed top-11/12 w-full h-16 bg-gray-hot/90 flex items-center cursor-pointer group">
+    <div className={cn("fixed top-11/12 w-full h-16 bg-gray-hot/90 flex items-center cursor-pointer group",className)} >
      <div className={cn("w-full min-w-fit group-hover:[animation-play-state:paused]",info.isLatin?" animate-[inverseslide_40s_linear_infinite] ":"animate-[slide_40s_linear_infinite] ") }>
     <p className="text-lg text-text-primary text-nowrap ">
       {info.message}

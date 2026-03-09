@@ -15,6 +15,7 @@ import SearchMenuForSideBar from "./SearchMenuForSideBar";
 
 const SideBar = () => {
   const { pathname } = useLocation();
+  const mode=import.meta.env.VITE_MODE;
   const isShoosed = (link: string) => {
     return link === pathname;
     // if (link === "/") return link === pathname;
@@ -116,6 +117,7 @@ const SideBar = () => {
       />
       {/* </button> */}
       <aside
+      
         onClick={() => setShowed(false)}
         className={`min-h-lvh  bg-background-base transition duration-300 ease-in-out  ${
           showed

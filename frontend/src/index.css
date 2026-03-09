@@ -63,7 +63,10 @@
   --gray-hot: #6b7a8f;
   --gray-too-cold: #f1ebf2;
 }
-
+[data-env="dev"] {
+  --primary: #ff00ff; /* dev color */
+  --background-screen: #fff6f6;
+}
 @layer base {
   html {
     font-family: var(--font-display);
