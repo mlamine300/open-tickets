@@ -7,7 +7,7 @@ import {
 import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
 import type { FormType, FormFieldType } from "@/types";
 
-import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, Plus, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, MessageCircleMore, Plus, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -172,7 +172,15 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
-      {id:"07",
+    {id:"07",
+      label:"Motifs",
+      icon: MessageCircleMore,
+      path:"/motifs",
+      hasChilds:false,
+     
+
+    },
+      {id:"08",
       label:"Annonce",
       icon: Megaphone,
       path:"/alert",
@@ -180,7 +188,7 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
-    {id:"08",
+    {id:"09",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -190,7 +198,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 
     },
   {
-    id: "09",
+    id: "10",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -324,7 +332,7 @@ export const STATUS_DATA = [
   { value: "complete", label: "cloturé" },
 ];
 export const translateStatus=(v:string)=>{
-  return STATUS_DATA.find(s=>s.value===v)?.label??v;
+  return STATUS_DATA.find(s=>s.value===v)?.label??v
 }
 export const MOTIFS=[
   "Bureau injoignable - مكتب مُتعذِّر الوصول إليه",

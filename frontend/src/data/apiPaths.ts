@@ -1,3 +1,5 @@
+import { MOTIFS } from "./data";
+
 export const API_ENDPOINT = import.meta.env.VITE_BACKEND_URL||"http://localhost:5001";
 export const API_PATH = {
   AUTH: {
@@ -54,5 +56,12 @@ export const API_PATH = {
   REPORTS:{
     NOT_COMPLETE:'api/tickets/reports/notcomplete',
     REPORT_FROM_DATES:"api/tickets/reports/date"
+  },
+  MOTIFS:{
+    GET_ALL_MOTIFS:"/api/motifs",
+     GET_ACTIVE_MOTIFS:"/api/motifs",
+    ADD_MOTIF:"/api/motifs",
+    TURN_OFF:(id:string)=>`/api/motifs/off/${id}`,
+    TURN_ON:(id:string)=>`/api/motifs/on/${id}`
   }
 };

@@ -20,6 +20,7 @@ import AddEditUserPage from './page/users/AddEditUserPage';
 import AlertPage from './page/alert/AlertPage';
 import OrganisationsPage from './page/organisations/OrganisationsPage';
 import AddOrganisation from './page/organisations/AddOrganisation';
+import Motifpage from './page/motifs/MotifPage';
 function App() {
  
  const favicon = document.querySelector("link[rel='icon']") as any;
@@ -31,8 +32,8 @@ function App() {
     <Routes>
         <Route path="/login" element={<Login />} />
         {/* <Route path="/signup" element={<SignUp />} /> */}
-<Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
-       <Route path="/" element={<Dashboard />} />
+        <Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>
+        <Route path="/" element={<Dashboard />} />
         <Route path="/form" element={<AddTicket />} />
         <Route path="/form/:id" element={<AddTicketFormPage />} />
         <Route path="/tickets/*" element={<TicketsPage />} />
@@ -46,6 +47,7 @@ function App() {
          <Route path="/users/:id" element={<AddEditUserPage />} />
          <Route path="/organisations/list" element={<OrganisationsPage />} />
          <Route path="/organisations/:id" element={<AddOrganisation />} />
+          <Route path="/motifs" element={<Motifpage />} />
            <Route path="/alert" element={<AlertPage />} />
          </Route>
       </Routes>  
