@@ -13,7 +13,7 @@ import { donwloadExcel } from '@/actions/ticketAction';
 const FilterTableDiv = ({ className, organisations }: { className?: string, organisations?: Organisation[] }) => {
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  alert("rerender")
+  
   // 1. Initialize state directly from URL parameters
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [motif, setMotif] = useState(searchParams.get("motif") || "");
