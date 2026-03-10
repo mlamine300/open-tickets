@@ -31,10 +31,10 @@ export const getLastInfos=async(req:Request,res:Response)=>{
             const user = jwt.decode(token) as TokenPayload;
             if (!user?.userId) return res.status(409).json({ message: "not authorized" });
         const info=await (await infosModel.find({}).sort({createdAt: -1}).limit(1))
-        if(!info||!Array.isArray(info)||info.length<1)return res.status(404).json({message:"there is no infos"});
+        if(!info||!Array.isArray(info)||info.length<1)return res.status(200).json({message:"there is no infos"});
         return res.status(200).json({message:"success",data:info.at(0)});
     } catch (error) {
-        console.log(error);
+        console.log(error); 
         res.status(500).json({message:"server error"})
     }
 }

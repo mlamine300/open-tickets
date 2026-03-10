@@ -1312,11 +1312,18 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
     yesterDay.setHours(0, 0, 0, 0);
 
     // ================= FILTERS =================
-    const baseFilter: any = {
-      ...getResponsablitiesFilterFromRole(user,"false"),
-      emitterOrganizationId: {
-        $ne: new mongoose.Types.ObjectId(user.organisation),
+    const baseFilter: any = user.role==="standard"?{
+     $or:[
+        
+        {
+        emitterOrganizationId:new mongoose.Types.ObjectId(user.organisation),
       },
+      {
+        recipientOrganizationId:new mongoose.Types.ObjectId(user.organisation),
+      }
+      ]
+  }: {
+      ...getResponsablitiesFilterFromRole(user,"false"),
     };
   
     
@@ -1325,15 +1332,25 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
         {
           status: "pending",
           createdAt: { $lt: yesterDay },
+      //     emitterOrganizationId: {
+      //   $ne: new mongoose.Types.ObjectId(user.organisation),
+      // },
         },
         {
           status: "open",
+        //   emitterOrganizationId: {
+        // $ne: new mongoose.Types.ObjectId(user.organisation),},
             $or: [
         { "assignedTo.date": { $lt: yesterDay } },
         { assignedTo: { $exists: false } },
         { assignedTo: null },
+        
       ],
         },
+        {status: "traited", 
+          // emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation),
+        },
+        
       ],
     };
 

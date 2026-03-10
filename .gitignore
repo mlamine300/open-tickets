@@ -1,0 +1,12 @@
+frontend/.env
+.env
+backend/.env
+.DS_Store
+node_modules/
+*.log
+dist/
+build/
+.vscode/
+.idea/
+*.swp
+*.swo
