@@ -107,7 +107,7 @@ export interface Comment{
 export const UserSchema=z.object({
   name: z.string().min(3,"").max(35,""),
   email: z.email("format de l'email est incorrect"),
-  organisation: z.string().min(3,"").max(35,""),
+  organisation: z.string().min(3,"organisation plus de 3 charactere").max(70,"organisation moins de 3 charactere"),
   organisationsList: z.array(z.string()),
   password: z.string().min(8,"format de mot de passe et incorrect").max(135,"format de mot de passe et incorrect").or(z.enum([""])),
   rePassword: z.string().min(8,"format de mot de passe et incorrect").max(135,"format de mot de passe et incorrect").or(z.enum([""])),
@@ -116,12 +116,12 @@ export const UserSchema=z.object({
 export type userFormType= z.infer<typeof UserSchema>
 
 export const organisationSchema=z.object({
-        name:z.string(),
-        wilaya:z.string(),
-         address:z.string(),
-          phone:z.string(),
-           head:z.string(),
-            description:z.string(),
+        name:z.string().min(5,"Le nom est obligatoire"),
+        wilaya:z.string().min(5,"Le wilaya est obligatoire"),
+         address:z.string().min(5,"Le address est obligatoire"),
+          phone:z.string().min(5,"Le phone est obligatoire"),
+           head:z.string().optional(),
+            description:z.string().optional(),
 
     });
 export type organisationFormType=z.infer<typeof organisationSchema>

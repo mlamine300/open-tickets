@@ -7,7 +7,7 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
 
   switch (field.type) {
     case "text":
-      schema = z.string();
+      schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
       break;
 
     case "number":
@@ -18,16 +18,16 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
       break;
 
     case "date":
-      schema = z.coerce.date(); // coercion from string → Date
+      schema = z.coerce.date("Date Incorrect"); // coercion from string → Date
       break;
 
     case "select":
       if (!field.possibleValues || field.possibleValues.length === 0) {
-        schema = z.string(); // fallback
+        schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
         
       }
       else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"){
-      schema = z.string();
+      schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
       }
       else {
         schema = z.enum(field.possibleValues as [string, ...string[]]);

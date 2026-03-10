@@ -13,7 +13,7 @@ import { donwloadExcel } from '@/actions/ticketAction';
 const FilterTableDiv = ({ className, organisations }: { className?: string, organisations?: Organisation[] }) => {
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  alert("rerender")
   // 1. Initialize state directly from URL parameters
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [motif, setMotif] = useState(searchParams.get("motif") || "");
@@ -44,7 +44,7 @@ const FilterTableDiv = ({ className, organisations }: { className?: string, orga
         if (value) params.set(key, String(value));
         else params.delete(key);
       };
-
+     
       updateParam("search", search);
       updateParam("motif", motif);
       updateParam("priority", priority);
@@ -55,7 +55,7 @@ const FilterTableDiv = ({ className, organisations }: { className?: string, orga
 
       const recipientId = organisations?.find(o => o.name === recipientOrganization)?._id;
       updateParam("recipient_organization", recipientId);
-
+      params.delete("page");
       setSearchParams(params);
     }, 300);
 
@@ -64,6 +64,7 @@ const FilterTableDiv = ({ className, organisations }: { className?: string, orga
   }, [search, motif, onlyMyOrganisation, emitterOrganization, recipientOrganization, priority]);
 // Sync URL Params -> State (Handles browser Back/Forward or external URL changes)
   useEffect(() => {
+   
     const pSearch = searchParams.get("search") || "";
     const pMotif = searchParams.get("motif") || "";
     const pPriority = searchParams.get("priority") || "";
