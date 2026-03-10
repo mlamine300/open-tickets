@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 const Motifpage = () => {
    
     const [pending, setPending] = useState(false);
+    console.log(pending)
     const [actionPending, setActionPending] = useState(false);
     const [motifs, setMotifs] = useState<{_id:string;name:string,active:boolean}[]>([]);
     const [motifToadd, setMotifToAdd] = useState("");
@@ -35,7 +36,7 @@ const Motifpage = () => {
              setActionPending(false);
         }
     }
-    const handleAction=async({_id,name,active}:{_id:string;name:string,active:boolean})=>{
+    const handleAction=async({_id,active}:{_id:string;name:string,active:boolean})=>{
        try {
          setActionPending(true);
         if(active){
