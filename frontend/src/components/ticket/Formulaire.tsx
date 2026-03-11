@@ -86,7 +86,7 @@ return (<div className="flex justify-center items-center">
   const myForm = useForm({
     resolver: zodResolver(schema),
   });
-  const { errors } = myForm.formState;
+  //const { errors } = myForm.formState;
 const onSubmit = async(data: z.infer<typeof schema>) => {
  try {
    setPending(true)
@@ -136,7 +136,7 @@ myForm.reset();
 
       {formulaire.fields.map((field) => {
        
-        const fieldError = (errors as Record<string, any>)[field.name]?.message;
+      //  const fieldError = (errors as Record<string, any>)[field.name]?.message;
 
         return (
           <div key={field.name} className="space-y-2">
