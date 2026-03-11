@@ -1,10 +1,8 @@
 
+import { addMotif, getAllMotifsActiveAndNotActiveAction, turnOffMotifAction, turnOnMotifAction } from "@/actions/motifAction";
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/card";
 import Input from "@/components/ui/Input";
-
-import { API_PATH } from "@/data/apiPaths";
-import axiosInstance from "@/utils/axiosInstance";
 import { Power, PowerOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -22,14 +20,9 @@ const Motifpage = () => {
         try {
             const name=motifToadd;
             setActionPending(true);
-            const res=await axiosInstance.post(API_PATH.MOTIFS.ADD_MOTIF,{name});
-            
-            if(res.status===200){
-
-                toast.success("Motif a été ajouté avec success")
-                setMotifToAdd("");
-                setTriggerRerender(Math.random())
-            } 
+            await addMotif(name);
+            setMotifToAdd("");
+            setTriggerRerender(Math.random())
         } catch (error) {
             toast.error("Error adding motif")
         }finally{
@@ -40,12 +33,11 @@ const Motifpage = () => {
        try {
          setActionPending(true);
         if(active){
-         const result=   await axiosInstance.post(API_PATH.MOTIFS.TURN_OFF(_id))
-         if(result.status===200)toast.success("Motif a été désactivé")
+         await turnOffMotifAction(_id);
+         
         }
     else{
-        const result=   await axiosInstance.post(API_PATH.MOTIFS.TURN_ON(_id))
-         if(result.status===200)toast.success("Motif a été activé")
+       await turnOnMotifAction(_id);
     }
 setTriggerRerender(Math.random())
 setActionPending(false);
@@ -61,7 +53,8 @@ setActionPending(false);
         
             const fetchMotif=async()=>{
                 setPending(true);
-                const motifRes=await axiosInstance.get(API_PATH.MOTIFS.GET_ALL_MOTIFS);
+                const motifRes=await getAllMotifsActiveAndNotActiveAction();
+                
                 if(motifRes){
                     const fetchedMotifs=motifRes.data.data as {_id:string;name:string,active:boolean}[];
                     setMotifs(fetchedMotifs);

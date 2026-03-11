@@ -14,6 +14,7 @@ import TicketViewOnModal from '../../components/ticket/TicketViewOnModal';
 import { cn } from '@/lib/utils';
 import TicketsTable from './TicketsTable';
 import { useUserContext } from "@/context/user/userContext";
+import { getActiveMotifsAction } from "@/actions/motifAction";
 
 const TicketsPage = () => {
 //    const [tickets,setTicket]=useState<ticket[]>([]);
@@ -22,51 +23,20 @@ const TicketsPage = () => {
 //   const [searchParams]=useSearchParams();
   const {setTriggerAppRender}=useUserContext()
    const [organisations,setOrganisations]=useState<Organisation[]>([]);
+   const [motifs, setMotifs] = useState<string[]>([]);
    useEffect(()=>{
-          const retrieveOrganisations = async () => {
+          const retrievePossibleValue = async () => {
         const organisationsFromAction = await getAllorganisationsAction();
+        const motifsFromAction=await getActiveMotifsAction();
         setOrganisations(organisationsFromAction);
+        setMotifs(motifsFromAction.map((m:any)=>m.name));
       };
-      retrieveOrganisations();
+      retrievePossibleValue();
+      
    },[])
    
-//    const [pending,setPending]=useState(false);
-    const [triggerRerender,setTriggerRerender]=useState(0);
-//   const page=searchParams.get("page")||1;
-//     const search=searchParams.get("search")||"";
-//     const motif=searchParams.get("motif")||"";
-//     const emitterOrganizationId=searchParams.get("emitter_organization")||"";
-//     const recipientOrganizationId=searchParams.get("recipient_organization")||"";
-//     const onlyMyOrganisation=searchParams.get("notag");
-    
-//     const priority=searchParams.get("priority")||"";
-//   const {pathname}=useLocation();
-  
-     
-//     useEffect(() => {
-//       let intervalId;
-//       const getMyTickets = async () => {
-//         setPending(true);
-//         setTicket([]);
-//         const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation });
-//         setTicket(res.data);
-//         setTotalTicketsSize(res.total);
-//         setPending(false);
-//       };
-//       const retrieveOrganisations = async () => {
-//         const organisationsFromAction = await getAllorganisationsAction();
-//         setOrganisations(organisationsFromAction);
-//       };
-//       getMyTickets();
-//       retrieveOrganisations();
-//       intervalId = setInterval(() => {
-//         setTriggerRerender(Math.random());
-//       }, 1*60*1000); // 1 minute
-//       return () => {
-//         clearInterval(intervalId);
-//       };
-//     }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
 
+    const [triggerRerender,setTriggerRerender]=useState(0);
 
    
   return (
@@ -76,7 +46,7 @@ const TicketsPage = () => {
 
       
         <div className='flex flex-col w-full h-full '>
-          <FilterTableDiv organisations={organisations} />
+          <FilterTableDiv motifs={motifs} organisations={organisations} />
         <TicketsTable setShowModal={setShowModal} setTriggerRerender={setTriggerRerender} setSelectedTicket={setSelectedTicket} triggerRerender={triggerRerender} />
          </div>
       

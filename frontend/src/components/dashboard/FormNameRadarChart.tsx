@@ -2,6 +2,7 @@
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, Tooltip } from 'recharts';
 
 function FormNameRadarChart({data}:{data:any}) {
+  console.log(data)
   return (
     <div className='flex flex-col gap-0 w-full'>
  <h3 className='w-full text-start px-8 italic font-semibold'>Motifs des réclamations</h3>

@@ -20,6 +20,7 @@ import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
 import AddAttachement from "./AddAttachement";
 import { uploadFile } from "@/utils/UploadAttachement";
+import { getActiveMotifsAction } from "@/actions/motifAction";
 
 
 
@@ -41,9 +42,9 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
     
     const getOrganisations=async()=>{
       const organisations=await getAllorganisationsAction() as Organisation[];
-       //setAllORganisations(organisations); 
+         const motifs=await getActiveMotifsAction();
         const organisationString=organisations.map(o=>o.name);
-      formulaire.fields.forEach(field=>{
+          formulaire.fields.forEach(field=>{
         
         if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
      
@@ -57,8 +58,15 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
           myForm.trigger();
           
         }
+           if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="motifs"){
+     
+          field.possibleValues=(motifs.map((m:any)=>m.name))
+          myForm.trigger();
+          
+        }
       })
     }
+ 
     if(!disabled&& !formulaire.fields.map(f=>f.name).includes("priority") )
      formulaire.fields.push(...StandartFierlds());
     getOrganisations();
@@ -115,7 +123,7 @@ myForm.reset();
   return (
       <form
       onSubmit={myForm.handleSubmit(onSubmit)}
-      className="space-y-6   w-full max-w-[800px] bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
+      className="space-y-6   w-full max-w-200 bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
     >
       <div>
         <h2 className="text-2xl font-semibold text-primary">{formulaire.name}</h2>
@@ -205,9 +213,9 @@ myForm.reset();
             )}
 
             {/* VALIDATION ERROR */}
-            {fieldError && (
+            {/* {(myForm.watch(field.name)&& fieldError) && (
               <p className="text-sm text-red-500">{fieldError}</p>
-            )}
+            )} */}
           </div>
         );
       })}

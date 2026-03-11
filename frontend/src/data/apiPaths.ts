@@ -59,7 +59,7 @@ export const API_PATH = {
   },
   MOTIFS:{
     GET_ALL_MOTIFS:"/api/motifs",
-     GET_ACTIVE_MOTIFS:"/api/motifs",
+     GET_ACTIVE_MOTIFS:"/api/motifs/active",
     ADD_MOTIF:"/api/motifs",
     TURN_OFF:(id:string)=>`/api/motifs/off/${id}`,
     TURN_ON:(id:string)=>`/api/motifs/on/${id}`

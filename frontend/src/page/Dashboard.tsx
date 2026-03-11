@@ -56,7 +56,17 @@ const Dashboard = () => {
       setNotCompletePending(false);
     }
   }
-  
+  const TRANSLATE_STATUS:any={
+    open:"Ouvert",
+    pending:"En attente",
+    traited:"Traité",
+    complete:"Clôturé"
+  }
+  const TRANSLATE_PRIORITY:any={
+    medium:"Urgent",
+    low:"Normal",
+    high:"Trés Urgent"
+  }
   const donwloadDateReport=async()=>{
     if(!reportDateStart||!reportDateEnd){
       toast.error("Merci de choisir les date avant procéder a l'action")
@@ -90,15 +100,16 @@ const Dashboard = () => {
   if(!stats)return <div>
     <Spinner/>
   </div>
-  const statusData=stats.byStatus.map((bs:any)=> {return {name:bs._id,value:bs.count,fill:getFill(bs._id)}});
+  const statusData=stats.byStatus.map((bs:any)=> {return {name:TRANSLATE_STATUS[bs._id]||TRANSLATE_STATUS.pending,value:bs.count,fill:getFill(bs._id)}});
   const priorityData=stats.byPriority.map((bp:any)=>{
-    return {name:bp._id,value:bp.count,fill:getFill(bp._id)}
+    return {name:TRANSLATE_PRIORITY[bp._id as string]||TRANSLATE_PRIORITY.medium,value:bp.count,fill:getFill(bp._id)}
   })
   const totaleCount=stats.total?.at(0)?.totalTickets;
+  
   // const formData=stats.formName.map((fn:any)=>{
   //   return {form:fn._id,value:fn.count,fullMark:totaleCount}
   // })
-  const motifData=stats.motif.map((m:any)=>{
+  const motifData=stats.motif.sort((m1:any,m2:any)=>m2.count-m1.count).slice(0,10).map((m:any)=>{
     return {motif:m._id,value:m.count,fullMark:totaleCount}
   })
   const emmiterData=stats.emmiter.map((ed:any)=>{
@@ -107,7 +118,7 @@ const Dashboard = () => {
   const receiptionData=stats.recipient.map((ed:any)=>{
     return {name:ed.name,count:ed.count}
   })
-  console.log(emmiterData)
+  // console.log(emmiterData)
   return (
    
       <div className="grid grid-cols-1 w-full gap-1 justify h-full lg:grid-cols-2 min-h-screen xl:min-w-[70svw] ">

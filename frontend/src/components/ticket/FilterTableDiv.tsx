@@ -4,16 +4,15 @@ import type { Organisation } from '@/types';
 import Input from '../ui/Input';
 import { useLocation, useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { MOTIFS, PRIORITY_DATA } from '@/data/data';
+import {  PRIORITY_DATA } from '@/data/data';
 import { AccordionContent, Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import SelectWithSearch from '../ui/SelectWithSearch';
 import { FaFileExcel } from 'react-icons/fa6';
 import { donwloadExcel } from '@/actions/ticketAction'; 
 
-const FilterTableDiv = ({ className, organisations }: { className?: string, organisations?: Organisation[] }) => {
+const FilterTableDiv = ({ className, organisations,motifs }: { className?: string, organisations?: Organisation[];motifs:string[] }) => {
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  
   // 1. Initialize state directly from URL parameters
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [motif, setMotif] = useState(searchParams.get("motif") || "");
@@ -138,7 +137,7 @@ const FilterTableDiv = ({ className, organisations }: { className?: string, orga
 
               <div className="flex flex-col items-start gap-0">
                 <label className='w-full flex text-xs italic'>Motif</label>
-                <SelectWithSearch label='Motif' name='motif' onValueChange={setMotif} value={motif} possibleValues={MOTIFS} />
+                <SelectWithSearch label='Motif' name='motif' onValueChange={setMotif} value={motif} possibleValues={motifs} />
               </div>
 
               <div className="flex flex-col items-start gap-0">
@@ -168,10 +167,10 @@ const FilterTableDiv = ({ className, organisations }: { className?: string, orga
                 tabIndex={0}
                 className="grid grid-cols-2 cursor-pointer rounded-2xl items-start gap-0 w-72 lg:max-w-72 mt-4 md:mt-0"
               >
-                <div className={`flex items-center justify-center w-full h-full rounded-l-2xl min-h-[32px] transition-colors ${onlyMyOrganisation ? "bg-gray-hot" : "bg-primary text-white"}`}>
+                <div className={`flex items-center justify-center w-full h-full rounded-l-2xl min-h-8 transition-colors ${onlyMyOrganisation ? "bg-gray-hot" : "bg-primary text-white"}`}>
                   <p className='text-sm italic'>Tous</p>
                 </div>
-                <div className={`flex items-center justify-center w-full h-full rounded-r-2xl min-h-[32px] transition-colors ${onlyMyOrganisation ? "bg-primary text-white" : "bg-gray-hot"}`}>
+                <div className={`flex items-center justify-center w-full h-full rounded-r-2xl min-h-8 transition-colors ${onlyMyOrganisation ? "bg-primary text-white" : "bg-gray-hot"}`}>
                   <p className='text-sm italic'>Me Concerne</p>
                 </div>
               </div>

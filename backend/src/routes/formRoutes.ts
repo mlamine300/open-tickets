@@ -7,8 +7,8 @@ const formRouter=Router();
 formRouter.get("/",protect,getForms);
 
 formRouter.get("/:id",protect,getFormById);
-formRouter.put("/:id",protect,editFormById);
-formRouter.delete("/:id",protect,deleteForm);
+formRouter.put("/:id",protect,checkAdmin,editFormById);
+formRouter.delete("/:id",protect,checkAdmin,deleteForm);
 formRouter.post("/",protect,checkAdmin,addForm);
 
 export default formRouter;

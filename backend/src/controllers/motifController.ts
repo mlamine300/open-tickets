@@ -12,6 +12,7 @@ try {
     return res.status(500).json({message:"server error :",error})
 }
 }
+
 export const getActiveMotifs=async(req:Request,res:Response)=>{
 try {
     const motifs=await motifModel.find({active:true}).exec();

@@ -28,8 +28,8 @@ const SelectWithSearch = ({
   // Filter values
   useEffect(() => {
     setFiltredValues(
-      possibleValues?.filter((p) =>
-        p.toLowerCase().includes(search.toLowerCase())
+      possibleValues?.filter((p:string) =>
+       p&&p.length>0&&p.toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, possibleValues]);

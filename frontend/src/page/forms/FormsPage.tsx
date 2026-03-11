@@ -42,7 +42,7 @@ getForms();
 
   return (
     <div >
-      <div className='w-11/12  xl:min-w-[1080px] '>
+      <div className='w-11/12  xl:min-w-270 '>
       <Card className='flex flex-col gap-8 w py-8 px-4 bg-background-base rounded-xl shadow-2xl border-none items-center min-h-[90vh]'>
       <h3 className='text-lg font-semibold'>Créer / Editer / Supprimer des formulaires </h3>
       <div className='flex gap-4 w-full flex-wrap justify-start '>

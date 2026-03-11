@@ -23,14 +23,14 @@ const localOrganisationsString=localStorage.getItem("organisations")||"{}";
 const data=JSON.parse(localOrganisationsString)
 const {date,organisations:localOrganisations}=data;
 const today=new Date().getTime();
-const differenceInHours =(Number(new Date(date).getTime())- Number(today))/1000/60/60 ;
+const differenceInMinutes =(Number(new Date(date).getTime())- Number(today))/1000/60 ;
 
 
 
 
 
 
-if(!localOrganisations||!Array.isArray(localOrganisations)||localOrganisations.length<1||differenceInHours>8){
+if(!localOrganisations||!Array.isArray(localOrganisations)||localOrganisations.length<1||differenceInMinutes>30){
   const res=await axiosInstance.get(API_PATH.ORGANISATIONS.GET_ALL_ORGANISATIONS);
   console.log("refreshing organisations");
   
