@@ -1,22 +1,33 @@
 import  { useEffect, useState } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { Link } from 'react-router';
-import type { FormFieldType, FormType } from '@/types';
+import type { FormFieldType, FormType, Organisation } from '@/types';
 import { getStandardForm } from '@/data/data';
 import DynamicForm from '@/components/ticket/Formulaire';
 //import { getAllorganisationsAction } from '@/actions/organisationAction';
 import { getFormsAction } from '@/actions/formAction';
 import { getAllorganisationsAction } from '@/actions/organisationAction';
+import { getActiveMotifsAction } from '@/actions/motifAction';
+import Spinner from '@/components/main/Spinner';
 
 const AddTicket = () => {
     
    const [standardForm, setStandardForm] = useState<FormType|null>(null);
-
+  const [organisations, setOrganisations] = useState<Organisation[]>([]);
+  const [motifs, setMotifs] = useState<any[]>([]);
     const[forms,setForms]=useState<FormType[]|null>(null);
     
     
     useEffect(()=>{
+ const getOrganisations=async()=>{
+            const organisationsResp=await getAllorganisationsAction();
+            setOrganisations(organisationsResp);
+          }
 
+          const getMotifs=async()=>{
+            const motifsRes=await getActiveMotifsAction();
+            setMotifs(motifsRes)
+          }
      
         const getForms=async()=>{
           try {
@@ -47,7 +58,8 @@ const AddTicket = () => {
           
           
         }
-      
+        getOrganisations();
+        getMotifs();
         getForms();
         
        
@@ -79,7 +91,9 @@ const AddTicket = () => {
 
       </div>
       {standardForm&&<div className='w-8/12 self-center hidden lg:flex'>
-        <DynamicForm form={standardForm}  />
+      {(organisations.length>0&&motifs.length>0)? <DynamicForm form={standardForm} organisations={organisations} motifs={motifs}  />:  (<div className="flex w-full h-[50vh] justify-center items-center">
+  <Spinner size="xl" />
+ </div>) }
       </div>}
       </div>
     

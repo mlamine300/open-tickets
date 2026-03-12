@@ -96,7 +96,7 @@ id==="new"?<Button disabled={pending} onClick={()=>submitFormAdd()} text="Ajoute
       </div>
       <div className="hidden xl:flex w-full flex-col gap-4 bg-background-base h-full">
         
-     {(form&&form.fields&&Array.isArray(form.fields)&&form.fields.length)? <DynamicForm form={form} disabled={true} />:
+     {(form&&form.fields&&Array.isArray(form.fields)&&form.fields.length)? <DynamicForm motifs={[]} organisations={[]} form={form} disabled={true} />:
      <div className="flex flex-col items-center my-5 w-full h-full gap-8">
         <h3 className="italic font-extrabold underline">Fomrmulaire vide</h3>
         <p className="text-sm italic text-text-primary/50 font-normal">Ajouter des champs pour créer un fomulaire </p>

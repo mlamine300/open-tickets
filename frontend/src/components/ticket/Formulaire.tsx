@@ -9,8 +9,8 @@ import Button from "../ui/Button";
 import { Select, SelectContent,  SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import toast from "react-hot-toast";
 //import { useNavigate } from "react-router";
-import { getAllorganisationsAction } from "@/actions/organisationAction";
-import { useEffect, useState } from "react";
+
+import {  useState } from "react";
 import { addTicketAction } from "@/actions/ticketAction";
 import { useForm } from "react-hook-form";
 import SelectWithSearch from "../ui/SelectWithSearch";
@@ -20,30 +20,20 @@ import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
 import AddAttachement from "./AddAttachement";
 import { uploadFile } from "@/utils/UploadAttachement";
-import { getActiveMotifsAction } from "@/actions/motifAction";
 
 
 
 
-export default function DynamicForm({ form,disabled }:{form:FormType|null,disabled?:boolean}) {
-  // const [triggerRerender,setTriggerRerender]=useState(0);
-  // console.log(triggerRerender);
-  //const [formulaire,setFormulaire]=useState<FormType>(form||standardForm());
-  
-  
+export default function DynamicForm({ form,disabled,motifs,organisations }:{form:FormType|null,disabled?:boolean;motifs:any[],organisations:Organisation[]}) {
   const formulaire=form||getStandardForm();
-  
-//  form?.fields.forEach(f=>{
-//   if(f.name==="depart")console.log(f.possibleValues)
-//  });
-  
-  const [pending,setPending]=useState<boolean>(false);
-  useEffect(()=>{
-    
-    const getOrganisations=async()=>{
-      const organisations=await getAllorganisationsAction() as Organisation[];
-         const motifs=await getActiveMotifsAction();
-        const organisationString=organisations.map(o=>o.name);
+  const InitForm=()=>{
+      
+         const organisationString=(organisations&&Array.isArray(organisations)&&organisations.length>1)? organisations.map((o:Organisation|undefined)=>{
+        
+          if(o===undefined)return "";
+          return o?.name??"";
+         }):[""];
+         const motifsNames=(motifs&&Array.isArray(motifs)&&motifs.length>0)?motifs.map(m=>m?.name??""):[""];
           formulaire.fields.forEach(field=>{
         
         if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
@@ -60,22 +50,33 @@ export default function DynamicForm({ form,disabled }:{form:FormType|null,disabl
         }
            if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="motifs"){
      
-          field.possibleValues=(motifs.map((m:any)=>m.name))
+          field.possibleValues=(motifsNames)
           myForm.trigger();
           
         }
       })
-    }
- 
-    if(!disabled&& !formulaire.fields.map(f=>f.name).includes("priority") )
+
+      if(!disabled&& !formulaire.fields.map(f=>f.name).includes("priority") )
      formulaire.fields.push(...StandartFierlds());
-    getOrganisations();
-  },[form])
+    }
+
+ 
+  
+
+  const [pending,setPending]=useState<boolean>(false);
+  // useEffect(()=>{
+    
+    
+ 
+    
+  //   InitForm();
+  // },[form,disabled,motifs,organisations])
  if(!formulaire){
 return (<div className="flex justify-center items-center">
   <Spinner size="xl" />
  </div>)
  }
+ 
  
     
 
@@ -86,7 +87,10 @@ return (<div className="flex justify-center items-center">
   const myForm = useForm({
     resolver: zodResolver(schema),
   });
-  //const { errors } = myForm.formState;
+  
+
+
+    InitForm();
 const onSubmit = async(data: z.infer<typeof schema>) => {
  try {
    setPending(true)
