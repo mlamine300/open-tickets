@@ -248,7 +248,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
                  }
                 <Input parentClassName='w-full' inputClassName='h-42' type='area' placeHolder='Ajouter votre commentaire ici...' label='Commentaire' onChange={(e)=>setMessage(e.target.value)} value={message} />
             
-                  <Button disabled={pending} className='disabled:bg-gray-cold/50' type='button' text='Ajouter' variant='primary' onClick={(e)=>{
+                  <Button disabled={pending||(!message&&action==="comment")} className='disabled:bg-gray-cold/50' type='button' text='Ajouter' variant='primary' onClick={(e)=>{
                     handleAction(e)
                   }} />
                   <SheetClose ref={ref}>
