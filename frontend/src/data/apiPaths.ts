@@ -39,10 +39,12 @@ export const API_PATH = {
         GET_TICKET_BY_ID:(id:string)=>`/api/tickets/${id}`,
       GET_MY_TICKETS:(status:string)=>`/api/tickets/me/${status}`,
       TAKE_IN_CHARGE:(id:string)=>`/api/tickets/take_in_charge/${id}`,
+      CANCEL_IN_CHARGE:(id:string)=>`/api/tickets/cancel_in_charge/${id}`,
       CLOSE_TICKET:(id:string)=>`/api/tickets/close/${id}`,
       TRAIT_TICKET:(id:string)=>`/api/tickets/trait/${id}`,
       REOPEN_TICKET:(id:string)=>`/api/tickets/relance/${id}`,
       ADD_ORGANISATION:(id:string)=>`/api/tickets/add_organisation/${id}`,
+      SWITCH_ORGANISATION:(id:string)=>`/api/tickets/switch_organisation/${id}`,
       TICKETS_STATS:"/api/tickets/stats",
        SEARCH_TICKETS:"/api/tickets/search/list",
      

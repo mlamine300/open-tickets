@@ -158,7 +158,7 @@ export const getSpecificTicketAction:(t:string,params:any)=>Promise<{data:ticket
     }
 }
 
-export const TakeTicketInchargeAction=async(ticketId:string,message:string)=>{
+export const takeTicketInchargeAction=async(ticketId:string,message:string)=>{
     
 try {
     const res=await axiosInstance.post(API_PATH.TICKETS.TAKE_IN_CHARGE(ticketId),{message});
@@ -172,6 +172,22 @@ toast.success("Ticket a été Pris en charge")
     console.log(error);
     // console.log("Error Pris en charge",res.data.message);
     toast.error(`Erreur Pris en charge `)
+}
+}
+export const cancelTicketInchargeAction=async(ticketId:string,message:string)=>{
+    
+try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.CANCEL_IN_CHARGE(ticketId),{message});
+     if(res.status!==200){
+    console.log("Error annulation de Pris en charge",res.data.message);
+  
+return null; 
+}
+toast.success("Pris en charge annulé (ticket et en attente)")
+} catch (error) {
+    console.log(error);
+    // console.log("Error Pris en charge",res.data.message);
+    toast.error(`Error annulation de Pris en charge`)
 }
 }
 
@@ -219,6 +235,22 @@ toast.success("Ticket est relancé")
 } catch (error) {
     console.log(error);
     toast.error("erreur relance de ticket")
+    
+}
+}
+
+export const switchOrganisationAction=async(ticketId:string,message:string,organisationId:string)=>{
+    try {
+    const res=await axiosInstance.post(API_PATH.TICKETS.SWITCH_ORGANISATION(ticketId),{message,organisationId});
+     if(res.status!==200){
+    console.log("Error reopen ticket",res.data.message);
+    toast.error("impossible re relancer le ticket")
+return null; 
+}
+toast.success("Organisation ajoutée")
+} catch (error) {
+    console.log(error);
+    toast.error("erreur ajout d'organisation")
     
 }
 }

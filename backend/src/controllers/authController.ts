@@ -131,7 +131,7 @@ export const loginUser = async (req: Request, res: Response) => {
 export const getUserProfile = async (
   req: Request,
   res: Response,
-  next: NextFunction
+
 ) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -140,15 +140,16 @@ export const getUserProfile = async (
     if (!userId) {
       return res.status(409).json({ message: "user id is required!!" });
     }
+    
     const user = await userModel
       .findById(userId)
-      .select("-password")
+      .select("-password").populate("organisation")
       .lean()
       .exec();
     if (!user)
       return res.status(404).json({ message: "there is no user with such id" });
 
-    return res.status(200).json(user);
+    return res.status(200).json({...user,organisation:user.organisation._id,organisationName:(user.organisation as any).name});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "server error, ", error });

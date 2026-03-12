@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {  addOrganisation, addTicket, closeTicket, getMytickets, getNotCompleteReport, getTicketByid, getTicketReport, getTickets, getTicketsStatsForSideBar, relanceTicket, searchTickets, takeTicketInCharge, traitTicket } from "../controllers/ticketController.js";
+import {  addOrganisation, addTicket, closeTicket, getMytickets, getNotCompleteReport, getTicketByid, getTicketReport, getTickets, getTicketsStatsForSideBar, relanceTicket, searchTickets, takeTicketInCharge, traitTicket,switchOrganisation } from "../controllers/ticketController.js";
 const ticketRouter=Router();
 
 // ticketRouter.get("/",getTickets);
@@ -12,6 +12,7 @@ ticketRouter.post("/relance/:id",relanceTicket)
 ticketRouter.post("/me/:status",getMytickets);
 ticketRouter.post("/",addTicket);
 ticketRouter.post("/add_organisation/:id",addOrganisation);
+ticketRouter.post("/switch_organisation/:id",switchOrganisation);
 ticketRouter.get("/reports/notcomplete",getNotCompleteReport);
 ticketRouter.post("/reports/date",getTicketReport);
 ticketRouter.post("/stats",getTicketsStatsForSideBar)

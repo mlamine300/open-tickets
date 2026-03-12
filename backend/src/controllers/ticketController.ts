@@ -5,6 +5,7 @@ import ticketModel from "../models/Ticket.js";
 import { getFieldsFromFormName, getOrganisationId, getOrganisationsId, getToken } from "../utils/index.js";
 import { commentsModel } from "../models/Comment.js";
 import mongoose from "mongoose";
+import organisationModel from "../models/Organisation.js";
 export const addTicket=async(req:Request,res:Response)=>{
    
 
@@ -916,6 +917,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     if(!id)return res.status(400).json({message:"id is required"})
       const organisation=req.body.organisationId;
      if(!organisation)return res.status(400).json({message:"organisation is required"})
+       const foundOrganisation=await organisationModel.findById(organisation);
+     if(!foundOrganisation)return res.status(404).json({message:"Organisation not found"});
     const ticket=await ticketModel.findById(id).exec();
     if(!ticket)return res.status(404).json({message:"ticket not found"})
       if(!checkIfUSerCanPerformAction(ticket,user))return res.status(409).json({message:"you don't have permission"})
@@ -925,6 +928,41 @@ if (!token) return res.status(409).json({ message: "not autorized" });
       ticketId:ticket._id,
       authorId:userId,
       action:"subscribe",
+      message,
+      ticketRef:ticket.ref
+    })
+    ticket.lastComment=comment;
+    ticket.comments.push(comment._id)
+    await ticket.save();
+    return res.status(200).json({message:"success",data:ticket})
+
+  } catch (error) {
+    return res.status(500).json({message:"server error",error})
+  }
+}
+export const switchOrganisation=async(req:Request,res:Response)=>{
+   try {
+      const token = req.headers.authorization?.split(" ")[1];
+if (!token) return res.status(409).json({ message: "not autorized" });
+    const user = (await jwt.decode(token)) as TokenPayload;
+    const { userId }=user;
+    if (!userId) return res.status(409).json({ message: "not autorized" });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required"})
+      const organisation=req.body.organisationId;
+     if(!organisation)return res.status(400).json({message:"organisation is required"});
+     const foundOrganisation=await organisationModel.findById(organisation);
+     if(!foundOrganisation)return res.status(404).json({message:"Organisation not found"});
+    const ticket=await ticketModel.findById(id).exec();
+    if(!ticket)return res.status(404).json({message:"ticket not found"})
+      if(!checkIfUSerCanSwitchOrganisation(ticket,user,organisation))return res.status(409).json({message:"you don't have permission",user,ticket,organisation})
+      //ticket.associatedOrganizations.push(new mongoose.Types.ObjectId(organisation));
+      ticket.recipientOrganizationId=organisation;
+    const message=req.body.message;
+    const comment=await commentsModel.create({
+      ticketId:ticket._id,
+      authorId:userId,
+      action:"switch",
       message,
       ticketRef:ticket.ref
     })
@@ -1295,6 +1333,16 @@ const isAdmin=user.role==="admin";
 return isAssignedTome||isAdmin;
 } 
 
+const checkIfUSerCanSwitchOrganisation=(ticket:any,user:TokenPayload,organisaionToId:string)=>{
+
+ const ticketOrganisationId=ticket.recipientOrganizationId.toString();
+
+ if(!ticket.status||ticket.status!=="pending")return false;
+if(user.role==="admin")return true;
+if(user.role==="supervisor"&&user.organisationsList.includes(ticketOrganisationId)&&user.organisationsList.includes(organisaionToId))return true;
+
+return false;
+} 
 
 
 export const getNotCompleteReport = async (req: Request, res: Response) => {

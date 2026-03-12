@@ -2,10 +2,9 @@ import React, { useRef, useState } from 'react';
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import type { Organisation, ticket, User } from '@/types';
 import { Select, SelectContent, SelectItem, SelectValue,SelectTrigger } from '../ui/select';
-//import {  COMMENT_ACTIONS_DICTIONNAIRE } from '@/data/data';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import {  closeTicketAction, relanceeTicketAction, subscribeOrganisationAction, TakeTicketInchargeAction, traitTicketAction } from '@/actions/ticketAction';
+import {  cancelTicketInchargeAction, closeTicketAction, relanceeTicketAction, subscribeOrganisationAction, switchOrganisationAction, takeTicketInchargeAction, traitTicketAction } from '@/actions/ticketAction';
 import {AddCommentAction} from "@/actions/commentAction"
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/context/user/userContext';
@@ -57,6 +56,15 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           handleSubscribe();
           break;
         }
+
+        case "cancel_incharge":{
+          handleCancelInCharge();
+          break;
+        }
+        case "switch":{
+          handleSwitch()
+          break;
+        }
         default:{
           handleComment();
         }
@@ -98,7 +106,7 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           return
         }
         if(ticket._id){
-          await  TakeTicketInchargeAction(ticket._id,`${user?.name}\n ${message} `);
+          await  takeTicketInchargeAction(ticket._id,`${user?.name}\n ${message} `);
          setAction("comment");
       setMessage("");
       if(ref&&ref.current){
@@ -180,12 +188,56 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
           }
           
          setAction("comment");
+           setorganisation("");
       setMessage("");
       if(ref&&ref.current){
       ref.current.click();
       }
       
       
+        }
+        }
+
+        const handleSwitch=async()=>{
+          
+       
+        if(ticket.status!=="pending"){
+          toast.error(`le status de ticket: (${ticket.status}), vous pouvez pas ajouter une organisation`)
+          return
+        }
+        const organisationFilter=organisations.filter(o=>o.name===organisation);
+        if(ticket._id&&organisationFilter&&Array.isArray(organisationFilter)&&organisationFilter.length>0&&organisations.filter(o=>o.name===organisation).at(0)?._id){
+          const organisationId=organisations.filter(o=>o.name===organisation).at(0)?._id;
+          if(organisationId){
+      await  switchOrganisationAction(ticket._id,`${user?.name} a transféré le ticket a ${organisation} \n${message}`,organisationId);
+          }
+          
+         setAction("comment");
+         setorganisation("");
+        setMessage("");
+          refresh();
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      
+      
+        }
+        }
+        const handleCancelInCharge=async()=>{
+       
+        if(ticket.status!=="open"){
+          toast.error(`les status de ticket: (${ticket.status}), vous pouvez pas annuler la prise en charge`)
+          return
+        }
+        if(ticket._id){
+          await  cancelTicketInchargeAction(ticket._id,message);
+         setAction("comment");
+         setMessage("");
+      if(ref&&ref.current){
+      ref.current.click();
+      }
+      refresh();
+     
         }
         }
   return (
@@ -243,9 +295,13 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
                 
               </Select>
                 </div>
-                {action==="subscribe"&&
+                {(action==="subscribe")&&
                 <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={organisations.map(o=>o.name)} />
                  }
+                 {(action==="switch")&&
+                <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={organisations.filter(o=>user?.organisationsList?.includes(o._id||"-**")) .map(o=>o.name)} />
+                 }
+                 
                 <Input parentClassName='w-full' inputClassName='h-42' type='area' placeHolder='Ajouter votre commentaire ici...' label='Commentaire' onChange={(e)=>setMessage(e.target.value)} value={message} />
             
                   <Button disabled={pending||(!message&&action==="comment")} className='disabled:bg-gray-cold/50' type='button' text='Ajouter' variant='primary' onClick={(e)=>{
@@ -274,6 +330,9 @@ if(ticket.status==="pending"){
  actions["in_charge"]="Pris en charge";
  
   }
+  if(role==="admin"||(role==="supervisor"&&(user.organisationsList?.includes(ticket.recipientOrganization?._id||"****")))){
+    actions["switch"]="Transférer à une autre organisation";
+  }
  
 
 }
@@ -284,6 +343,7 @@ if(ticket.status==="open"){
 
 actions["subscribe"]="Ajouter une organisation";
 actions["trait"]="Traiter";
+actions["cancel_incharge"]="Annuler la Pris en charge";
 //actions["relancer"]="Relancer";
    }
 

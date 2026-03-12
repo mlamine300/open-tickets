@@ -400,7 +400,7 @@ export const getStandardForm=():FormType=>({
     
     ]
 
-export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close","create"]
+export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close","create","subscribe","cancel_incharge","switch"]
 
     export const COMMENT_ACTIONS_DICTIONNAIRE=
       {
@@ -411,7 +411,9 @@ export const COMMENT_ACTIONS=["comment","in_charge","called","relancer","close",
   relancer: "Relancer",
   close:"Clôturer",
    trait:"Traiter",
-  subscribe:"Ajouter une organisation"
+  subscribe:"Ajouter une organisation",
+  cancel_incharge:"Annuler la Pris en charge",
+  switch:"Transférer à une autre organisation"
 }
 
 export const getWilayas=()=>{
