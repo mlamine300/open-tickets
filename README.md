@@ -187,7 +187,7 @@ Améliorations futures :
 
 # 👤 Auteur
 
-**Lamine Anderson**
+**Lamine LAOUFI**
 
 GitHub :
 https://github.com/mlamine300
