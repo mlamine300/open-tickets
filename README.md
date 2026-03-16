@@ -187,7 +187,11 @@ Améliorations futures :
 
 # 👤 Auteur
 
-**Lamine LAOUFI**
+<<<<<<< HEAD
+**Lamine Laoufi**
+=======
+**Lamine Laoufi**
+>>>>>>> websocket
 
 GitHub :
 https://github.com/mlamine300
