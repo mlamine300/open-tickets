@@ -17,19 +17,19 @@ const PrivateRoute = ({ allowedRoles }: { allowedRoles: string[] }) => {
     }
   }, [token, navigate]);
 
-  if (role && allowedRoles.includes(role))
+  
     return (
       <div className="w-full h-full ">
         <Header />
-        <DashboardLayout>
-        <Outlet />
+        <DashboardLayout >
+       {role && allowedRoles.includes(role)? <Outlet />:<NotAuthorized/>}
 
         </DashboardLayout>
         <Fouter />
       </div>
     );
 
-  return <NotAuthorized />;
+ 
 };
 
 export default PrivateRoute;

@@ -7,7 +7,7 @@ import {
 import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
 import type { FormType, FormFieldType } from "@/types";
 
-import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, MessageCircleMore, Plus, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, MessageCircleMore, Plus, Search, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -188,7 +188,17 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
+
     {id:"09",
+      
+      label:"Recherche par Référence",
+      icon: Search ,
+      path:"/search",
+      hasChilds:false,
+     
+
+    },
+    {   id:"10",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -197,8 +207,9 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
+     
   {
-    id: "10",
+    id: "11",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -303,8 +314,17 @@ export const SIDE_MENU_USER_DATA = [
     ]
 
     },
-     
     {id:"06",
+     
+      label:"Recherche par Référence",
+      icon: Search,
+      path:"/search",
+      hasChilds:false,
+     
+
+    },
+     
+    {id:"07",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -313,8 +333,9 @@ export const SIDE_MENU_USER_DATA = [
      
 
     },
+      
   {
-    id: "07",
+    id: "08",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",

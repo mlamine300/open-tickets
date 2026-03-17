@@ -6,6 +6,191 @@ import { getFieldsFromFormName, getOrganisationId, getOrganisationsId, getToken 
 import { commentsModel } from "../models/Comment.js";
 import mongoose from "mongoose";
 import organisationModel from "../models/Organisation.js";
+
+const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
+   const msortField = sortField || "createdAt";
+    const msortOrder = sortOrder||1;
+    const mskip=skip||0;
+    const mlimit=limit||10;
+
+    return [
+      { $match: match },
+
+      // Join user (creator)
+      {
+        $lookup: {
+          from: "users",
+          localField: "creator",
+          foreignField: "_id",
+          as: "creator"
+        }
+      },
+      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+
+      // emitter organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "emitterOrganizationId",
+          foreignField: "_id",
+          as: "emitterOrganization"
+        }
+      },
+      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+
+      // recipient organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "recipientOrganizationId",
+          foreignField: "_id",
+          as: "recipientOrganization"
+        }
+      },
+      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+
+      // associated organizations
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "associatedOrganizations",
+          foreignField: "_id",
+          as: "associatedOrganizations"
+        }
+      },
+
+      // assignedTo
+      {
+        $lookup: {
+          from: "users",
+          localField: "assignedTo.userId",
+          foreignField: "_id",
+          as: "assignedUsers"
+        }
+      },
+
+      {
+        $addFields: {
+          assignedTo: {
+            $map: {
+              input: {
+                $cond: {
+                  if: { $isArray: "$assignedTo" },
+                  then: "$assignedTo",
+                  else: {
+                    $cond: {
+                      if: { $eq: ["$assignedTo", null] },
+                      then: [],
+                      else: ["$assignedTo"]
+                    }
+                  }
+                }
+              },
+              as: "a",
+              in: {
+                date: "$$a.date",
+                user: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$assignedUsers",
+                        as: "u",
+                        cond: { $eq: ["$$u._id", "$$a.userId"] }
+                      }
+                    },
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+
+      { $project: { assignedUsers: 0 } },
+
+      // Populate lastComment.author (replace authorId with author doc)
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastComment.authorId",
+          foreignField: "_id",
+          as: "lastCommentAuthor"
+        }
+      },
+      {
+        $addFields: {
+          lastComment: {
+            $cond: [
+              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+              {
+                $mergeObjects: [
+                  "$lastComment",
+                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+                ]
+              },
+              "$lastComment"
+            ]
+          }
+        }
+      },
+      { $project: { lastCommentAuthor: 0 } },
+
+      // project only necessary fields for creator, organisations and assignedTo
+      {
+        $project: {
+          _id: 1,
+          ref: 1,
+          formName: 1,
+          message: 1,
+          status: 1,
+          priority: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          specialFields:1,
+          attachement:1,
+          motif:1,
+          lastComment: {
+            _id: "$lastComment._id",
+            message: "$lastComment.message",
+            action: "$lastComment.action",
+            ticketRef: "$lastComment.ticketRef",
+            createdAt: "$lastComment.createdAt",
+            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+          },
+          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+          assignedTo: {
+            $let: {
+              vars: {
+                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+              },
+              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+            }
+          }
+        }
+      },
+
+
+
+      // Sorting
+      { $sort: { [msortField]: msortOrder } },
+
+      // Pagination + count in one request
+      {
+        $facet: {
+          data: [{ $skip: mskip }, { $limit: mlimit }],
+          totalCount: [{ $count: "count" }]
+        }
+      }
+    ];
+}
+
+
+
+
 export const addTicket=async(req:Request,res:Response)=>{
    
 
@@ -51,7 +236,8 @@ export const addTicket=async(req:Request,res:Response)=>{
        
        
         const ticket=await ticketModel.create({creator:userId,attachement,motif,
-           emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,formName,message,specialFields,priority,commentsId,ref
+           emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,
+           formName,message,specialFields,priority,commentsId,ref:ref.toUpperCase()
         });
           const comment=await commentsModel.create({
       ticketId:ticket._id,
@@ -122,184 +308,10 @@ if(motif){
    baseFilter["motif"]=motif;
 }
     const searchFilter=getSearchFilter(search)
+  const pipeline=getPipline({match:{ ...baseFilter,...searchFilter},limit,skip,sortField,sortOrder})
+   
 
-    const pipeline: any[] = [
-      { $match: { ...baseFilter,...searchFilter
-        //  ...searchQuery
-         } },
-
-      // Join user (creator)
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator"
-        }
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
-
-      // emitter organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization"
-        }
-      },
-      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
-
-      // recipient organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization"
-        }
-      },
-      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
-
-      // associated organizations
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations"
-        }
-      },
-
-      // assignedTo
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers"
-        }
-      },
-
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: {
-                $cond: {
-                  if: { $isArray: "$assignedTo" },
-                  then: "$assignedTo",
-                  else: {
-                    $cond: {
-                      if: { $eq: ["$assignedTo", null] },
-                      then: [],
-                      else: ["$assignedTo"]
-                    }
-                  }
-                }
-              },
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$assignedUsers",
-                        as: "u",
-                        cond: { $eq: ["$$u._id", "$$a.userId"] }
-                      }
-                    },
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-
-      { $project: { assignedUsers: 0 } },
-
-      // Populate lastComment.author (replace authorId with author doc)
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor"
-        }
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
-                ]
-              },
-              "$lastComment"
-            ]
-          }
-        }
-      },
-      { $project: { lastCommentAuthor: 0 } },
-
-      // project only necessary fields for creator, organisations and assignedTo
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          formName: 1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields:1,
-          attachement:1,
-          motif:1,
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
-          },
-          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
-          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
-          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-          assignedTo: {
-            $let: {
-              vars: {
-                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
-              },
-              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-            }
-          }
-        }
-      },
-
-
-
-      // Sorting
-      { $sort: { [sortField]: sortOrder } },
-
-      // Pagination + count in one request
-      {
-        $facet: {
-          data: [{ $skip: skip }, { $limit: limit }],
-          totalCount: [{ $count: "count" }]
-        }
-      }
-    ];
-
-    const result = await ticketModel.aggregate(pipeline).exec();
+    const result = await ticketModel.aggregate(pipeline as any).exec();
 
     const data = result[0].data;
     const totalCount = result[0].totalCount[0]?.count || 0;
@@ -326,12 +338,6 @@ export const searchTickets=async(req:Request,res:Response)=>{
     const user = jwt.decode(token) as TokenPayload;
     if (!user?.userId) return res.status(409).json({ message: "not authorized" });
 
-    
-
-   
-
-
-   
     const search = req.body.search || "";
     if(!search||search.length<3)return res.json(200).json({data:[],message:"search less then 3"}) ;
 
@@ -342,182 +348,182 @@ export const searchTickets=async(req:Request,res:Response)=>{
     // };
 
     const searchFilter=getSearchFilter(search.trim())
+    const pipeline=getPipline({match: { ...searchFilter},limit:100})
+    // const pipeline: any[] = [
+    //   { $match: { ...searchFilter
+    //     //  ...searchQuery
+    //      } },
 
-    const pipeline: any[] = [
-      { $match: { ...searchFilter
-        //  ...searchQuery
-         } },
+    //   // Join user (creator)
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "creator",
+    //       foreignField: "_id",
+    //       as: "creator"
+    //     }
+    //   },
+    //   { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // Join user (creator)
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator"
-        }
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+    //   // emitter organization
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "emitterOrganizationId",
+    //       foreignField: "_id",
+    //       as: "emitterOrganization"
+    //     }
+    //   },
+    //   { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
 
-      // emitter organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization"
-        }
-      },
-      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+    //   // recipient organization
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "recipientOrganizationId",
+    //       foreignField: "_id",
+    //       as: "recipientOrganization"
+    //     }
+    //   },
+    //   { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
 
-      // recipient organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization"
-        }
-      },
-      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+    //   // associated organizations
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "associatedOrganizations",
+    //       foreignField: "_id",
+    //       as: "associatedOrganizations"
+    //     }
+    //   },
 
-      // associated organizations
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations"
-        }
-      },
+    //   // assignedTo
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "assignedTo.userId",
+    //       foreignField: "_id",
+    //       as: "assignedUsers"
+    //     }
+    //   },
 
-      // assignedTo
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers"
-        }
-      },
+    //   {
+    //     $addFields: {
+    //       assignedTo: {
+    //         $map: {
+    //           input: {
+    //             $cond: {
+    //               if: { $isArray: "$assignedTo" },
+    //               then: "$assignedTo",
+    //               else: {
+    //                 $cond: {
+    //                   if: { $eq: ["$assignedTo", null] },
+    //                   then: [],
+    //                   else: ["$assignedTo"]
+    //                 }
+    //               }
+    //             }
+    //           },
+    //           as: "a",
+    //           in: {
+    //             date: "$$a.date",
+    //             user: {
+    //               $arrayElemAt: [
+    //                 {
+    //                   $filter: {
+    //                     input: "$assignedUsers",
+    //                     as: "u",
+    //                     cond: { $eq: ["$$u._id", "$$a.userId"] }
+    //                   }
+    //                 },
+    //                 0
+    //               ]
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
 
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: {
-                $cond: {
-                  if: { $isArray: "$assignedTo" },
-                  then: "$assignedTo",
-                  else: {
-                    $cond: {
-                      if: { $eq: ["$assignedTo", null] },
-                      then: [],
-                      else: ["$assignedTo"]
-                    }
-                  }
-                }
-              },
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$assignedUsers",
-                        as: "u",
-                        cond: { $eq: ["$$u._id", "$$a.userId"] }
-                      }
-                    },
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
+    //   { $project: { assignedUsers: 0 } },
 
-      { $project: { assignedUsers: 0 } },
+    //   // Populate lastComment.author (replace authorId with author doc)
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "lastComment.authorId",
+    //       foreignField: "_id",
+    //       as: "lastCommentAuthor"
+    //     }
+    //   },
+    //   {
+    //     $addFields: {
+    //       lastComment: {
+    //         $cond: [
+    //           { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+    //           {
+    //             $mergeObjects: [
+    //               "$lastComment",
+    //               { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+    //             ]
+    //           },
+    //           "$lastComment"
+    //         ]
+    //       }
+    //     }
+    //   },
+    //   { $project: { lastCommentAuthor: 0 } },
 
-      // Populate lastComment.author (replace authorId with author doc)
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor"
-        }
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
-                ]
-              },
-              "$lastComment"
-            ]
-          }
-        }
-      },
-      { $project: { lastCommentAuthor: 0 } },
-
-      // project only necessary fields for creator, organisations and assignedTo
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          formName: 1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields:1,
-          motif:1,
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
-          },
-          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
-          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
-          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-          assignedTo: {
-            $let: {
-              vars: {
-                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
-              },
-              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-            }
-          }
-        }
-      },
+    //   // project only necessary fields for creator, organisations and assignedTo
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       ref: 1,
+    //       formName: 1,
+    //       message: 1,
+    //       status: 1,
+    //       priority: 1,
+    //       createdAt: 1,
+    //       updatedAt: 1,
+    //       specialFields:1,
+    //       motif:1,
+    //       lastComment: {
+    //         _id: "$lastComment._id",
+    //         message: "$lastComment.message",
+    //         action: "$lastComment.action",
+    //         ticketRef: "$lastComment.ticketRef",
+    //         createdAt: "$lastComment.createdAt",
+    //         author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+    //       },
+    //       creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+    //       emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+    //       recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+    //       associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+    //       assignedTo: {
+    //         $let: {
+    //           vars: {
+    //             a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+    //           },
+    //           in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+    //         }
+    //       }
+    //     }
+    //   },
 
 
 
      
-    ];
+    // ];
 
-    const data = await ticketModel.aggregate(pipeline).exec();
+    const data = await ticketModel.aggregate(pipeline as any[]).exec();
     
-
+    const newData=data.at(0).data;
    
     
 
     return res.status(200).json({
       message: "success",
-      data,
+      data:newData,
     });
 
   } catch (err) {
@@ -529,11 +535,11 @@ export const searchTickets=async(req:Request,res:Response)=>{
 
 export const getTicketByid=async(req:Request,res:Response)=>{
    try {
-     const token = req.headers.authorization?.split(" ")[1];
-if (!token) return res.status(409).json({ message: "not autorized" });
-    const user = (await jwt.decode(token)) as TokenPayload;
-    const { userId }=user;
-    if (!userId) return res.status(409).json({ message: "not autorized" });
+//      const token = req.headers.authorization?.split(" ")[1];
+// if (!token) return res.status(409).json({ message: "not autorized" });
+//     const user = (await jwt.decode(token)) as TokenPayload;
+//     const { userId }=user;
+//     if (!userId) return res.status(409).json({ message: "not autorized" });
     const id=req.params.id;
     if(!id)return res.status(400).json({message:"id is required"})
 
@@ -601,181 +607,182 @@ if(recipientOrganizationId){
 }
    
     const searchFilter=getSearchFilter(search)
-    const pipeline: any[] = [
-      { $match: { ...baseFilter,...searchFilter
-        //  ...searchQuery
-         } },
+    const pipeline:any[]=getPipline({match:{...baseFilter,...searchFilter},limit,skip,sortField,sortOrder})
+    // const pipeline: any[] = [
+    //   { $match: { ...baseFilter,...searchFilter
+    //     //  ...searchQuery
+    //      } },
 
-      // Join user (creator)
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator"
-        }
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+    //   // Join user (creator)
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "creator",
+    //       foreignField: "_id",
+    //       as: "creator"
+    //     }
+    //   },
+    //   { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // emitter organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization"
-        }
-      },
-      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+    //   // emitter organization
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "emitterOrganizationId",
+    //       foreignField: "_id",
+    //       as: "emitterOrganization"
+    //     }
+    //   },
+    //   { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
 
-      // recipient organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization"
-        }
-      },
-      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+    //   // recipient organization
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "recipientOrganizationId",
+    //       foreignField: "_id",
+    //       as: "recipientOrganization"
+    //     }
+    //   },
+    //   { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
 
-      // associated organizations
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations"
-        }
-      },
+    //   // associated organizations
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "associatedOrganizations",
+    //       foreignField: "_id",
+    //       as: "associatedOrganizations"
+    //     }
+    //   },
 
-      // assignedTo
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers"
-        }
-      },
+    //   // assignedTo
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "assignedTo.userId",
+    //       foreignField: "_id",
+    //       as: "assignedUsers"
+    //     }
+    //   },
 
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: {
-                $cond: {
-                  if: { $isArray: "$assignedTo" },
-                  then: "$assignedTo",
-                  else: {
-                    $cond: {
-                      if: { $eq: ["$assignedTo", null] },
-                      then: [],
-                      else: ["$assignedTo"]
-                    }
-                  }
-                }
-              },
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$assignedUsers",
-                        as: "u",
-                        cond: { $eq: ["$$u._id", "$$a.userId"] }
-                      }
-                    },
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
+    //   {
+    //     $addFields: {
+    //       assignedTo: {
+    //         $map: {
+    //           input: {
+    //             $cond: {
+    //               if: { $isArray: "$assignedTo" },
+    //               then: "$assignedTo",
+    //               else: {
+    //                 $cond: {
+    //                   if: { $eq: ["$assignedTo", null] },
+    //                   then: [],
+    //                   else: ["$assignedTo"]
+    //                 }
+    //               }
+    //             }
+    //           },
+    //           as: "a",
+    //           in: {
+    //             date: "$$a.date",
+    //             user: {
+    //               $arrayElemAt: [
+    //                 {
+    //                   $filter: {
+    //                     input: "$assignedUsers",
+    //                     as: "u",
+    //                     cond: { $eq: ["$$u._id", "$$a.userId"] }
+    //                   }
+    //                 },
+    //                 0
+    //               ]
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
 
-      { $project: { assignedUsers: 0 } },
+    //   { $project: { assignedUsers: 0 } },
 
-      // Populate lastComment.author (replace authorId with author doc)
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor"
-        }
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
-                ]
-              },
-              "$lastComment"
-            ]
-          }
-        }
-      },
-      { $project: { lastCommentAuthor: 0 } },
+    //   // Populate lastComment.author (replace authorId with author doc)
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "lastComment.authorId",
+    //       foreignField: "_id",
+    //       as: "lastCommentAuthor"
+    //     }
+    //   },
+    //   {
+    //     $addFields: {
+    //       lastComment: {
+    //         $cond: [
+    //           { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+    //           {
+    //             $mergeObjects: [
+    //               "$lastComment",
+    //               { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+    //             ]
+    //           },
+    //           "$lastComment"
+    //         ]
+    //       }
+    //     }
+    //   },
+    //   { $project: { lastCommentAuthor: 0 } },
 
-      // project only necessary fields for creator, organisations and assignedTo
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          attachement:1,
-          formName: 1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields:1,
-           motif:1,
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
-          },
-          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
-          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
-          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-          assignedTo: {
-            $let: {
-              vars: {
-                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
-              },
-              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-            }
-          }
-        }
-      },
+    //   // project only necessary fields for creator, organisations and assignedTo
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       ref: 1,
+    //       attachement:1,
+    //       formName: 1,
+    //       message: 1,
+    //       status: 1,
+    //       priority: 1,
+    //       createdAt: 1,
+    //       updatedAt: 1,
+    //       specialFields:1,
+    //        motif:1,
+    //       lastComment: {
+    //         _id: "$lastComment._id",
+    //         message: "$lastComment.message",
+    //         action: "$lastComment.action",
+    //         ticketRef: "$lastComment.ticketRef",
+    //         createdAt: "$lastComment.createdAt",
+    //         author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+    //       },
+    //       creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+    //       emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+    //       recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+    //       associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+    //       assignedTo: {
+    //         $let: {
+    //           vars: {
+    //             a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+    //           },
+    //           in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+    //         }
+    //       }
+    //     }
+    //   },
 
 
 
-      // Sorting
-      { $sort: { [sortField]: sortOrder } },
+    //   // Sorting
+    //   { $sort: { [sortField]: sortOrder } },
 
-      // Pagination + count in one request
-      {
-        $facet: {
-          data: [{ $skip: skip }, { $limit: limit }],
-          totalCount: [{ $count: "count" }]
-        }
-      }
-    ];
+    //   // Pagination + count in one request
+    //   {
+    //     $facet: {
+    //       data: [{ $skip: skip }, { $limit: limit }],
+    //       totalCount: [{ $count: "count" }]
+    //     }
+    //   }
+    // ];
 
     const result = await ticketModel.aggregate(pipeline).exec();
 
@@ -1433,237 +1440,245 @@ export const getNotCompleteReport = async (req: Request, res: Response) => {
       ],
     };
 
-    // ================= PIPELINE =================
-    const pipeline: any[] = [
-      // ===== match =====
-      {
-        $match: {
+    const pipeline:any[]=getPipline({match: {
          $and: [
     { ...baseFilter }, // this may include $or
     { ...notCompleteFilter } // this also includes $or
   ]
-        },
-      },
+        }
+      ,limit:1000
+      })
+    // ================= PIPELINE =================
+  //   const pipeline: any[] = [
+  //     // ===== match =====
+  //     {
+  //       $match: {
+  //        $and: [
+  //   { ...baseFilter }, // this may include $or
+  //   { ...notCompleteFilter } // this also includes $or
+  // ]
+  //       },
+  //     },
 
-      // ===== normalize assignedTo =====
-      {
-        $addFields: {
-          assignedTo: {
-            $cond: [
-              { $isArray: "$assignedTo" },
-              "$assignedTo",
-              {
-                $cond: [
-                  { $eq: ["$assignedTo", null] },
-                  [],
-                  ["$assignedTo"],
-                ],
-              },
-            ],
-          },
-        },
-      },
+  //     // ===== normalize assignedTo =====
+  //     {
+  //       $addFields: {
+  //         assignedTo: {
+  //           $cond: [
+  //             { $isArray: "$assignedTo" },
+  //             "$assignedTo",
+  //             {
+  //               $cond: [
+  //                 { $eq: ["$assignedTo", null] },
+  //                 [],
+  //                 ["$assignedTo"],
+  //               ],
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     },
 
-      // ===== creator =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator",
-        },
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+  //     // ===== creator =====
+  //     {
+  //       $lookup: {
+  //         from: "users",
+  //         localField: "creator",
+  //         foreignField: "_id",
+  //         as: "creator",
+  //       },
+  //     },
+  //     { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // ===== organizations =====
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization",
-        },
-      },
-      {
-        $unwind: {
-          path: "$emitterOrganization",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization",
-        },
-      },
-      {
-        $unwind: {
-          path: "$recipientOrganization",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations",
-        },
-      },
+  //     // ===== organizations =====
+  //     {
+  //       $lookup: {
+  //         from: "organisations",
+  //         localField: "emitterOrganizationId",
+  //         foreignField: "_id",
+  //         as: "emitterOrganization",
+  //       },
+  //     },
+  //     {
+  //       $unwind: {
+  //         path: "$emitterOrganization",
+  //         preserveNullAndEmptyArrays: true,
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: "organisations",
+  //         localField: "recipientOrganizationId",
+  //         foreignField: "_id",
+  //         as: "recipientOrganization",
+  //       },
+  //     },
+  //     {
+  //       $unwind: {
+  //         path: "$recipientOrganization",
+  //         preserveNullAndEmptyArrays: true,
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: "organisations",
+  //         localField: "associatedOrganizations",
+  //         foreignField: "_id",
+  //         as: "associatedOrganizations",
+  //       },
+  //     },
 
-      // ===== assigned users =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers",
-        },
-      },
+  //     // ===== assigned users =====
+  //     {
+  //       $lookup: {
+  //         from: "users",
+  //         localField: "assignedTo.userId",
+  //         foreignField: "_id",
+  //         as: "assignedUsers",
+  //       },
+  //     },
 
-      // ===== enrich assignedTo =====
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: "$assignedTo",
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $let: {
-                    vars: {
-                      u: {
-                        $arrayElemAt: [
-                          {
-                            $filter: {
-                              input: "$assignedUsers",
-                              as: "u",
-                              cond: {
-                                $eq: ["$$u._id", "$$a.userId"],
-                              },
-                            },
-                          },
-                          0,
-                        ],
-                      },
-                    },
-                    in: {
-                      $cond: [
-                        { $eq: ["$$u", null] },
-                        null,
-                        {
-                          _id: "$$u._id",
-                          name: "$$u.name",
-                          email: "$$u.email",
-                        },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      { $project: { assignedUsers: 0 } },
+  //     // ===== enrich assignedTo =====
+  //     {
+  //       $addFields: {
+  //         assignedTo: {
+  //           $map: {
+  //             input: "$assignedTo",
+  //             as: "a",
+  //             in: {
+  //               date: "$$a.date",
+  //               user: {
+  //                 $let: {
+  //                   vars: {
+  //                     u: {
+  //                       $arrayElemAt: [
+  //                         {
+  //                           $filter: {
+  //                             input: "$assignedUsers",
+  //                             as: "u",
+  //                             cond: {
+  //                               $eq: ["$$u._id", "$$a.userId"],
+  //                             },
+  //                           },
+  //                         },
+  //                         0,
+  //                       ],
+  //                     },
+  //                   },
+  //                   in: {
+  //                     $cond: [
+  //                       { $eq: ["$$u", null] },
+  //                       null,
+  //                       {
+  //                         _id: "$$u._id",
+  //                         name: "$$u.name",
+  //                         email: "$$u.email",
+  //                       },
+  //                     ],
+  //                   },
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //     { $project: { assignedUsers: 0 } },
 
-      // ===== last comment =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor",
-        },
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  {
-                    author: {
-                      $arrayElemAt: ["$lastCommentAuthor", 0],
-                    },
-                  },
-                ],
-              },
-              "$lastComment",
-            ],
-          },
-        },
-      },
-      { $project: { lastCommentAuthor: 0 } },
+  //     // ===== last comment =====
+  //     {
+  //       $lookup: {
+  //         from: "users",
+  //         localField: "lastComment.authorId",
+  //         foreignField: "_id",
+  //         as: "lastCommentAuthor",
+  //       },
+  //     },
+  //     {
+  //       $addFields: {
+  //         lastComment: {
+  //           $cond: [
+  //             { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
+  //             {
+  //               $mergeObjects: [
+  //                 "$lastComment",
+  //                 {
+  //                   author: {
+  //                     $arrayElemAt: ["$lastCommentAuthor", 0],
+  //                   },
+  //                 },
+  //               ],
+  //             },
+  //             "$lastComment",
+  //           ],
+  //         },
+  //       },
+  //     },
+  //     { $project: { lastCommentAuthor: 0 } },
 
-      // ===== final projection =====
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          formName: 1,
-          motif:1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields: 1,
+  //     // ===== final projection =====
+  //     {
+  //       $project: {
+  //         _id: 1,
+  //         ref: 1,
+  //         formName: 1,
+  //         motif:1,
+  //         message: 1,
+  //         status: 1,
+  //         priority: 1,
+  //         createdAt: 1,
+  //         updatedAt: 1,
+  //         specialFields: 1,
 
-          creator: {
-            _id: "$creator._id",
-            name: "$creator.name",
-            email: "$creator.email",
-          },
+  //         creator: {
+  //           _id: "$creator._id",
+  //           name: "$creator.name",
+  //           email: "$creator.email",
+  //         },
 
-          emitterOrganization: {
-            _id: "$emitterOrganization._id",
-            name: "$emitterOrganization.name",
-          },
+  //         emitterOrganization: {
+  //           _id: "$emitterOrganization._id",
+  //           name: "$emitterOrganization.name",
+  //         },
 
-          recipientOrganization: {
-            _id: "$recipientOrganization._id",
-            name: "$recipientOrganization.name",
-          },
+  //         recipientOrganization: {
+  //           _id: "$recipientOrganization._id",
+  //           name: "$recipientOrganization.name",
+  //         },
 
-          associatedOrganizations: {
-            $map: {
-              input: { $ifNull: ["$associatedOrganizations", []] },
-              as: "o",
-              in: { _id: "$$o._id", name: "$$o.name" },
-            },
-          },
+  //         associatedOrganizations: {
+  //           $map: {
+  //             input: { $ifNull: ["$associatedOrganizations", []] },
+  //             as: "o",
+  //             in: { _id: "$$o._id", name: "$$o.name" },
+  //           },
+  //         },
 
-          assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
+  //         assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
 
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: {
-              _id: "$lastComment.author._id",
-              name: "$lastComment.author.name",
-              email: "$lastComment.author.email",
-            },
-          },
-        },
-      },
+  //         lastComment: {
+  //           _id: "$lastComment._id",
+  //           message: "$lastComment.message",
+  //           action: "$lastComment.action",
+  //           ticketRef: "$lastComment.ticketRef",
+  //           createdAt: "$lastComment.createdAt",
+  //           author: {
+  //             _id: "$lastComment.author._id",
+  //             name: "$lastComment.author.name",
+  //             email: "$lastComment.author.email",
+  //           },
+  //         },
+  //       },
+  //     },
 
-      // ===== pagination + count =====
-      {
-        $facet: {
-          data: [{ $sort: { createdAt: 1 } }],
-          totalCount: [{ $count: "count" }],
-        },
-      },
-    ];
+  //     // ===== pagination + count =====
+  //     {
+  //       $facet: {
+  //         data: [{ $sort: { createdAt: 1 } }],
+  //         totalCount: [{ $count: "count" }],
+  //       },
+  //     },
+  //   ];
 
     // ================= EXEC =================
     const result = await ticketModel.aggregate(pipeline).exec();
@@ -1713,234 +1728,239 @@ export const getTicketReport = async (req: Request, res: Response) => {
     }
 
     // ================= PIPELINE =================
-    const pipeline: any[] = [
-      // ===== match =====
-      {
-        $match: {
+    const pipeline:any[]=getPipline({match: {
           ...baseFilter,
           ...dateFilter,
-        },
-      },
+        },limit:10000})
 
-      // ===== normalize assignedTo =====
-      {
-        $addFields: {
-          assignedTo: {
-            $cond: [
-              { $isArray: "$assignedTo" },
-              "$assignedTo",
-              {
-                $cond: [
-                  { $eq: ["$assignedTo", null] },
-                  [],
-                  ["$assignedTo"],
-                ],
-              },
-            ],
-          },
-        },
-      },
+    // const pipeline: any[] = [
+    //   // ===== match =====
+    //   {
+    //     $match: {
+    //       ...baseFilter,
+    //       ...dateFilter,
+    //     },
+    //   },
 
-      // ===== creator =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator",
-        },
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+    //   // ===== normalize assignedTo =====
+    //   {
+    //     $addFields: {
+    //       assignedTo: {
+    //         $cond: [
+    //           { $isArray: "$assignedTo" },
+    //           "$assignedTo",
+    //           {
+    //             $cond: [
+    //               { $eq: ["$assignedTo", null] },
+    //               [],
+    //               ["$assignedTo"],
+    //             ],
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   },
 
-      // ===== organizations =====
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization",
-        },
-      },
-      {
-        $unwind: {
-          path: "$emitterOrganization",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization",
-        },
-      },
-      {
-        $unwind: {
-          path: "$recipientOrganization",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations",
-        },
-      },
+    //   // ===== creator =====
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "creator",
+    //       foreignField: "_id",
+    //       as: "creator",
+    //     },
+    //   },
+    //   { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // ===== assigned users =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers",
-        },
-      },
+    //   // ===== organizations =====
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "emitterOrganizationId",
+    //       foreignField: "_id",
+    //       as: "emitterOrganization",
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: "$emitterOrganization",
+    //       preserveNullAndEmptyArrays: true,
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "recipientOrganizationId",
+    //       foreignField: "_id",
+    //       as: "recipientOrganization",
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: "$recipientOrganization",
+    //       preserveNullAndEmptyArrays: true,
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "organisations",
+    //       localField: "associatedOrganizations",
+    //       foreignField: "_id",
+    //       as: "associatedOrganizations",
+    //     },
+    //   },
 
-      // ===== enrich assignedTo =====
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: "$assignedTo",
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $let: {
-                    vars: {
-                      u: {
-                        $arrayElemAt: [
-                          {
-                            $filter: {
-                              input: "$assignedUsers",
-                              as: "u",
-                              cond: {
-                                $eq: ["$$u._id", "$$a.userId"],
-                              },
-                            },
-                          },
-                          0,
-                        ],
-                      },
-                    },
-                    in: {
-                      $cond: [
-                        { $eq: ["$$u", null] },
-                        null,
-                        {
-                          _id: "$$u._id",
-                          name: "$$u.name",
-                          email: "$$u.email",
-                        },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      { $project: { assignedUsers: 0 } },
+    //   // ===== assigned users =====
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "assignedTo.userId",
+    //       foreignField: "_id",
+    //       as: "assignedUsers",
+    //     },
+    //   },
 
-      // ===== last comment =====
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor",
-        },
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  {
-                    author: {
-                      $arrayElemAt: ["$lastCommentAuthor", 0],
-                    },
-                  },
-                ],
-              },
-              "$lastComment",
-            ],
-          },
-        },
-      },
-      { $project: { lastCommentAuthor: 0 } },
+    //   // ===== enrich assignedTo =====
+    //   {
+    //     $addFields: {
+    //       assignedTo: {
+    //         $map: {
+    //           input: "$assignedTo",
+    //           as: "a",
+    //           in: {
+    //             date: "$$a.date",
+    //             user: {
+    //               $let: {
+    //                 vars: {
+    //                   u: {
+    //                     $arrayElemAt: [
+    //                       {
+    //                         $filter: {
+    //                           input: "$assignedUsers",
+    //                           as: "u",
+    //                           cond: {
+    //                             $eq: ["$$u._id", "$$a.userId"],
+    //                           },
+    //                         },
+    //                       },
+    //                       0,
+    //                     ],
+    //                   },
+    //                 },
+    //                 in: {
+    //                   $cond: [
+    //                     { $eq: ["$$u", null] },
+    //                     null,
+    //                     {
+    //                       _id: "$$u._id",
+    //                       name: "$$u.name",
+    //                       email: "$$u.email",
+    //                     },
+    //                   ],
+    //                 },
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    //   { $project: { assignedUsers: 0 } },
 
-      // ===== final projection =====
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          formName: 1,
-           motif:1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields: 1,
+    //   // ===== last comment =====
+    //   {
+    //     $lookup: {
+    //       from: "users",
+    //       localField: "lastComment.authorId",
+    //       foreignField: "_id",
+    //       as: "lastCommentAuthor",
+    //     },
+    //   },
+    //   {
+    //     $addFields: {
+    //       lastComment: {
+    //         $cond: [
+    //           { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
+    //           {
+    //             $mergeObjects: [
+    //               "$lastComment",
+    //               {
+    //                 author: {
+    //                   $arrayElemAt: ["$lastCommentAuthor", 0],
+    //                 },
+    //               },
+    //             ],
+    //           },
+    //           "$lastComment",
+    //         ],
+    //       },
+    //     },
+    //   },
+    //   { $project: { lastCommentAuthor: 0 } },
 
-          creator: {
-            _id: "$creator._id",
-            name: "$creator.name",
-            email: "$creator.email",
-          },
+    //   // ===== final projection =====
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       ref: 1,
+    //       formName: 1,
+    //        motif:1,
+    //       message: 1,
+    //       status: 1,
+    //       priority: 1,
+    //       createdAt: 1,
+    //       updatedAt: 1,
+    //       specialFields: 1,
 
-          emitterOrganization: {
-            _id: "$emitterOrganization._id",
-            name: "$emitterOrganization.name",
-          },
+    //       creator: {
+    //         _id: "$creator._id",
+    //         name: "$creator.name",
+    //         email: "$creator.email",
+    //       },
 
-          recipientOrganization: {
-            _id: "$recipientOrganization._id",
-            name: "$recipientOrganization.name",
-          },
+    //       emitterOrganization: {
+    //         _id: "$emitterOrganization._id",
+    //         name: "$emitterOrganization.name",
+    //       },
 
-          associatedOrganizations: {
-            $map: {
-              input: { $ifNull: ["$associatedOrganizations", []] },
-              as: "o",
-              in: { _id: "$$o._id", name: "$$o.name" },
-            },
-          },
+    //       recipientOrganization: {
+    //         _id: "$recipientOrganization._id",
+    //         name: "$recipientOrganization.name",
+    //       },
 
-          assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
+    //       associatedOrganizations: {
+    //         $map: {
+    //           input: { $ifNull: ["$associatedOrganizations", []] },
+    //           as: "o",
+    //           in: { _id: "$$o._id", name: "$$o.name" },
+    //         },
+    //       },
 
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: {
-              _id: "$lastComment.author._id",
-              name: "$lastComment.author.name",
-              email: "$lastComment.author.email",
-            },
-          },
-        },
-      },
+    //       assignedTo: { $arrayElemAt: ["$assignedTo", 0] },
 
-      // ===== pagination + count =====
-      {
-        $facet: {
-          data: [{ $sort: { createdAt: 1 } }],
-          totalCount: [{ $count: "count" }],
-        },
-      },
-    ];
+    //       lastComment: {
+    //         _id: "$lastComment._id",
+    //         message: "$lastComment.message",
+    //         action: "$lastComment.action",
+    //         ticketRef: "$lastComment.ticketRef",
+    //         createdAt: "$lastComment.createdAt",
+    //         author: {
+    //           _id: "$lastComment.author._id",
+    //           name: "$lastComment.author.name",
+    //           email: "$lastComment.author.email",
+    //         },
+    //       },
+    //     },
+    //   },
+
+    //   // ===== pagination + count =====
+    //   {
+    //     $facet: {
+    //       data: [{ $sort: { createdAt: 1 } }],
+    //       totalCount: [{ $count: "count" }],
+    //     },
+    //   },
+    // ];
 
     // ================= EXEC =================
     const result = await ticketModel.aggregate(pipeline).exec();
@@ -2036,6 +2056,19 @@ const baseFilter: any = {
   }catch (error) {
     res.status(500).json({message:"server error",error});
     console.log(error);
+  }
+}
+
+export const searchTicketWithRef=async(req:Request,res:Response)=>{
+  try {
+    const ref=req.params.ref.toUpperCase();
+    if(!ref)return res.status(409).json({message:"Ref is required!!!"});
+    const pipeline:any[]=getPipline({match:{ref},limit:100})
+    const tickets= await ticketModel.aggregate(pipeline).exec();
+    if(!tickets||!Array.isArray(tickets)||tickets.length<1)return res.status(404).json({message:"there are no ticket with such ref"});
+    return res.status(200).json({message:"success",data:tickets})
+  } catch (error) {
+    return res.status(500).json({message:"Server Error",error});
   }
 }
 

@@ -295,6 +295,17 @@ export const donwloadExcel=async(pathname:string)=>{
   }
 }
 
+export const SearchTicketWithRefAction=async(ref:string)=>{
+    try {
+        const res=await axiosInstance.get(API_PATH.TICKETS.SEARCH_WITH_REF(ref))
+        if(res.status===200)return res.data.data.at(0).data as ticket[];
+       
+    } catch (error) {
+        console.log(error)
+    }
+     return []  as ticket[];
+}
+
 
 
 

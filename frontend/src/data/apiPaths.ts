@@ -47,7 +47,7 @@ export const API_PATH = {
       SWITCH_ORGANISATION:(id:string)=>`/api/tickets/switch_organisation/${id}`,
       TICKETS_STATS:"/api/tickets/stats",
        SEARCH_TICKETS:"/api/tickets/search/list",
-     
+       SEARCH_WITH_REF:(id:string)=>`/api/tickets/refsearch/${id}`,        
      
   },
   COMMENT:{ADD_COMMENT:(id:string)=>`/api/comments/${id}`,GET_COMMENTS_OF_TICKETS:(id:string)=>`/api/comments/${id}`},

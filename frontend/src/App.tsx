@@ -21,6 +21,7 @@ import AlertPage from './page/alert/AlertPage';
 import OrganisationsPage from './page/organisations/OrganisationsPage';
 import AddOrganisation from './page/organisations/AddOrganisation';
 import Motifpage from './page/motifs/MotifPage';
+import SearchPage from './page/search/SearchPage';
 function App() {
  
  const favicon = document.querySelector("link[rel='icon']") as any;
@@ -37,6 +38,7 @@ function App() {
         <Route path="/form" element={<AddTicket />} />
         <Route path="/form/:id" element={<AddTicketFormPage />} />
         <Route path="/tickets/*" element={<TicketsPage />} />
+          <Route path="/search" element={<SearchPage />} />
         <Route path="/ticket/:id" element={<TicketOverViewPage />} />
          <Route path="*" element={<NotFound />} />
        </Route>
