@@ -343,12 +343,12 @@ export const searchTickets=async(req:Request,res:Response)=>{
 
   
    
-    // const baseFilter:any = {
-    //   ...getResponsablitiesFilterFromRole(user,"false"),
-    // };
+    const baseFilter:any = {
+      ...getResponsablitiesFilterFromRole(user,"false"),
+    };
 
     const searchFilter=getSearchFilter(search.trim())
-    const pipeline=getPipline({match: { ...searchFilter},limit:100})
+    const pipeline=getPipline({match: { $and:[searchFilter,baseFilter]},limit:100})
     // const pipeline: any[] = [
     //   { $match: { ...searchFilter
     //     //  ...searchQuery
