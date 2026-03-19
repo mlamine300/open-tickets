@@ -6,6 +6,8 @@ import { getFieldsFromFormName, getOrganisationId, getOrganisationsId, getToken 
 import { commentsModel } from "../models/Comment.js";
 import mongoose from "mongoose";
 import organisationModel from "../models/Organisation.js";
+import { io } from "../app.js";
+import userModel from "../models/User.js";
 
 const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
    const msortField = sortField || "createdAt";
@@ -248,6 +250,8 @@ export const addTicket=async(req:Request,res:Response)=>{
     })
     ticket.lastComment=comment;
     ticket.save();
+    io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Créé",payload:ticket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
+     
         return res.status(200).json({message:"success",data:ticket})
 
     } catch (error) {
@@ -1032,7 +1036,7 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     if (!userId) return res.status(409).json({ message: "not autorized" });
     const id=req.params.id;
     if(!id)return res.status(400).json({message:"id is required"})
-
+      const userName=(await userModel.findById(userId).lean().exec())?.name||"";
     const ticket=await ticketModel.findById(id).exec();
     if(!ticket)return res.status(404).json({message:"ticket not found"});
     if(role!=="admin"&&(!ticket.creator||ticket.creator._id.toString()!==userId)){
@@ -1050,6 +1054,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
+     io.to(ticket.recipientOrganizationId.toString()).emit('notify', {title:"Ticket Relancé",payload:ticket,message:`${userName} a relancé votre ticket "Ref : "${ticket.ref}`}); 
+     
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {

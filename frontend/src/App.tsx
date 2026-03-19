@@ -22,15 +22,49 @@ import OrganisationsPage from './page/organisations/OrganisationsPage';
 import AddOrganisation from './page/organisations/AddOrganisation';
 import Motifpage from './page/motifs/MotifPage';
 import SearchPage from './page/search/SearchPage';
+import { socket } from './utils/socket';
+import { useEffect } from 'react';
 function App() {
+   const favicon = document.querySelector("link[rel='icon']") as any;
+   const imageIcon=import.meta.env.VITE_MINI_LOGO;
+ if(favicon) favicon.href = imageIcon
+ useEffect(() => {
+  if (Notification.permission !== "granted") {
+    
+    Notification.requestPermission();
+  }
  
- const favicon = document.querySelector("link[rel='icon']") as any;
- if(favicon) favicon.href = import.meta.env.VITE_MINI_LOGO
+}, []);
+
+const showNotification = (title: string, body: string) => {
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body,
+      icon: imageIcon,
+      
+      // image: "/preview.png", // big preview (Chrome)
+      // tag: "chat-message", // prevent spam duplicates
+      // // renotify: true,
+      // requireInteraction: false, // true = stays until user clicks
+    });
+  }
+};
+
+
+
  
+
+   socket.on('notify', (msg: any) => {
+      console.log(msg);
+      showNotification(msg.title||"Notification",`message : ${msg.message}`)
+    });
+    socket.on("x",()=>alert("-------------"))
+
+
+
   return (
      <main className="layout bg-background-screen">
-
-    <Routes>
+      <Routes>
         <Route path="/login" element={<Login />} />
         {/* <Route path="/signup" element={<SignUp />} /> */}
         <Route element={<PrivateRoute allowedRoles={["standard","supervisor", "admin"]} />}>

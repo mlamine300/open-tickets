@@ -3,6 +3,8 @@
 import { Link } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../data/apiPaths";
+import { socket } from "@/utils/socket";
+import { useUserContext } from "@/context/user/userContext";
 
 const MenuItem = ({
   item,
@@ -22,12 +24,14 @@ const MenuItem = ({
  colapsed?: boolean;
   choosed: boolean;
 }) => {
+  const {user}=useUserContext();
   const logout = async () => {
     try {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
-      const data = await axiosInstance.post(API_PATH.AUTH.LOGOUT);
-      console.log(data);
+      await axiosInstance.post(API_PATH.AUTH.LOGOUT);
+
+      socket.emit("logout",user?.organisation);
     } catch (error) {
       console.error(error);
     }

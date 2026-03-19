@@ -21,6 +21,8 @@ import attachementRouter from "./routes/attachement.js";
 import infoRouter from "./routes/infoRoutes.js";
 import motifRouter from "./routes/motifRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 
 
@@ -29,6 +31,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 config();
+
+const server = createServer(app); // http
+export const io = new Server(server, {
+  cors: { origin: '*', methods: ['GET', 'POST'] },
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -76,7 +83,24 @@ const PORT =
   Number.isFinite(numericPort) && numericPort > 0 ? numericPort : 3500;
 
   app.use(errorHandler);
-app.listen(PORT, (err?: Error) => {
+
+
+  io.on('connection', (socket) => {
+  //console.log('a user connected');
+  
+  socket.on('disconnect', () => console.log('user disconnected'));
+  socket.on("register",async (organisationId:string)=> {
+    await socket.join(organisationId);
+    console.log("user joined "+organisationId)
+
+  });
+  socket.on('logout', async (organisationId: string) => {
+    await socket.leave(organisationId);
+    console.log("User leaved "+organisationId);
+  });
+  
+});
+server.listen(PORT, (err?: Error) => {
   if (err) console.error("Server failed to start:", err);
   console.log(`Server running on port ${PORT}`);
 });

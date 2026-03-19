@@ -18,3 +18,9 @@ export interface FormFieldType{
       possibleValues?:string[];
       default?:string;
     required:boolean;}
+
+export interface SocketMessage{
+  title:string;
+  message?:string;
+  payload?:any
+}
