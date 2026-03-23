@@ -23,18 +23,11 @@ import AddOrganisation from './page/organisations/AddOrganisation';
 import Motifpage from './page/motifs/MotifPage';
 import SearchPage from './page/search/SearchPage';
 import { socket } from './utils/socket';
-import { useEffect } from 'react';
 function App() {
    const favicon = document.querySelector("link[rel='icon']") as any;
    const imageIcon=import.meta.env.VITE_MINI_LOGO;
  if(favicon) favicon.href = imageIcon
- useEffect(() => {
-  if (Notification.permission !== "granted") {
-    
-    Notification.requestPermission();
-  }
- 
-}, []);
+
 
 const showNotification = (title: string, body: string) => {
   if (Notification.permission === "granted") {
@@ -55,10 +48,10 @@ const showNotification = (title: string, body: string) => {
  
 
    socket.on('notify', (msg: any) => {
-      console.log(msg);
+      
       showNotification(msg.title||"Notification",`message : ${msg.message}`)
     });
-    socket.on("x",()=>alert("-------------"))
+    
 
 
 
