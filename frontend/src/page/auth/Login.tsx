@@ -13,8 +13,8 @@ import { AxiosError } from "axios";
 
 
 import { tokenService } from "@/utils/tokenService";
-import { socket } from "@/utils/socket";
-import type { User } from "@/types";
+// import { socket } from "@/utils/socket";
+// import type { User } from "@/types";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -57,7 +57,7 @@ const Login = () => {
         const user={...response.data,_id:response.data?.id};
         
         updateUser(user);
-        socket.emit("register",(user as User).organisation)
+        //socket.emit("register",(user as User).organisation)
         
           navigate("/");
         

@@ -23,6 +23,7 @@ import AddOrganisation from './page/organisations/AddOrganisation';
 import Motifpage from './page/motifs/MotifPage';
 import SearchPage from './page/search/SearchPage';
 import { socket } from './utils/socket';
+
 function App() {
    const favicon = document.querySelector("link[rel='icon']") as any;
    const imageIcon=import.meta.env.VITE_MINI_LOGO;
@@ -45,7 +46,7 @@ const showNotification = (title: string, body: string) => {
 
 
 
- 
+
 
    socket.on('notify', (msg: any) => {
       

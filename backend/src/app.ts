@@ -86,19 +86,19 @@ const PORT =
 
 
   io.on('connection', (socket) => {
-  //console.log('a user connected');
+  console.log('a user connected');
   
   socket.on('disconnect', () => console.log('user disconnected'));
   socket.on("register",async (organisationId:string)=> {
     await socket.join(organisationId);
     console.log("user joined "+organisationId)
-
+   
   });
   socket.on('logout', async (organisationId: string) => {
     await socket.leave(organisationId);
     console.log("User leaved "+organisationId);
   });
-  
+   //console.log(socket)
 });
 server.listen(PORT, (err?: Error) => {
   if (err) console.error("Server failed to start:", err);

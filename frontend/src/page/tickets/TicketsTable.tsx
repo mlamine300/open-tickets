@@ -5,13 +5,14 @@ import { DataTable } from '@/components/ticket/data-table'
 import SkeletonRow from '@/components/ticket/SkeletonRow'
 import TablePagination from '@/components/ticket/TablePAgination'
 import type {  ticket } from '@/types'
+import { socket } from '@/utils/socket'
 import { useEffect, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
 const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,triggerRerender}: {setTriggerRerender:(value:number)=>void,setShowModal:any; setSelectedTicket:(ticket:ticket|null)=>void,triggerRerender:number}) => {
-useEffect(() => {
-  console.log("LOCATION:", window.location.href);
-});
+// useEffect(() => {
+//   console.log("LOCATION:", window.location.href);
+// });
  const [tickets,setTicket]=useState<ticket[]>([]);
   //const [showModal,setShowModal]=useState<string>("")
 
@@ -42,8 +43,19 @@ useEffect(() => {
         setTotalTicketsSize(res.total);
         setPending(false);
       };
+
+       const href=window.location.href;
+      const updateDBFromSocket=()=>{
+         if(href.split("/").at(-1)==="pending"||
+            href.split("/").at(-1)==="open_me"||
+            href.split("/").at(-1)==="open"){
+          
+         }
+       
+      }
      
       getMyTickets();
+      updateDBFromSocket()
      // setTriggerAppRender(Math.random());
      
       intervalId = setInterval(() => {
@@ -60,7 +72,29 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           
          }
    
+ const href=window.location.href;
+          socket.on('notify', (msg: any) => {
+            
+          if(msg.action==="Ticket Créé"&&href.split("/").at(-1)==="pending"){
+            setTotalTicketsSize((x)=>x+1);
+          
+            if(tickets.filter(x=>x._id===msg.payload).length===0){
+              setTicket([msg.payload,...tickets])
+            }
+            // setTicket((arr)=>{
+            //   if(arr.filter(x=>x._id===msg.payload._id).length===0)return[msg.payload,...arr]
+            //   return arr;
+            // }
+               
+            // );
+            
+          }
+          if(msg.action==="Ticket Relancé"&&(href.split("/").at(-1)==="open"||href.split("/").at(-1)==="open_me")){
+          
+            setTriggerRerender(Math.random());
 
+          }
+    });
 
   return (
     <>

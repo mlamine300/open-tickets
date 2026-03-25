@@ -25,14 +25,15 @@ const TicketsPage = () => {
    const [organisations,setOrganisations]=useState<Organisation[]>([]);
    const [motifs, setMotifs] = useState<string[]>([]);
    useEffect(()=>{
-          const retrievePossibleValue = async () => {
+          const retrieveMotifsAndORganisations = async () => {
         const organisationsFromAction = await getAllorganisationsAction();
         const motifsFromAction=await getActiveMotifsAction();
         setOrganisations(organisationsFromAction);
         setMotifs(motifsFromAction.map((m:any)=>m.name));
       };
-      retrievePossibleValue();
-      
+     
+      retrieveMotifsAndORganisations();
+     
    },[])
    
 

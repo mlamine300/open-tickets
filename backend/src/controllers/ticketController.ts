@@ -220,13 +220,12 @@ export const addTicket=async(req:Request,res:Response)=>{
         if(fields!==null){
             const bodyFields=Object.keys(req.body);
             //if there is a required field missing in the request return 400
-            fields.forEach(f=>{
-                if(f.required&&!bodyFields.includes(f.name)){
-                    return res.status(400).json({message:`${f.name} is required`});
-                }
-                //add all custom fields in "specialFields" object
-                specialFields[f.name]=req.body[f.name];
-            })
+           for (const f of fields) {
+  if (f.required && !bodyFields.includes(f.name)) {
+    return res.status(400).json({ message: `${f.name} is required` });
+  }
+  specialFields[f.name] = req.body[f.name];
+}
         }
         
         //
@@ -250,9 +249,28 @@ export const addTicket=async(req:Request,res:Response)=>{
     })
     ticket.lastComment=comment;
     ticket.save();
-    io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Créé",payload:ticket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
-     
-        return res.status(200).json({message:"success",data:ticket})
+
+
+    const pipeline:any = getPipline({
+  match: { _id: ticket._id },
+  limit: 1,
+  skip: 0,
+  sortField: "createdAt",
+  sortOrder: -1
+});
+
+const result = await ticketModel.aggregate(pipeline as any).exec();
+const formattedTicket = result[0]?.data?.[0] || null;
+
+io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Créé",payload:formattedTicket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
+   
+return res.status(200).json({
+  message: "success",
+  data: formattedTicket
+});
+
+      
+        // return res.status(200).json({message:"success",data:ticket})
 
     } catch (error) {
         console.log(error)
@@ -1031,6 +1049,7 @@ export const relanceTicket=async (req:Request,res:Response)=>{
     
       const token = req.headers.authorization?.split(" ")[1];
 if (!token) return res.status(409).json({ message: "not autorized" });
+
     const user = (await jwt.decode(token)) as TokenPayload;
     const { userId,role }=user;
     if (!userId) return res.status(409).json({ message: "not autorized" });
@@ -1054,7 +1073,7 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
-     io.to(ticket.recipientOrganizationId.toString()).emit('notify', {title:"Ticket Relancé",payload:ticket,message:`${userName} a relancé votre ticket "Ref : "${ticket.ref}`}); 
+     io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Relancé",payload:ticket,message:`${userName} a relancé votre ticket "Ref : "${ticket.ref}`}); 
      
     return res.status(200).json({message:"success",data:ticket})
 

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const SearchMenuForSideBar = () => {
     const [search, setSearch] = useState("");
     const [ticketsList, setTicketsList] = useState<ticket[]>([]);
-    console.log(ticketsList)
+    
     useEffect(()=>{
        const getTicket=async()=>{
         const ticketsRes=await searchTicketsAction(search);
