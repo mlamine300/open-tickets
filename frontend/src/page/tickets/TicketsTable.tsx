@@ -75,18 +75,14 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
  const href=window.location.href;
           socket.on('notify', (msg: any) => {
             
-          if(msg.action==="Ticket Créé"&&href.split("/").at(-1)==="pending"){
-            setTotalTicketsSize((x)=>x+1);
+          if((msg.action==="Ticket Créé"||msg.action==="Ticket transféré")&&href.split("/").at(-1)==="pending"){
+            setTriggerRerender(Math.random());
+            // setTotalTicketsSize((x)=>x+1);
           
-            if(tickets.filter(x=>x._id===msg.payload).length===0){
-              setTicket([msg.payload,...tickets])
-            }
-            // setTicket((arr)=>{
-            //   if(arr.filter(x=>x._id===msg.payload._id).length===0)return[msg.payload,...arr]
-            //   return arr;
+            // if(tickets.filter(x=>x._id===msg.payload).length===0){
+            //   setTicket([msg.payload,...tickets])
             // }
-               
-            // );
+           
             
           }
           if(msg.action==="Ticket Relancé"&&(href.split("/").at(-1)==="open"||href.split("/").at(-1)==="open_me")){

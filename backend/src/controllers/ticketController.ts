@@ -1037,7 +1037,22 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
-    return res.status(200).json({message:"success",data:ticket})
+
+    
+    const pipeline:any = getPipline({
+  match: { _id: ticket._id },
+  limit: 1,
+  skip: 0,
+  sortField: "createdAt",
+  sortOrder: -1
+});
+
+const result = await ticketModel.aggregate(pipeline as any).exec();
+const formattedTicket = result[0]?.data?.[0] || null;
+
+io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket transféré",payload:formattedTicket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
+ 
+    return res.status(200).json({message:"success",data:formattedTicket})
 
   } catch (error) {
     return res.status(500).json({message:"server error",error})
