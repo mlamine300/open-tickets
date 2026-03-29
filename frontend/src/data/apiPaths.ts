@@ -25,7 +25,7 @@ export const API_PATH = {
   },
   ORGANISATIONS:{
     DELETE_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`,
-    GET_ALL_ORGANISATIONS:'/api/organisations',
+    GET_ACTIVE_ORGANISATIONS:'/api/organisations',
     GET_ORGANISATION_BY_ID:(id:string)=>`/api/organisations/${id}`,
     ADD_ORGANISATION:'/api/organisations',
     UPDATE_ORGANISATION:(id:string)=>`/api/organisations/${id}`,

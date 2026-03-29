@@ -5,9 +5,9 @@ import ticketModel from "../models/Ticket.js";
 import mongoose from "mongoose";
 import userModel from "../models/User.js";
  const MAX_PER_PAGE=10;
-export const getAllOrganisations=async(req:Request,res:Response)=>{
+export const getActiveOrganisations=async(req:Request,res:Response)=>{
 try {
-    const organisations=await organisationModel.find({}).exec();
+    const organisations=await organisationModel.find({active:true}).exec();
     if(!organisations||organisations.length<1){
         return res.status(404).json({message:"there are no organisation in the database"});
     }
@@ -24,15 +24,17 @@ try {
     const page=req.body.page??1;
     const search=req.body.search as string||"";
     const wilaya=req.body.wilaya as string ||"";
+    const active=req.body.active ||"";
     const filterSearch= {name:{ $regex: search, $options: "i" }}
     const filterWilaya={wilaya:wilaya};
+    const filterActive={active:Boolean(active)}
     let params:any={};
     if(search.length>1&&wilaya){
-        params["$and"]=[filterSearch,filterWilaya];
+        params["$and"]=[filterSearch,filterWilaya,filterActive];
     }
     else if(search.length>1)params=filterSearch;
     else if(wilaya)params=filterWilaya;
-    
+    else if(active&&active.length>0)params={active:active==="true"}
     console.log(params);
 
     const organisations=await organisationModel.find(params).skip((page-1)*maxPerPage).limit(maxPerPage);
@@ -78,13 +80,15 @@ export const updateOrganisation=async(req:Request,res:Response)=>{
       })
     }
 
-    const {name,head,address,description,wilaya,phone}=req.body;
+    const {name,head,address,description,wilaya,phone,active}=req.body;
     if(name)organisation.name=name;
     if(head)organisation.head=head;
     if(address)organisation.address=address;
     if(description)organisation.description=description;
     if(wilaya)organisation.wilaya=wilaya;
     if(phone)organisation.phone=phone;
+    if(active===true)organisation.active=true;
+    if(active===false)organisation.active=false;
     await organisation.save();
     return res.status(200).json({message:"success",data:organisation}) 
     } catch (error) {

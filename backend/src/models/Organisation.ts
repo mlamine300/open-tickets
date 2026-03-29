@@ -6,6 +6,7 @@ const OrganisationSchema=new mongoose.Schema({
   phone:{type:String, required:false},
   head:{type:String,required:false},
   description:{type:String,required:false},
+   active:{type:Boolean,default:false},
 })
 const organisationModel=mongoose.model("Organisation",OrganisationSchema)
 export default organisationModel;

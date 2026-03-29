@@ -62,6 +62,7 @@ export interface Organisation{
     address?:string;
      description?:string;
      phone?:string;
+     active?:boolean
    
 }
 
@@ -122,6 +123,7 @@ export const organisationSchema=z.object({
           phone:z.string().min(5,"Le phone est obligatoire"),
            head:z.string().optional(),
             description:z.string().optional(),
+            active:z.boolean().optional()
 
     });
 export type organisationFormType=z.infer<typeof organisationSchema>

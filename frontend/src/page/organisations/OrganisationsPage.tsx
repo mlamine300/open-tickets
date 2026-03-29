@@ -16,11 +16,13 @@ const OrganisationsPage = () => {
    
     const [pending, setPending] = useState(false);
     const [organisations, setOrganisations] = useState<Organisation[] >([]);
+    
     const x=useSearchParams();
     const searchParams=x[0];
     const page=Number(searchParams.get("page"))||1;
     const search=searchParams.get("search")||"";
     const wilaya=searchParams.get("wilaya")||"";
+    const active=searchParams.get("active")||"";
     const [toDeleteId, setToDeleteId] = useState<string|null>(null);
         const [showModal, setShowModal] = useState(false);
         const [triggerRerender, setTriggerRerender] = useState<number>(0);
@@ -29,14 +31,14 @@ const OrganisationsPage = () => {
         
             const fetchOrganisation=async()=>{
                 setPending(true);
-                const organisationsRes=await fetchOrganisationsAction({page,search,wilaya});
+                const organisationsRes=await fetchOrganisationsAction({page,search,wilaya,active:active+""});
                 if(organisationsRes)setOrganisations(organisationsRes);
                 setPending(false);
             }
         
         fetchOrganisation();
        
-    },[page,search,wilaya,triggerRerender])
+    },[page,search,wilaya,triggerRerender,active])
     return (
         <div className="flex w-full h-full">
             <Card className='flex item-center bg-background-base border-none shadow-2xl w-full p-5 min-h-screen justify-start'>

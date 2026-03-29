@@ -4,9 +4,9 @@ import { API_PATH } from "@/data/apiPaths";
 import toast from "react-hot-toast";
 
 
-export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:string,wilaya:string})=>Promise<Organisation[]> =async({page,search,wilaya})=>{
+export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:string,wilaya:string,active:string})=>Promise<Organisation[]> =async({page,search,wilaya,active})=>{
   try {
-    const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{page,search,wilaya});
+    const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{page,search,wilaya,active});
   if(res.status===200){
   return res.data.data;
 } 
@@ -18,6 +18,7 @@ export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:
 }
 
 export const getAllorganisationsAction:()=>Promise<Organisation[]> =async()=>{
+  localStorage.removeItem("organisations")
 const localOrganisationsString=localStorage.getItem("organisations")||"{}";
 
 const data=JSON.parse(localOrganisationsString)
@@ -31,10 +32,10 @@ const differenceInMinutes =(Number(new Date(date).getTime())- Number(today))/100
 
 
 if(!localOrganisations||!Array.isArray(localOrganisations)||localOrganisations.length<1||differenceInMinutes>30){
-  const res=await axiosInstance.get(API_PATH.ORGANISATIONS.GET_ALL_ORGANISATIONS);
-  console.log("refreshing organisations");
+  const res=await axiosInstance.get(API_PATH.ORGANISATIONS.GET_ACTIVE_ORGANISATIONS);
+  //console.log("refreshing organisations");
   
-  console.log(res);
+  //console.log(res);
   if(res.status===200){
   const organisations=res.data.data;
   localStorage.setItem("organisations",JSON.stringify({organisations,date:new Date()}))
@@ -83,7 +84,7 @@ export const addOrganisationAction=async(o:Organisation)=>{
 
 export const updateOrganisationAction=async(id:string,o:any)=>{
   try {
-        const res=await axiosInstance.put(API_PATH.ORGANISATIONS.UPDATE_ORGANISATION(id),{...o});
+        const res=await axiosInstance.post(API_PATH.ORGANISATIONS.UPDATE_ORGANISATION(id),{...o});
     if(res.status===200){
       toast.success("Organisation Updated!!");
         localStorage.removeItem("organisations")

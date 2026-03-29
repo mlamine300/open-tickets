@@ -15,7 +15,7 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
  const [searchParams,setSearchParams]=useSearchParams();
     const [search,setSearch]=useState(searchParams.get("search")||"");
         const [wilaya,setWilaya]=useState(searchParams.get("wilaya")||"");
-
+        const [active, setActive] = useState(searchParams.get("active")||"");
   const wilayas=getWilayas();
     // Debounce all filter param updates
     useEffect(() => {
@@ -32,12 +32,16 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
         } else if(!wilaya) {
           params.delete("wilaya");
         }
-       
+       if (active) {
+          params.set("active", active+"");
+        } else if(!active) {
+          params.delete("active");
+        }
        
         setSearchParams(params);
       }, 300);
       return () => clearTimeout(handler);
-    }, [search,wilaya, setSearchParams, searchParams]);
+    }, [search,wilaya, setSearchParams, searchParams,active]);
     
   
     
@@ -68,7 +72,11 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
              <SelectWithSearch label='Organisation Destinatrice' name='Organisation Destinatrice' onValueChange={(o)=>setWilaya(o)} value={wilaya} possibleValues={wilayas} />
                
               </div>}
- 
+ <div className={" flex flex-col items-start gap-0"}>
+                <label className={'w-full flex text-xs italic '} htmlFor={`select-emitterOrganisations`}>Active </label>
+             <SelectWithSearch label='Organisation Active' name='Organisation Active' onValueChange={(o)=>setActive(o)} value={active} possibleValues={["true","false"]} />
+               
+              </div>
   
     </div>
     <div className='flex flex-col-reverse max-lg:self-center  lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-5'>

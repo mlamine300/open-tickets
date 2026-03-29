@@ -858,6 +858,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
         ticket.lastComment=comment;
          ticket.comments.push(comment._id);
     await ticket.save();
+   // io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"prise en charge",payload:ticket.ref,message:``}); 
+    
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
@@ -897,6 +899,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
         ticket.lastComment=comment;
          ticket.comments.push(comment._id);
     await ticket.save();
+    //io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"prise en charge annulé",payload:ticket.ref,message:``}); 
+    
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
@@ -931,6 +935,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
+    //io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
+    
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
@@ -965,13 +971,17 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
+
+    //io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
+    
+
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
     console.log("--------------------->")
     console.log(error)
 console.log("--------------------->")
-    return res.status(500).json({message:"server error",error})
+     return res.status(500).json({message:"server error",error})
   }
 }
 export const addOrganisation=async(req:Request,res:Response)=>{

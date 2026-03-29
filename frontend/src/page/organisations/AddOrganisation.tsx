@@ -3,6 +3,7 @@ import Button from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem,  FormMessage } from "@/components/ui/form";
 import Input from "@/components/ui/Input";
+import SelectWithSearch from "@/components/ui/SelectWithSearch";
 import { organisationSchema, type Organisation, type organisationFormType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -63,6 +64,7 @@ const AddOrganisation = () => {
   phone:"",
   head:"",
   description:"",
+  active:true,
     },
   })
 
@@ -79,6 +81,7 @@ const AddOrganisation = () => {
         address:values.address,
         phone:values.phone,
         head:values.head,
+        active:values.active
  
     };
     if(id==="new"){
@@ -91,7 +94,9 @@ const AddOrganisation = () => {
   address:"",
   phone:"",
   head:"",
-  description:"",}
+  description:"",
+  active:true,
+}
     )
       }
     }else{
@@ -178,7 +183,20 @@ const AddOrganisation = () => {
                 </FormItem>
               )}
             />
-            
+           <FormField
+              control={form.control}
+              name="active"
+              render={({ field }) => (
+                <FormItem>
+                  
+                  <FormControl>
+                    <SelectWithSearch  possibleValues={["true","false"]} label="Active"  name={field.name} value={form.watch("active")+""} onValueChange={(s:string)=>form.setValue("active",s==='true')} />
+                         </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> 
+
 
             {/* Submit */}
             <div className="flex justify-center gap-3 col-span-2">
