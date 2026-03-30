@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 import {  useState } from "react";
 import { addTicketAction } from "@/actions/ticketAction";
-import { useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import SelectWithSearch from "../ui/SelectWithSearch";
 import SelectMultiple from "../ui/SelectMultiple";
 import { getStandardForm, getWilayas, StandartFierlds } from "@/data/data";
@@ -20,6 +20,7 @@ import Spinner from "../main/Spinner";
 import { buildZodFormSchema } from "@/utils/zod";
 import AddAttachement from "./AddAttachement";
 import { uploadFile } from "@/utils/UploadAttachement";
+import { Form, FormField, FormItem, FormMessage } from "../ui/form";
 
 
 
@@ -39,19 +40,19 @@ export default function DynamicForm({ form,disabled,motifs,organisations }:{form
         if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="organisations"){
      
           field.possibleValues=(organisationString)
-          myForm.trigger();
+         // myForm.trigger();
           
         }
           if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="wilaya"){
      
           field.possibleValues=(getWilayas())
-          myForm.trigger();
+         // myForm.trigger();
           
         }
            if(field.possibleValues&&Array.isArray(field.possibleValues)&&field.possibleValues.length>0&&field.possibleValues.at(0)==="motifs"){
      
           field.possibleValues=(motifsNames)
-          myForm.trigger();
+          //myForm.trigger();
           
         }
       })
@@ -84,6 +85,7 @@ return (<div className="flex justify-center items-center">
     
     if (!formulaire) return <p>Form is null </p>;
     const schema=buildZodFormSchema(formulaire) as any;
+    console.log(schema.def.shape)
   const myForm = useForm({
     resolver: zodResolver(schema),
   });
@@ -99,7 +101,7 @@ const onSubmit = async(data: z.infer<typeof schema>) => {
     const attachmentFile=myForm.getValues("attachement");
     if (attachmentFile) {
       const attachmentResponse = await uploadFile(attachmentFile);
-      console.log(attachmentResponse);
+      //console.log(attachmentResponse);
       attachmentUrl = attachmentResponse.fileUrl ?? "";
       console.log(attachmentUrl);
     }
@@ -125,6 +127,9 @@ myForm.reset();
 
 
   return (
+    <Form {...myForm}>
+      
+    
       <form
       onSubmit={myForm.handleSubmit(onSubmit)}
       className="space-y-6   w-full max-w-200 bg-background-base rounded-lg shadow-2xl p-4 flex flex-col items-center "
@@ -141,10 +146,15 @@ myForm.reset();
       {formulaire.fields.map((field) => {
        
       //  const fieldError = (errors as Record<string, any>)[field.name]?.message;
-
-        return (
-          <div key={field.name} className="space-y-2">
-          {field.type==="file"&&
+return <FormField key={field.name}
+              control={myForm.control}
+              name={field.name}
+              render={() => (
+                <FormItem>
+                  
+                  {/* <FormControl> */}
+                    
+                    {field.type==="file"&&
           <AddAttachement labelClassName={"w-full flex text-xs italic "}  label="attachement" image={myForm.watch(field.name)} setImage={(image:string)=>myForm.setValue(field.name,image)}/>
         
           }
@@ -216,12 +226,93 @@ myForm.reset();
               </div>
             )}
 
-            {/* VALIDATION ERROR */}
-            {/* {(myForm.watch(field.name)&& fieldError) && (
-              <p className="text-sm text-red-500">{fieldError}</p>
-            )} */}
-          </div>
-        );
+          
+                    
+                           {/* </FormControl> */}
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+//         return (
+//           <div key={field.name} className="space-y-2">
+//           {field.type==="file"&&
+//           <AddAttachement labelClassName={"w-full flex text-xs italic "}  label="attachement" image={myForm.watch(field.name)} setImage={(image:string)=>myForm.setValue(field.name,image)}/>
+        
+//           }
+//             {(field.type === "text"||field.type==="number"||field.type==="date"||field.type==="area") && (
+//               <Input
+//               parentClassName="bg-background-base flex flex-col items-start gap-0"
+//               labelClassName={"capitalize w-full flex text-xs italic "}
+//               containerClassName="w-full "
+//               type={field.type}
+//               value={myForm.watch(field.name) ?? ""}
+//                 // {...myForm.register(field.name)}
+//                 placeHolder={`Merci de saisir le(a) ${field.name}`}
+//                 label={field.label}
+//                 isRequired={field.required}
+//                 {...myForm.register(field.name)}
+//                 onChange={(e:any)=>{
+//                  myForm.setValue(field.name,field.type==="number"?Number(e.target.value)||0:e.target.value||"")
+//                // myForm.setValue(field.name,e.target.value||"")
+//                 myForm.register(field.name)
+//               }}
+//                 key={field.name}
+//               />
+//             )}
+//             {field.type === "select-filter" && (
+//               <div className={"bg-background-base flex flex-col items-start gap-0"}>
+//                 <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+//              <SelectWithSearch 
+//              name={field.name}
+//                value={myForm.watch(field.name) ?? field.default??""} label={field.label} possibleValues={field.possibleValues} onValueChange={(value) => myForm.setValue(field.name, value)} />
+//               </div>
+//             )}
+//  {field.type === "select-multiple" && (
+//               <div className={"bg-background-base flex flex-col items-start gap-0 "}>
+//                 <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+//              <SelectMultiple 
+//              name={field.name}
+//                value={myForm.watch(field.name) ?? field.default??[]} label={field.label} possibleValues={field.possibleValues} onValueChange={(value) => myForm.setValue(field.name, value)} />
+//               </div>
+//             )}
+//               {field.type === "select" && (
+//               <div className={"bg-background-base flex flex-col items-start gap-0"}>
+//                 <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-${field.name}`}>{field.label} </label>
+//            <Select 
+//                 value={myForm.watch(field.name) ?? field.default??""}
+//                 onValueChange={(value) => myForm.setValue(field.name, value)}
+//               >
+                
+//                 <SelectTrigger className={"w-full"}>
+//                   <SelectValue  placeholder={`Sélectionner un(e) ${field.label}`} />
+                  
+//                 </SelectTrigger>
+                
+                
+//                 <SelectContent  id={`select-${field.name}`} className="bg-background-base ">
+                  
+                 
+
+
+                 
+//                   { field.possibleValues?.map((val) => (
+//                     <SelectItem className="cursor-pointer hover:bg-gray-hot" key={val} value={val}>
+//                       {val}
+//                     </SelectItem>
+//                   ))}
+                  
+//                 </SelectContent>
+                
+//               </Select>
+//               </div>
+//             )}
+
+//             {/* VALIDATION ERROR */}
+//             {/* {(myForm.watch(field.name)&& fieldError) && (
+//               <p className="text-sm text-red-500">{fieldError}</p>
+//             )} */}
+//           </div>
+//         );
       })}
 
       <div  className="flex items-center w-full justify-center lg:col-span-2">
@@ -231,5 +322,6 @@ myForm.reset();
       </div>
       </div>
     </form>
+    </Form>
   );
 }

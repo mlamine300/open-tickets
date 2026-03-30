@@ -7,11 +7,13 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
 
   switch (field.type) {
     case "text":
-      schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
+      schema = z.string(`Merci de saisir le ${field.label}`).min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
       break;
-
+    case "area":
+      schema = z.string(`Merci de saisir le ${field.label}`).min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
+      break;
     case "number":
-      schema = z.number().refine(
+      schema = z.number(`Merci de saisir le ${field.label}`).refine(
         (val) => typeof Number(val) === "number" && !isNaN(val),
         { message: `${field.label} must be a number` }
       );
@@ -34,6 +36,21 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
         if(field.default)schema=schema.default(field.default)
       }
       break;
+
+       case "select-filter":
+      if (!field.possibleValues || field.possibleValues.length === 0) {
+        schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
+        
+      }
+      else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"){
+      schema = z.string().min(3,`Merci de choisir le ${field.label}`);
+      }
+      else {
+        schema = z.enum(field.possibleValues as [string, ...string[]],`Merci de choisir le ${field.label}`);
+        if(field.default)schema=schema.default(field.default)
+      }
+      break;
+
 
     default:
       schema = z.any();

@@ -73,8 +73,8 @@ export interface ticket{
   attachement?:string;
   emitterOrganizationId:string;
   recipientOrganizationId:string;
-  emitterOrganization?:{name:string,_id:string};
-  recipientOrganization?:{name:string,_id:string};
+  emitterOrganization:{name:string,_id:string};
+  recipientOrganization:{name:string,_id:string};
     associatedOrganizations?:{name:string,_id:string}[];
     type:string;
     status?:string;
