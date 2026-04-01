@@ -1135,6 +1135,13 @@ const getResponsablitiesFilterFromRole:(user:TokenPayload,notag:string)=>any=(us
    const role=user.role;
    const organisation=user.organisation ;
     const organisationsList=user.organisationsList.map(o=>new mongoose.Types.ObjectId(o))||[];
+     if(notag==="true"){
+return{$or: [
+    { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
+    { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
+  ]
+}
+    }
     if(role==="admin"){
 return {}
     }
@@ -1146,13 +1153,7 @@ return {}
   ]
 }   
     }
-    else if(notag==="true"){
-return{$or: [
-    { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
-    { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
-  ]
-}
-    }
+    
     else return{$or: [
     { emitterOrganizationId: new mongoose.Types.ObjectId(organisation) },
     { recipientOrganizationId: new mongoose.Types.ObjectId(organisation) },
