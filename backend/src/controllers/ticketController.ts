@@ -297,11 +297,12 @@ export const getTickets = async (req: Request, res: Response) => {
      const motif=req.body.motif||null;
      const notag=req.body.notag||null;
     const skip = (page - 1) * limit;
+    const sortFunction:{sortBy:string,sort:1|-1}=req.body.sortFunction||{sortBy:"createdAt",sort:1};
 
 
     // Sorting
-    const sortField = req.body?.sortField || "createdAt";
-    const sortOrder = req.body?.sortOrder === "asc" ? 1 : -1;
+    const sortField = sortFunction.sortBy||"createdAt";
+    const sortOrder = sortFunction.sort||1;
 
     // Search
     const search = req.body?.search || "";

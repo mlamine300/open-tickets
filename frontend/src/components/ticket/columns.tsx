@@ -8,16 +8,27 @@ import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
 import { PRIORITY_DATA } from "@/data/data";
+import type { Dispatch, SetStateAction } from "react";
 
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
-export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<ticket>[] =({actions})=> [
+export const columns:({actions,setSortFunction,sortFunction}:{actions:any;setSortFunction:Dispatch<SetStateAction<{
+    sortBy: string;
+    sort: -1 | 1;
+}>>;sortFunction:{sortBy:string;sort:-1|1}})=> ColumnDef<ticket>[] =({actions,setSortFunction,sortFunction})=> [
   {accessorKey:"createdAt",
-   header: ({ column }) => {
+   header: ({column}) => {
       return (
         <div
         className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          //onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={()=>
+          {
+
+            setSortFunction({sortBy:"createdAt",sort:sortFunction.sort===1?-1:1})
+            column.toggleSorting(sortFunction.sort===1?false:true)
+          }
+          }
         >
           <div className="flex flex-col p-0 m-0">
             <p className="text-xs">Ticket</p>
@@ -50,7 +61,15 @@ export const columns:({actions,path}:{actions:any;path?:string})=> ColumnDef<tic
       return (
         <div
         className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          //onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+             onClick={()=>
+             {
+            
+               setSortFunction({sortBy:"updatedAt",sort:sortFunction.sort===1?-1:1})
+              column.toggleSorting(sortFunction.sort===1?false:true)
+              }
+               
+              }
         >
           <div className="flex flex-col p-0 m-0">
 

@@ -21,7 +21,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
  
    const [totalTicketsSize,setTotalTicketsSize]=useState(0);
    const [pending,setPending]=useState(false);
-   
+   const [sortFunction, setsortFunction] = useState<{sortBy:string,sort:-1|1}>({sortBy:"createdAt",sort:1});
   const page=searchParams.get("page")||1;
     const search=searchParams.get("search")||"";
     const motif=searchParams.get("motif")||"";
@@ -38,7 +38,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       const getMyTickets = async () => {
         setPending(true);
         setTicket([]);
-        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation });
+        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation,sortFunction });
         setTicket(res.data);
         setTotalTicketsSize(res.total);
         setPending(false);
@@ -64,7 +64,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       return () => {
         clearInterval(intervalId);
       };
-    }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender]);
+    }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender,sortFunction]);
 
 const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setShowModal(modalTitle);
@@ -98,7 +98,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           <table className="bg-background-base border border-gray-hot w-full">
             <thead>
               <tr>
-                {columns({ actions: {}, path: pathname }).map((col, idx) => (
+                {columns({ actions: {},setSortFunction:setsortFunction,sortFunction:sortFunction}).map((col, idx) => (
                   <th key={idx} className="text-xs lg:text-sm px-4 py-2 bg-gray-hot/50 text-primary border border-gray-hot">
                     {/* Try to render header if possible */}
                     {typeof col.header === 'string' ? col.header : ''}
@@ -108,7 +108,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
             </thead>
             <tbody>
               {Array.from({ length: 6 }).map((_, idx) => (
-                <SkeletonRow key={idx} columns={columns({ actions: {}, path: pathname }).length} />
+                <SkeletonRow key={idx} columns={columns({ actions: {}, setSortFunction:setsortFunction,sortFunction:sortFunction }).length} />
               ))}
             </tbody>
           </table>
@@ -120,7 +120,7 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
         //  handleClosing:(ticket:ticket)=>openConfirmation(ticket,"close"),
         //  handleFormward:(ticket:ticket)=>openConfirmation(ticket,"forward"),
         },
-         path:pathname
+         setSortFunction:setsortFunction,sortFunction:sortFunction
          
          })} data={tickets} />}
        
