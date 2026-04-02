@@ -604,7 +604,7 @@ export const getMytickets = async (req: Request, res: Response) => {
 
     // Search
     const search = req.body?.search || "";
-console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user,notag)}));
+//console.log(JSON.stringify({...getResponsablitiesFilterFromRole(user,notag)}));
 
     // Filters
     const type = req.params.type || "pending";
@@ -936,8 +936,8 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
-    //io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
-    
+
+
     return res.status(200).json({message:"success",data:ticket})
 
   } catch (error) {
@@ -973,8 +973,19 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.comments.push(comment._id)
     await ticket.save();
 
-    //io.to(ticket.recipientOrganizationId.toString()).emit('action', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
-    
+          const pipeline:any = getPipline({
+  match: { _id: ticket._id },
+  limit: 1,
+  skip: 0,
+  sortField: "createdAt",
+  sortOrder: -1
+});
+
+const result = await ticketModel.aggregate(pipeline as any).exec();
+const formattedTicket = result[0]?.data?.[0] || null;
+    //io.to(ticket.emitterOrganizationId.toString()).emit('notify', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
+    io.to(ticket.emitterOrganizationId.toString()).emit('notify', {action:"Ticket Traité",payload:formattedTicket.ref,message:`${formattedTicket.assignedTo.user.name} a traité votre ticket Ref: (${ticket.ref})`}); 
+    console.log("envoyé")
 
     return res.status(200).json({message:"success",data:ticket})
 
@@ -1149,7 +1160,7 @@ return {}
      return {$or: [
     { emitterOrganizationId:{ $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] } },
     { recipientOrganizationId: { $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] }  },
-    { associatedOrganizations: { $in: [organisation,...user.organisationsList] } },
+    { associatedOrganizations: { $in: [new mongoose.Types.ObjectId(organisation),...organisationsList] } },
   ]
 }   
     }
@@ -1176,7 +1187,7 @@ export const getTicketsByStatus = async (req:Request,res:Response) => {
   const user=getToken(req);
   if(!user)return res.status(404).json({message:"there is no user"});
   const reponsabilities=getResponsablitiesFilterFromRole(user,"false")
-  console.log(reponsabilities)
+  //console.log(reponsabilities)
   const tickets=await ticketModel.aggregate([
    {$match:{...reponsabilities}}, {
       
@@ -1407,7 +1418,7 @@ if(user.role==="supervisor"){
   })
 };
 if(user.role==="admin")isUnderUserSupervision=true;
-console.log({isToUserOrganisation,isUnderUserSupervision,creator:{user:user.userId,ticketCreator:ticket.creator}})
+//console.log({isToUserOrganisation,isUnderUserSupervision,creator:{user:user.userId,ticketCreator:ticket.creator}})
 return isToUserOrganisation||isUnderUserSupervision;
 }
 

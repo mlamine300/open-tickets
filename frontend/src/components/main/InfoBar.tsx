@@ -38,7 +38,8 @@ const InfoBar = ({className}:{className?:string}) => {
     <div className={cn("fixed top-11/12 w-full h-16 bg-gray-hot/90 flex items-center cursor-pointer group",className)} >
      <div className={cn("w-full min-w-fit group-hover:[animation-play-state:paused]",info.isLatin?" animate-[inverseslide_40s_linear_infinite] ":"animate-[slide_40s_linear_infinite] ") }>
     <p className="text-lg text-text-primary text-nowrap ">
-      {info.message}
+      {/* {info.message} */}
+      <div dangerouslySetInnerHTML={{ __html: info.message }} />
 </p>
     </div>
     </div>
