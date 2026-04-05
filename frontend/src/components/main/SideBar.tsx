@@ -35,7 +35,7 @@ const SideBar = () => {
 
   const statsArray=[{
     path:"/tickets",
-    value:stats?.received?.total??0,
+    value:((stats?.received?.total??0)-(stats?.received?.complete??0)),
   },
   {
     path:"/tickets/pending",
@@ -60,7 +60,8 @@ const SideBar = () => {
 
   {
     path:"/tickets/sent",
-    value:stats?.sent?.total??0,
+    //value:stats?.sent?.total??0,
+     value:((stats?.sent?.total??0)-(stats?.sent?.complete??0)),
   },
   {
     path:"/tickets/sent/pending",

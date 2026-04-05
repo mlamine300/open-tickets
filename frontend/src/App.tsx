@@ -27,12 +27,13 @@ import { socket } from './utils/socket';
 function App() {
    const favicon = document.querySelector("link[rel='icon']") as any;
    const imageIcon=import.meta.env.VITE_MINI_LOGO;
+   
  if(favicon) favicon.href = imageIcon
 
 
-const showNotification = (title: string, body: string) => {
+const showNotification = (title: string, body: string,url:string) => {
   if (Notification.permission === "granted") {
-    new Notification(title, {
+   const notification= new Notification(title, {
       body,
       icon: imageIcon,
       
@@ -41,7 +42,19 @@ const showNotification = (title: string, body: string) => {
       // // renotify: true,
       // requireInteraction: false, // true = stays until user clicks
     });
+    if(url){
+ notification.onclick = (event) => {
+    event.preventDefault();
+
+    // Focus existing tab or open new one
+    window.open(url, "_blank");
+
+    notification.close();
+  };
+    }
+    
   }
+ 
 };
 
 
@@ -49,8 +62,8 @@ const showNotification = (title: string, body: string) => {
 
 
    socket.on('notify', (msg: any) => {
-      
-      showNotification(msg.title||"Notification",`message : ${msg.message}`)
+      //alert(msg.url)
+      showNotification(msg.title||"Notification",`message : ${msg.message}`,msg.url||"")
     });
     
 

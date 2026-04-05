@@ -43,7 +43,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 config();
-
+export const CLIENT_URL=process.env.CLIENT_URL;
 const server = createServer(app); // http
 export const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] },

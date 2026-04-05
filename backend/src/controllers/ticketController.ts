@@ -1,3 +1,4 @@
+
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken";
 import { TokenPayload } from "../types/index.js";
@@ -6,7 +7,7 @@ import { getFieldsFromFormName, getOrganisationId, getOrganisationsId, getToken 
 import { commentsModel } from "../models/Comment.js";
 import mongoose from "mongoose";
 import organisationModel from "../models/Organisation.js";
-import { io } from "../app.js";
+import { CLIENT_URL, io } from "../app.js";
 import userModel from "../models/User.js";
 
 const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
@@ -262,7 +263,10 @@ export const addTicket=async(req:Request,res:Response)=>{
 const result = await ticketModel.aggregate(pipeline as any).exec();
 const formattedTicket = result[0]?.data?.[0] || null;
 
-io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Créé",payload:formattedTicket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
+io.to(ticket.recipientOrganizationId.toString()).emit('notify',
+   {action:"Ticket Créé",payload:formattedTicket,
+    message:`Vous avez un nouveau ticket (${ticket.motif})`,
+    url:`${CLIENT_URL}/tickets/pending`}); 
    
 return res.status(200).json({
   message: "success",
@@ -984,8 +988,11 @@ if (!token) return res.status(409).json({ message: "not autorized" });
 const result = await ticketModel.aggregate(pipeline as any).exec();
 const formattedTicket = result[0]?.data?.[0] || null;
     //io.to(ticket.emitterOrganizationId.toString()).emit('notify', {action:"Ticket Traité",payload:ticket.ref,message:``}); 
-    io.to(ticket.emitterOrganizationId.toString()).emit('notify', {action:"Ticket Traité",payload:formattedTicket.ref,message:`${formattedTicket.assignedTo.user.name} a traité votre ticket Ref: (${ticket.ref})`}); 
-    console.log("envoyé")
+    io.to(ticket.emitterOrganizationId.toString()).emit('notify', {action:"Ticket Traité",
+      payload:formattedTicket.ref,
+      message:`${formattedTicket.assignedTo.user.name} a traité votre ticket Ref: (${ticket.ref})`,
+    url:`${CLIENT_URL}/tickets/sent/traited`}); 
+   
 
     return res.status(200).json({message:"success",data:ticket})
 
@@ -1072,7 +1079,11 @@ if (!token) return res.status(409).json({ message: "not autorized" });
 const result = await ticketModel.aggregate(pipeline as any).exec();
 const formattedTicket = result[0]?.data?.[0] || null;
 
-io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket transféré",payload:formattedTicket,message:`Vous avez un nouveau ticket (${ticket.motif})`}); 
+io.to(ticket.recipientOrganizationId.toString()).emit('notify',
+   {action:"Ticket transféré",payload:formattedTicket,
+    message:`Vous avez un nouveau ticket (${ticket.motif})`,
+    url:`${CLIENT_URL}/tickets/pending`
+  }); 
  
     return res.status(200).json({message:"success",data:formattedTicket})
 
@@ -1110,7 +1121,9 @@ if (!token) return res.status(409).json({ message: "not autorized" });
     ticket.lastComment=comment;
     ticket.comments.push(comment._id)
     await ticket.save();
-     io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Relancé",payload:ticket,message:`${userName} a relancé votre ticket "Ref : "${ticket.ref}`}); 
+     io.to(ticket.recipientOrganizationId.toString()).emit('notify', {action:"Ticket Relancé"
+      ,payload:ticket,message:`${userName} a relancé votre ticket "Ref : "${ticket.ref}`,
+    url:`${CLIENT_URL}/tickets/pending`}); 
      
     return res.status(200).json({message:"success",data:ticket})
 
