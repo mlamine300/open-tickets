@@ -349,8 +349,9 @@ export const PRIORITY_DATA = [
 ];
 export const STATUS_DATA = [
   { value: "pending", label: "En attente" },
-  { value: "open", label: "ouvert" },
-  { value: "complete", label: "cloturé" },
+  { value: "open", label: "Ouvert" },
+   { value: "complete", label: "Clôturé" },
+  { value: "trait", label: "Traité" },
 ];
 export const translateStatus=(v:string)=>{
   return STATUS_DATA.find(s=>s.value===v)?.label??v
@@ -409,7 +410,7 @@ export const getStandardForm=():FormType=>({
       {name:"motif",label:"Motif",type:"select-filter",possibleValues:["motifs"],required:true},
       {name:"ref",label:"Ref/Tracking/num",type:"text",required:true},
         // {name:"status",label:"status de réclamation",type:"select",possibleValues:STATUS_DATA.map(x=>x.value),required:false},
-        {name:"organisationDest",label:"organisation Destinataire",type:"select-filter",possibleValues:[
+        {name:"organisationDest",label:"organisation Destinatrice",type:"select-filter",possibleValues:[
                         "organisations"
                     ],required:true},
         {name:"organisationTag",label:"organisation Taguée",type:"select-multiple",possibleValues:["organisations"],required:false},

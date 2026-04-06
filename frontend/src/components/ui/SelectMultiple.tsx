@@ -11,7 +11,8 @@ const SelectMultiple =({value,onValueChange,label,name,possibleValues}:{value:st
     <div className="flex flex-col gap-2 w-full">
         <SelectWithSearch value={selectValue} label={label} name={name} possibleValues={possibleValues} onValueChange={(v)=>{
            const lst=value.filter(s=>s===v);
-            if(!lst||lst.length===0){
+           
+            if((!lst||lst.length===0)&&v.length>0){
                 //setSelectedValues(lst=>[...lst,v])
                 onValueChange([...value,v]);
             }

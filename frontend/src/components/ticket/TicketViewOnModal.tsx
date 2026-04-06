@@ -5,6 +5,7 @@ import CommentRow from '@/components/ticket/CommentRow';
 import { getTicketCommentsAction } from '@/actions/commentAction';
 import { Link } from 'react-router';
 import { Eye } from 'lucide-react';
+import { translateStatus } from '@/data/data';
 
 const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
   const [showAllComment,setShowAllComment]=useState(false);
@@ -59,7 +60,7 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
 
   <div className='flex items-center gap-2 text-xs 2xl:text-sm'>
     <p className='text-primary text-xs 2xl:text-sm'>Status :</p>
-    <p className='text-xs 2xl:text-sm'>{ticket.status||"Pending"} </p>
+    <p className='text-xs 2xl:text-sm'>{translateStatus(ticket.status+"")||"En attente"} </p>
  </div>
 
   <div className='flex items-center gap-2 text-xs 2xl:text-sm'>

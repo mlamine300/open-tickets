@@ -1788,12 +1788,13 @@ export const getTicketReport = async (req: Request, res: Response) => {
     if(!startdayString||!enddayString)return res.status(400).json({message:"Start day and end Day are required!!"})
       const startday=new Date(startdayString);
       const endday=new Date(enddayString);
+      endday.setHours(23, 59, 59, 999);
     // ================= FILTERS =================
     const baseFilter: any = {
       ...getResponsablitiesFilterFromRole(user,"false"),
-      emitterOrganizationId: {
-        $ne: new mongoose.Types.ObjectId(user.organisation),
-      },
+      // emitterOrganizationId: {
+      //   $ne: new mongoose.Types.ObjectId(user.organisation),
+      // },
     };
 
     const dateFilter = {
@@ -1802,6 +1803,7 @@ export const getTicketReport = async (req: Request, res: Response) => {
     $lte: endday
   }
     }
+    console.log(dateFilter)
 
     // ================= PIPELINE =================
     const pipeline:any[]=getPipline({match: {

@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver';
 import type { ticket } from "@/types";
 declare module 'file-saver';
 import { differenceInDays } from 'date-fns';
+import { translateStatus } from "@/data/data";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -423,8 +424,9 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
         const ref=line.ref;
         const formname=line.formName;
         const motif=line?.motif??"-"
-      const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":"NAN";
-        const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
+      //const status=line.status==="pending"?"en attente":line.status==="open"?"ouvert":line.status==="trait"?"Traité":line.status==="complete"?"Coloturé" :"NAN";
+      const status=translateStatus(line.status+"") 
+      const priority=line.priority==="low"?"Normal":line.priority==="medium"?"Urgent":"Trés Urgent";
         const message=line.message;
         
         const lastComment=`[${line.lastComment?.author?.name}:${line.lastComment?.createdAt}] : ${line.lastComment?.message}` ;
