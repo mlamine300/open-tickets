@@ -8,6 +8,8 @@ import { getWilayas} from '@/data/data';
 
 import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import SelectWithSearch from '../ui/SelectWithSearch';
+import { FaFileExcel } from 'react-icons/fa6';
+import { downloadOrganisationExcel } from '@/actions/organisationAction';
 
 
 const FilterTableDiv = ({className}:{className?:string,organisations?:Organisation[]}) => {
@@ -16,7 +18,22 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
     const [search,setSearch]=useState(searchParams.get("search")||"");
         const [wilaya,setWilaya]=useState(searchParams.get("wilaya")||"");
         const [active, setActive] = useState(searchParams.get("active")||"");
+         const [pending, setPending] = useState(false);
   const wilayas=getWilayas();
+
+
+  
+        const handleDownloadExcel = async () => {
+          try {
+            setPending(true);
+            await downloadOrganisationExcel();
+          } catch (error) {
+            console.error(error);
+          } finally {
+            setPending(false);
+          }
+        };
+
     // Debounce all filter param updates
     useEffect(() => {
       const handler = setTimeout(() => {
@@ -63,6 +80,16 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
 
 
             <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:gap-4",className)}>
+
+             
+                      <button
+                                     onClick={handleDownloadExcel}
+                                     disabled={pending}
+                                     className="flex w-fit gap-4 items-center h-fit px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold transition-all"
+                                   >
+                                     Télécharger le tableau
+                                     <FaFileExcel />
+                                   </button> 
       <Input parentClassName='flex flex-col items-start gap-0' containerClassName='w-11/12 min-w-11/12' labelClassName='text-xs italic' label='Recherche' placeHolder='Station X' type='text' onChange={(e)=>setSearch(e.target.value)} value={search} />
     {wilayas&&
                  

@@ -6,13 +6,28 @@ import { useSearchParams } from 'react-router';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 import { AccordionContent,Accordion, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { FaFileExcel } from 'react-icons/fa6';
+import { downloadUserExcel } from '@/actions/userAction';
 
 const FilterTableDiv = ({className,organisations}:{className?:string,organisations?:Organisation[]}) => {
  const [searchParams,setSearchParams]=useSearchParams();
+ const [pending, setPending] = useState(false);
+
     const [search,setSearch]=useState(searchParams.get("search")||"");
     const [organisation,setOrganisation]=useState(searchParams.get("organisation")||"");
       const [type,setType]=useState(searchParams.get("type")||"");
 
+
+      const handleDownloadExcel = async () => {
+        try {
+          setPending(true);
+          await downloadUserExcel();
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setPending(false);
+        }
+      };
     // Debounce all filter param updates
     useEffect(() => {
       const handler = setTimeout(() => {
@@ -60,7 +75,14 @@ const FilterTableDiv = ({className,organisations}:{className?:string,organisatio
 
  <div className={cn("flex flex-col gap-1 md:grid md:grid-cols-2 lg:grid-cols-3 w-full md:min-h-16 md:gap-4",className)}>
      
-        
+         <button
+                        onClick={handleDownloadExcel}
+                        disabled={pending}
+                        className="flex w-fit gap-4 items-center h-fit px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold transition-all"
+                      >
+                        Télécharger le tableau
+                        <FaFileExcel />
+                      </button>
    {organisations&&
    
                 <div className={"bg-background-base flex flex-col items-start gap-0"}>

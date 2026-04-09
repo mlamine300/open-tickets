@@ -43,7 +43,9 @@ try {
     }
     return res.status(200).json({message:"success",data:organisations})
 } catch (error) {
+    console.log(error)
     return res.status(500).json({message:"server error :",error})
+    
 }
 }
 

@@ -23,20 +23,8 @@ import motifRouter from "./routes/motifRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import userModel from "./models/User.js";
-import organisationModel from "./models/Organisation.js";
 
-const fixOrganisation=async()=>{
-  await organisationModel.updateMany({},{active:false});
-const x=await userModel.find({}).lean().exec();
-const organisations=x.map(z=>z.organisation)
-console.log(organisations)
-const a=await organisationModel.find({_id:{$in:organisations}});
-a.forEach(async(org)=>{
-org.active=true;
-await org.save();
-})
-}
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -112,7 +100,6 @@ const PORT =
   });
    //console.log(socket)
 });
-await fixOrganisation();
 server.listen(PORT, (err?: Error) => {
   if (err) console.error("Server failed to start:", err);
   console.log(`Server running on port ${PORT}`);

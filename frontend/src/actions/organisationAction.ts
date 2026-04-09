@@ -2,6 +2,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import type { Organisation } from "@/types";
 import { API_PATH } from "@/data/apiPaths";
 import toast from "react-hot-toast";
+import { exportOrganisationReport } from "@/lib/utils";
 
 
 export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:string,wilaya:string,active:string})=>Promise<Organisation[]> =async({page,search,wilaya,active})=>{
@@ -112,4 +113,16 @@ export const deleteOrganisationAction=async(id:string)=>{
     console.log(error)
     
   }
+}
+
+export const downloadOrganisationExcel=async()=>{
+    try {
+          const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{maxPerPage:1000});
+          console.log(res.data.data);
+        await exportOrganisationReport(res.data.data);
+    
+    } catch (error) {
+     console.log(error);
+    toast.error("Erreur en telechargent le fichier excel") 
+    }
 }

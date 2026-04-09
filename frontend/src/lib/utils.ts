@@ -3,7 +3,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import ExcelJS from "exceljs";
 import { saveAs } from 'file-saver';
-import type { ticket } from "@/types";
+import type { Organisation, ticket } from "@/types";
 declare module 'file-saver';
 import { differenceInDays } from 'date-fns';
 import { translateStatus } from "@/data/data";
@@ -453,4 +453,153 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
     // Create a Blob from the buffer and save the file
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(blob, `${new Date().toISOString()}-Tickets Report.xlsx`);
+  };
+
+   export const exportUserReport = async (users:any[]) => {
+    // Create a new workbook and worksheet
+    
+  
+    const workbook = new ExcelJS .Workbook();
+    const Sheet = workbook.addWorksheet('Utilisateur');
+
+    // Extract columns from the first row of data 
+    if (users.length > 0) {
+      // Dynamically define columns based on the keys in the first data object
+         const columns = [
+       {
+        header:"Date",
+        key:"createdAt",
+        width:20
+      },
+        {
+        header:"Active",
+        key:"activeStatus",
+        width:20
+      },
+       {
+        header:"Nom",
+        key:"name",
+        width:40
+      },
+      {
+        header:"Email",
+        key:"email",
+        width:20
+      },
+       {
+        header:"Organisation",
+        key:"organisation",
+        width:20
+      },
+        {
+        header:"Role",
+        key:"role",
+        width:20
+      }
+    ]
+      Sheet.columns = columns;
+      
+      // Add data rows
+      users.forEach(user => {
+        // const createdAt=user.createdAt;
+        // const name=user.name;
+        //  const email=user.email;
+        //  const organisation=user.organisation.name;
+        // const role=user.role;
+        // const activeStatus=user.role;
+         const row={...user,organisation:user.organisation.name};
+        Sheet.addRow(row)
+       
+      });
+      
+    }
+
+   
+
+   
+
+    // Generate Excel file as a buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Create a Blob from the buffer and save the file
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `${new Date().toISOString()}-Utilisateurs Report.xlsx`);
+  };
+
+/**
+ * {
+            "_id": "695bb0b3fe75b58ef8910830",
+            "name": "STATION LAGHOUAT",
+            "wilaya": "Laghouat",
+            "address": "Cite Bouameur Maamourah",
+            "phone": "0770953193",
+            "__v": 0,
+            "active": false
+        },
+ */
+     export const exportOrganisationReport = async (organisations:Organisation[]) => {
+    // Create a new workbook and worksheet
+    
+  
+    const workbook = new ExcelJS .Workbook();
+    const Sheet = workbook.addWorksheet('Organisation');
+
+    // Extract columns from the first row of data 
+    if (organisations.length > 0) {
+      // Dynamically define columns based on the keys in the first data object
+         const columns = [
+       {
+        header:"Nom",
+        key:"name",
+        width:20
+      },
+        {
+        header:"Active",
+        key:"active",
+        width:20
+      },
+       {
+        header:"Wilaya",
+        key:"wilaya",
+        width:40
+      },
+      {
+        header:"Address",
+        key:"address",
+        width:20
+      },
+       {
+        header:"Téléphone",
+        key:"phone",
+        width:20
+      },
+       
+    ]
+      Sheet.columns = columns;
+      
+      // Add data rows
+      organisations.forEach(org => {
+        // const createdAt=user.createdAt;
+        // const name=user.name;
+        //  const email=user.email;
+        //  const organisation=user.organisation.name;
+        // const role=user.role;
+        // const activeStatus=user.role;
+        // const row=org;
+        Sheet.addRow(org)
+       
+      });
+      
+    }
+
+   
+
+   
+
+    // Generate Excel file as a buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // Create a Blob from the buffer and save the file
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `${new Date().toISOString()}-Organisations Report.xlsx`);
   };

@@ -1,6 +1,8 @@
 import { API_PATH } from "@/data/apiPaths";
+import { exportUserReport } from "@/lib/utils";
 import type { User, userFormType } from "@/types";
 import axiosInstance from "@/utils/axiosInstance";
+import toast from "react-hot-toast";
 
 export const addUserAction:(u:Omit<userFormType,"rePassword">)=>Promise<User>=async(user)=>{
     try {
@@ -49,3 +51,23 @@ export const updateUserAction:(id:string,values:any)=>Promise<User>=async(id,val
         console.log(error)
     }
 }
+/**
+ * onst page=Number(req.body?.page)||1;
+            const maxPerPage:number=Number(req.body?.maxPerPage)||10;
+            const skip = (page - 1) * maxPerPage;
+            const organisationId:string=req.body?.organisationId||null;
+            const statusactiveStatus=Boolean(req.body?.activeStatus||"true");
+            const role=req.body?.role;
+            const search:string=req.body?.search||"";
+ */
+export const downloadUserExcel=async()=>{
+    try {
+        const users=await getUsersAction({maxPerPage:10000,skip:0,})
+        await exportUserReport(users);
+    
+    } catch (error) {
+     console.log(error);
+    toast.error("Erreur en telechargent le fichier excel") 
+    }
+}
+
