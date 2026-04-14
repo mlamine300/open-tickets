@@ -123,7 +123,8 @@ export const loginUser = async (req: Request, res: Response) => {
     name: foundUser.name,
     role: foundUser.role,
     organisation:foundUser.organisation,
-    organisationName:organisationName?.name
+    organisationName:organisationName?.name,
+    organisationsList:foundUser.organisationsList
   };
   return res.status(200).json(user);
 };

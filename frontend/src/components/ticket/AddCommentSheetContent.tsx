@@ -330,7 +330,7 @@ if(ticket.status==="pending"){
  actions["in_charge"]="Pris en charge";
  
   }
-  if(role==="admin"||(role==="supervisor"&&(user.organisationsList?.includes(ticket.recipientOrganization?._id||"****")))){
+  if(role==="admin"||(role==="supervisor"&&(user.organisationsList?.includes(ticket.recipientOrganization?._id)))){
     actions["switch"]="Transférer à une autre organisation";
   }
  
