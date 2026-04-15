@@ -51,7 +51,7 @@ const MenuItem = ({
         choosed
           ? "text-primary bg-primary/10 border-r-2 border-primary "
           : "text-text-primary/90"
-      } ${item.path === "/logout" ? "mt-auto" : ""}`}
+      } ${item.path === "/logout" ? "mt-auto" : ""} `}
     >
       <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
       <div className={colapsed?"hidden":"flex justify-between w-full"}>

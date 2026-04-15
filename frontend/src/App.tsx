@@ -23,6 +23,9 @@ import AddOrganisation from './page/organisations/AddOrganisation';
 import Motifpage from './page/motifs/MotifPage';
 import SearchPage from './page/search/SearchPage';
 import { socket } from './utils/socket';
+import ManageUsefulLinksPage from './page/usefulLinks/ManageUsefulLinksPage';
+import AddUsefulLinkPage from './page/usefulLinks/AddUsefulLinkPage';
+import UsefulLinksPage from './page/usefulLinks/UsefulLinksPage';
 
 function App() {
    const favicon = document.querySelector("link[rel='icon']") as any;
@@ -81,6 +84,7 @@ const showNotification = (title: string, body: string,url:string) => {
         <Route path="/tickets/*" element={<TicketsPage />} />
           <Route path="/search" element={<SearchPage />} />
         <Route path="/ticket/:id" element={<TicketOverViewPage />} />
+        <Route path="/links" element={<UsefulLinksPage />} />
          <Route path="*" element={<NotFound />} />
        </Route>
        <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}>
@@ -90,6 +94,8 @@ const showNotification = (title: string, body: string,url:string) => {
          <Route path="/users/:id" element={<AddEditUserPage />} />
          <Route path="/organisations/list" element={<OrganisationsPage />} />
          <Route path="/organisations/:id" element={<AddOrganisation />} />
+         <Route path="/links/list" element={<ManageUsefulLinksPage />} />
+         <Route path="/links/:id" element={<AddUsefulLinkPage />} />
           <Route path="/motifs" element={<Motifpage />} />
            <Route path="/alert" element={<AlertPage />} />
          </Route>

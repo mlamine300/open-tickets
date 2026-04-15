@@ -7,7 +7,7 @@ import {
 import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
 import type { FormType, FormFieldType } from "@/types";
 
-import { BookmarkCheck, Check, CheckCheck, LayoutList, Loader, Megaphone, MessageCircleMore, Plus, Search, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Link, Loader, Megaphone, MessageCircleMore, Plus, Search, Settings, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
@@ -188,6 +188,7 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
+ 
 
     {id:"09",
       
@@ -198,7 +199,44 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
-    {   id:"10",
+
+         {
+    id: "10",
+    label: "Gestion des Liens Utiles",
+    icon: Link,
+    path: "/links0",
+    hasChilds:true,
+    childs:[
+      {
+    id: "101",
+    label: "Liens Utiles (utilisateur)",
+    icon: Link,
+    path: "/links",
+    hasChilds:false
+
+  },
+    {
+    id: "102",
+    label: "Ajouter un liens Utile",
+    icon: Plus,
+    path: "/links/new",
+    hasChilds:false
+
+  },
+  {
+    id: "103",
+    label: "Liens Utiles (Admin)",
+    icon: Settings,
+    path: "/links/list",
+    hasChilds:false
+
+  },
+    ]
+
+  },
+
+
+    {   id:"11",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -207,9 +245,11 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
+
+  
      
   {
-    id: "11",
+    id: "12",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -314,6 +354,8 @@ export const SIDE_MENU_USER_DATA = [
     ]
 
     },
+
+    
     {id:"06",
      
       label:"Recherche par Référence",
@@ -323,8 +365,16 @@ export const SIDE_MENU_USER_DATA = [
      
 
     },
+     {
+    id: "07",
+    label: "Liens Utiles",
+    icon: Link,
+    path: "/links",
+    hasChilds:false
+
+  },
      
-    {id:"07",
+    {id:"08",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -333,9 +383,9 @@ export const SIDE_MENU_USER_DATA = [
      
 
     },
-      
+    
   {
-    id: "08",
+    id: "09",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -356,47 +406,7 @@ export const STATUS_DATA = [
 export const translateStatus=(v:string)=>{
   return STATUS_DATA.find(s=>s.value===v)?.label??v
 }
-// export const MOTIFS=[
-//   "Bureau injoignable - مكتب مُتعذِّر الوصول إليه",
-// "Bureau fermé - المكتب مغلق",
-// "Colis endommagé - طرد تالف",
-// "Colis manquant - طرد مفقود",
-// "Livraison manquante - تسليم مفقود",
-// "Retard de livraison - تأخر في التسليم",
-// "Retard de retour - تأخر في الإرجاع",
-// "Refus de livraison - رفض التسليم",
-// "Faux statut / Scan - حالة / مسح غير صحيح",
-// "Mauvais comportement - سوء السلوك",
-// "Ouverture sans autorisation - فتح بدون إذن",
-// "Demandes / Modifications - طلبات / تعديلات",
-// "Changement de prix - تغيير السعر",
-// "Changement de numéro - تغيير الرقم",
-// "Changement de commune - تغيير البلدية",
-// "Changement du type de livraison - تغيير نوع التسليم",
-// "Demande de localisation - طلب تحديد الموقع",
-// "Demande de mise à jour - طلب تحديث",
-// "Demande de livraison - طلب تسليم",
-// "Demande de retour - طلب إرجاع",
-// "Demande d’information - طلب معلومات",
-// "Conserver le colis / Garder le colis - الاحتفاظ بالطرد",
-// "Réclamation financière - شكوى مالية",
-// "Autre réclamation - شكوى أخرى",
-// "Surfacturation - فواتير زائدة",
-// "Réacheminement - إعادة التوجيه",
-// "Faux dispatch - توزيع خاطئ",
-// "accélération de livraison - تسريع التسليم",
-// "retour vide - إرجاع فارغ",
-// "litige et remboursement - نزاع واسترجاع الأموال",
-// "manque de prefessionnalisme - نقص الاحترافية",
-// "colis vide - طرد فارغ",
-// "Colis non validé - طرد غير مُعتمد",
-// "Colis non dispatché - طرد غير مُوزَّع",
-// "Navette saturée - الشاحنة ممتلئة",
-// "Colis double - طرد مكرر",
-// "Reçu par erreur - تم الاستلام عن طريق الخطأ",
 
-
-// ]
 
 export const getStandardForm=():FormType=>({
         _id:"standard",

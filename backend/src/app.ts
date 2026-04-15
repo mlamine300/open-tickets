@@ -23,6 +23,7 @@ import motifRouter from "./routes/motifRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import usefulLinksRouter from "./routes/usefulLinksRoutes.js";
 
 
 
@@ -66,6 +67,7 @@ app.use("/api/stat",protect,statRouter);
 app.use("/api/attachement",protect,attachementRouter);
 app.use("/api/info",protect,infoRouter);
 app.use("/api/motifs",protect,motifRouter)
+app.use("/api/links",protect,usefulLinksRouter)
 app.get("/api/test",(req:Request,res:Response)=>{
   console.log("test")
   return res.status(200).json({message:"test",client:process.env.CLIENT_URL,requiestIp:req.ip});

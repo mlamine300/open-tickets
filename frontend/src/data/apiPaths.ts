@@ -65,5 +65,15 @@ export const API_PATH = {
     ADD_MOTIF:"/api/motifs",
     TURN_OFF:(id:string)=>`/api/motifs/off/${id}`,
     TURN_ON:(id:string)=>`/api/motifs/on/${id}`
+  },
+  USEFUL_LINKS:{
+    GET_ALL_USEFUL_LINKS:"/api/links/all",
+    GET_ACTIVE_USEFUL_LINKS:"/api/links",
+    ADD_USEFUL_LINK:"/api/links",
+    UPDATE_USEFUL_LINK:(id:string)=>`/api/links/update/${id}`,
+    DELETE_USEFUL_LINK:(id:string)=>`/api/links/delete/${id}`,
+    DEACTIVATE_USEFUL_LINK:(id:string)=>`/api/links/deactivate/${id}`,
+    
   }
 };
+

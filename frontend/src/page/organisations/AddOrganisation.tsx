@@ -47,14 +47,7 @@ const AddOrganisation = () => {
     fetchOrganisation();
    
   }, [id])
-  /**
-   *  name:{type:String, required:true},
-  wilaya:"",
-  address:{type:String, required:false},
-  phone:{type:String, required:false},
-  head:{type:String,required:false},
-  description:{type:String,required:false},
-   */
+  
   const form = useForm<organisationFormType>({
     resolver: zodResolver(organisationSchema),
     defaultValues: {
@@ -119,7 +112,7 @@ const AddOrganisation = () => {
     <Card className="max-w-2xl  mt-10  bg-background-base shadow-2xl rounded-xl border-none">
       <CardHeader>
         <CardTitle>
-          {id === "new" ? "Créer un Utilisateur" : "Modifier un Utilisateur"}
+          {id === "new" ? "Créer un Organisation" : "Modifier un Organisation"}
         </CardTitle>
       </CardHeader>
 

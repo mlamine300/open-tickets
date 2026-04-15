@@ -25,7 +25,7 @@ const SearchMenuForSideBar = () => {
        getTicket();
     },[search])
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col mt-auto mb-8 px-1">
         <div className="flex w-full items-center relative">
           <Input label="Recherche par ref" onChange={(e)=>setSearch(e.target.value)} value={search}
          placeHolder="Recherche par reference" type="text"labelClassName={"text-xs text-start my-1 italic font-semibold"}

@@ -1,5 +1,5 @@
 import {z} from "zod";
-
+const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
 export interface SimpleMenuItemType {
     id: string;
     label: string;
@@ -22,6 +22,7 @@ export interface MenuItemType{
     path: string;
     hasChilds:boolean;
     childs?:SimpleMenuItemType[];
+    
   
 }
 
@@ -116,6 +117,13 @@ export const UserSchema=z.object({
 })
 export type userFormType= z.infer<typeof UserSchema>
 
+export const usefulLinksSchema=z.object({
+  name:z.string().min(5,"Le nom est obligatoire > 5 caractères"),
+   description:z.string().min(10,"La description est obligatoire >10 caractères"),
+  link:z.string().regex(urlRegex,"le format de lien est incorrect"),
+  imageLink:z.file().optional()
+})
+
 export const organisationSchema=z.object({
         name:z.string().min(5,"Le nom est obligatoire"),
         wilaya:z.string().min(5,"Le wilaya est obligatoire"),
@@ -127,4 +135,13 @@ export const organisationSchema=z.object({
 
     });
 export type organisationFormType=z.infer<typeof organisationSchema>
+
+export type usefulLinksFormType=z.infer<typeof usefulLinksSchema>
+
+export type UsefulLinkType={
+name:string;
+description?:string;
+link:string;
+imageLink?:string
+}
 

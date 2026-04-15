@@ -36,7 +36,7 @@ colapsed: boolean;
         choosed
           ? "text-primary bg-primary/10 border-r-2 border-primary "
           : "text-text-primary/90"
-      }`}>
+      } `}>
        <div className="flex  gap-4 w-full">
 
       <Icon className={colapsed?"w-8 h-8":"w-5 h-5"} />
