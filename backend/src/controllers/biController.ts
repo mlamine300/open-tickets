@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import ticketModel from "../models/Ticket.js";
+import organisationModel from "../models/Organisation.js";
+import userModel from "../models/User.js";
 
 
 const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
@@ -502,3 +504,21 @@ export const getNotCompleteReportBi = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "server error" });
   }
 };
+
+export const getOrganisationBi=async(req:Request,res:Response)=>{
+    try {
+        const organisations=await organisationModel.find({}).lean().exec();
+    return res.status(200).json(organisations)
+    } catch (error) {
+     return res.status(500).json({message:"server Error"})   
+    }
+}
+export const getUsersBi=async(req:Request,res:Response)=>{
+
+    try {
+        const users=await userModel.find({},{ role:1,email:1,name: 1, _id: 1,activeStatus:1,organisation:1,createdAt:1 }).populate("organisation","name").lean().exec();
+        return res.status(200).json(users)
+    } catch (error) {
+        return res.status(500).json({message:"server Error"})  
+    }
+}
