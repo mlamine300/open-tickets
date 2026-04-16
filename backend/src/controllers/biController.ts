@@ -443,3 +443,62 @@ export const getTicketReportForBi = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "server error" });
   }
 };
+
+export const getNotCompleteReportBi = async (req: Request, res: Response) => {
+  try {
+    
+
+    
+    const yesterDay = new Date();
+    yesterDay.setHours(0, 0, 0, 0);
+
+    // ================= FILTERS =================
+   
+  
+    
+    const notCompleteFilter = {
+      $or: [
+        {
+          status: "pending",
+          createdAt: { $lt: yesterDay },
+      //     emitterOrganizationId: {
+      //   $ne: new mongoose.Types.ObjectId(user.organisation),
+      // },
+        },
+        {
+          status: "open",
+        //   emitterOrganizationId: {
+        // $ne: new mongoose.Types.ObjectId(user.organisation),},
+            $or: [
+        { "assignedTo.date": { $lt: yesterDay } },
+        { assignedTo: { $exists: false } },
+        { assignedTo: null },
+        
+      ],
+        },
+        {status: "traited", 
+          // emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation),
+        },
+        
+      ],
+    };
+
+    const pipeline:any[]=getPipline({match: {
+         $and: [
+    { ...notCompleteFilter } // this also includes $or
+  ]
+        }
+      ,limit:1000
+      })
+   
+      const result = await ticketModel.aggregate(pipeline).exec();
+
+    return res.status(200).json({
+      
+      tickets: result[0]?.data ?? [],
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "server error" });
+  }
+};
