@@ -2,31 +2,36 @@
 
 import type{ ColumnDef } from "@tanstack/react-table"
 import type { ticket } from "@/types"
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { ArrowUpDown, ExternalLink, Eye, MessageCirclePlus} from "lucide-react";
 
 import { format } from 'date-fns'
 import { SheetTrigger } from "../ui/sheet";
 import { PRIORITY_DATA } from "@/data/data";
-import type { Dispatch, SetStateAction } from "react";
+
 
 const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
 
-export const columns:({actions,setSortFunction,sortFunction}:{actions:any;setSortFunction:Dispatch<SetStateAction<{
-    sortBy: string;
-    sort: -1 | 1;
-}>>;sortFunction:{sortBy:string;sort:-1|1}})=> ColumnDef<ticket>[] =({actions,setSortFunction,sortFunction})=> [
+export const columns:({actions}:{actions:any})=> ColumnDef<ticket>[] =({actions})=> [
   {accessorKey:"createdAt",
-   header: ({column}) => {
+   header: () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const params = new URLSearchParams(searchParams);
       return (
         <div
         className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
           //onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           onClick={()=>
           {
-
-            setSortFunction({sortBy:"createdAt",sort:sortFunction.sort===1?-1:1})
-            column.toggleSorting(sortFunction.sort===1?false:true)
+          params.set("sort_by","createdAt")
+          params.set("sort",params.get("sort")==="-1"?"1":"-1")
+          params.set("page","1")
+          setSearchParams(params)
+          //setSearchParams({...searchParams,sort_by:"createdAt"})
+            // setSortFunction({sortBy:"createdAt",sort:sortFunction.sort===1?-1:1})
+             
+            
+           
           }
           }
         >
@@ -57,16 +62,21 @@ export const columns:({actions,setSortFunction,sortFunction}:{actions:any;setSor
   }
   ,
   {accessorKey:"updatedAt",
-   header: ({ column }) => {
+   header: () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const params = new URLSearchParams(searchParams);
       return (
         <div
         className="text-xs flex gap-1 items-center cursor-pointer hover:bg-gray-cold/20 py-px px-2 rounded hover:font-bold"
           //onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
              onClick={()=>
              {
-            
-               setSortFunction({sortBy:"updatedAt",sort:sortFunction.sort===1?-1:1})
-              column.toggleSorting(sortFunction.sort===1?false:true)
+            params.set("sort_by","updatedAt")
+          params.set("sort",params.get("sort")==="-1"?"1":"-1")
+          params.set("page","1")
+          setSearchParams(params)
+              //  setSortFunction({sortBy:"updatedAt",sort:sortFunction.sort===1?-1:1})
+              // column.toggleSorting(sortFunction.sort===1?false:true)
               }
                
               }

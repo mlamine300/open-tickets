@@ -10,187 +10,441 @@ import organisationModel from "../models/Organisation.js";
 import { CLIENT_URL, io } from "../app.js";
 import userModel from "../models/User.js";
 
-const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
-   const msortField = sortField || "createdAt";
-    const msortOrder = sortOrder||1;
-    const mskip=skip||0;
-    const mlimit=limit||10;
+// const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
+//    const msortField = sortField || "createdAt";
+//     const msortOrder = sortOrder||1;
+    
+//     const mskip=skip||0;
+//     const mlimit=limit||10;
 
-    return [
-      { $match: match },
+//     return [
+//       { $match: match },
 
-      // Join user (creator)
-      {
-        $lookup: {
-          from: "users",
-          localField: "creator",
-          foreignField: "_id",
-          as: "creator"
-        }
-      },
-      { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+//       // Join user (creator)
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "creator",
+//           foreignField: "_id",
+//           as: "creator"
+//         }
+//       },
+//       { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
 
-      // emitter organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "emitterOrganizationId",
-          foreignField: "_id",
-          as: "emitterOrganization"
-        }
-      },
-      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+//       // emitter organization
+//       {
+//         $lookup: {
+//           from: "organisations",
+//           localField: "emitterOrganizationId",
+//           foreignField: "_id",
+//           as: "emitterOrganization"
+//         }
+//       },
+//       { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
 
-      // recipient organization
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "recipientOrganizationId",
-          foreignField: "_id",
-          as: "recipientOrganization"
-        }
-      },
-      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+//       // recipient organization
+//       {
+//         $lookup: {
+//           from: "organisations",
+//           localField: "recipientOrganizationId",
+//           foreignField: "_id",
+//           as: "recipientOrganization"
+//         }
+//       },
+//       { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
 
-      // associated organizations
-      {
-        $lookup: {
-          from: "organisations",
-          localField: "associatedOrganizations",
-          foreignField: "_id",
-          as: "associatedOrganizations"
-        }
-      },
+//       // associated organizations
+//       {
+//         $lookup: {
+//           from: "organisations",
+//           localField: "associatedOrganizations",
+//           foreignField: "_id",
+//           as: "associatedOrganizations"
+//         }
+//       },
 
-      // assignedTo
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedTo.userId",
-          foreignField: "_id",
-          as: "assignedUsers"
-        }
-      },
+//       // assignedTo
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "assignedTo.userId",
+//           foreignField: "_id",
+//           as: "assignedUsers"
+//         }
+//       },
 
-      {
-        $addFields: {
-          assignedTo: {
-            $map: {
-              input: {
+//       {
+//         $addFields: {
+//           assignedTo: {
+//             $map: {
+//               input: {
+//                 $cond: {
+//                   if: { $isArray: "$assignedTo" },
+//                   then: "$assignedTo",
+//                   else: {
+//                     $cond: {
+//                       if: { $eq: ["$assignedTo", null] },
+//                       then: [],
+//                       else: ["$assignedTo"]
+//                     }
+//                   }
+//                 }
+//               },
+//               as: "a",
+//               in: {
+//                 date: "$$a.date",
+//                 user: {
+//                   $arrayElemAt: [
+//                     {
+//                       $filter: {
+//                         input: "$assignedUsers",
+//                         as: "u",
+//                         cond: { $eq: ["$$u._id", "$$a.userId"] }
+//                       }
+//                     },
+//                     0
+//                   ]
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       },
+
+//       { $project: { assignedUsers: 0 } },
+
+//       // Populate lastComment.author (replace authorId with author doc)
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "lastComment.authorId",
+//           foreignField: "_id",
+//           as: "lastCommentAuthor"
+//         }
+//       },
+//       {
+//         $addFields: {
+//           lastComment: {
+//             $cond: [
+//               { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
+//               {
+//                 $mergeObjects: [
+//                   "$lastComment",
+//                   { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
+//                 ]
+//               },
+//               "$lastComment"
+//             ]
+//           }
+//         }
+//       },
+//       { $project: { lastCommentAuthor: 0 } },
+
+//       // project only necessary fields for creator, organisations and assignedTo
+//       {
+//         $project: {
+//           _id: 1,
+//           ref: 1,
+//           formName: 1,
+//           message: 1,
+//           status: 1,
+//           priority: 1,
+//           createdAt: 1,
+//           updatedAt: 1,
+//           specialFields:1,
+//           attachement:1,
+//           motif:1,
+//           lastComment: {
+//             _id: "$lastComment._id",
+//             message: "$lastComment.message",
+//             action: "$lastComment.action",
+//             ticketRef: "$lastComment.ticketRef",
+//             createdAt: "$lastComment.createdAt",
+//             author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+//           },
+//           creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
+//           emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
+//           recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
+//           associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
+//           assignedTo: {
+//             $let: {
+//               vars: {
+//                 a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+//               },
+//               in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
+//             }
+//           }
+//         }
+//       },
+
+
+
+//       // Sorting
+//       { $sort: { [msortField]: msortOrder } },
+
+//       // Pagination + count in one request
+//       {
+//         $facet: {
+//           data: [{ $skip: mskip }, { $limit: mlimit }],
+//           totalCount: [{ $count: "count" }]
+//         }
+//       }
+//     ];
+// }
+
+const getPipline = ({
+  match,
+  sortField,
+  sortOrder,
+  skip,
+  limit,
+}: {
+  match: any;
+  sortField?: string;
+  sortOrder?: number;
+  skip?: number;
+  limit?: number;
+}) => {
+  const msortField = sortField || "createdAt";
+  const msortOrder = sortOrder ?? -1;
+  const mskip = skip ?? 0;
+  const mlimit = limit ?? 10;
+
+  return [
+    { $match: match },
+
+    {
+      $facet: {
+        data: [
+          // ==============================
+          // SORT FULL DATASET FIRST
+          // ==============================
+          { $sort: { [msortField]: msortOrder } },
+          { $skip: mskip },
+          { $limit: mlimit },
+
+          // ==============================
+          // NORMALIZE assignedTo (array-safe)
+          // ==============================
+          {
+            $addFields: {
+              assignedTo: {
                 $cond: {
                   if: { $isArray: "$assignedTo" },
                   then: "$assignedTo",
                   else: {
                     $cond: {
-                      if: { $eq: ["$assignedTo", null] },
+                      if: { $or: [{ $eq: ["$assignedTo", null] }, { $not: ["$assignedTo"] }] },
                       then: [],
-                      else: ["$assignedTo"]
-                    }
-                  }
-                }
-              },
-              as: "a",
-              in: {
-                date: "$$a.date",
-                user: {
-                  $arrayElemAt: [
-                    {
-                      $filter: {
-                        input: "$assignedUsers",
-                        as: "u",
-                        cond: { $eq: ["$$u._id", "$$a.userId"] }
-                      }
+                      else: ["$assignedTo"],
                     },
-                    0
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-
-      { $project: { assignedUsers: 0 } },
-
-      // Populate lastComment.author (replace authorId with author doc)
-      {
-        $lookup: {
-          from: "users",
-          localField: "lastComment.authorId",
-          foreignField: "_id",
-          as: "lastCommentAuthor"
-        }
-      },
-      {
-        $addFields: {
-          lastComment: {
-            $cond: [
-              { $gt: [{ $size: { $ifNull: ["$lastCommentAuthor", []] } }, 0] },
-              {
-                $mergeObjects: [
-                  "$lastComment",
-                  { author: { $arrayElemAt: ["$lastCommentAuthor", 0] } }
-                ]
+                  },
+                },
               },
-              "$lastComment"
-            ]
-          }
-        }
-      },
-      { $project: { lastCommentAuthor: 0 } },
-
-      // project only necessary fields for creator, organisations and assignedTo
-      {
-        $project: {
-          _id: 1,
-          ref: 1,
-          formName: 1,
-          message: 1,
-          status: 1,
-          priority: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          specialFields:1,
-          attachement:1,
-          motif:1,
-          lastComment: {
-            _id: "$lastComment._id",
-            message: "$lastComment.message",
-            action: "$lastComment.action",
-            ticketRef: "$lastComment.ticketRef",
-            createdAt: "$lastComment.createdAt",
-            author: { _id: "$lastComment.author._id", name: "$lastComment.author.name", email: "$lastComment.author.email" }
+            },
           },
-          creator: { _id: "$creator._id", name: "$creator.name", email: "$creator.email" },
-          emitterOrganization: { _id: "$emitterOrganization._id", name: "$emitterOrganization.name" },
-          recipientOrganization: { _id: "$recipientOrganization._id", name: "$recipientOrganization.name" },
-          associatedOrganizations: { $map: { input: { $ifNull: ["$associatedOrganizations", []] }, as: "o", in: { _id: "$$o._id", name: "$$o.name" } } },
-          assignedTo: {
-            $let: {
-              vars: {
-                a: { $cond: [{ $isArray: "$assignedTo" }, { $arrayElemAt: ["$assignedTo", 0] }, "$assignedTo"] }
+
+          // ==============================
+          // LOOKUPS (ONLY FOR PAGINATED DOCS)
+          // ==============================
+
+          // Creator
+          {
+            $lookup: {
+              from: "users",
+              localField: "creator",
+              foreignField: "_id",
+              as: "creator",
+            },
+          },
+          { $unwind: { path: "$creator", preserveNullAndEmptyArrays: true } },
+
+          // Emitter Organization
+          {
+            $lookup: {
+              from: "organisations",
+              localField: "emitterOrganizationId",
+              foreignField: "_id",
+              as: "emitterOrganization",
+            },
+          },
+          { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+
+          // Recipient Organization
+          {
+            $lookup: {
+              from: "organisations",
+              localField: "recipientOrganizationId",
+              foreignField: "_id",
+              as: "recipientOrganization",
+            },
+          },
+          { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+
+          // Associated Organizations
+          {
+            $lookup: {
+              from: "organisations",
+              localField: "associatedOrganizations",
+              foreignField: "_id",
+              as: "associatedOrganizations",
+            },
+          },
+
+          // Assigned Users
+          {
+            $lookup: {
+              from: "users",
+              localField: "assignedTo.userId",
+              foreignField: "_id",
+              as: "assignedUsers",
+            },
+          },
+
+          // Merge assigned users safely
+          {
+            $addFields: {
+              assignedTo: {
+                $map: {
+                  input: "$assignedTo",
+                  as: "a",
+                  in: {
+                    date: "$$a.date",
+                    user: {
+                      $let: {
+                        vars: {
+                          matchedUser: {
+                            $arrayElemAt: [
+                              {
+                                $filter: {
+                                  input: "$assignedUsers",
+                                  as: "u",
+                                  cond: { $eq: ["$$u._id", "$$a.userId"] },
+                                },
+                              },
+                              0,
+                            ],
+                          },
+                        },
+                        in: {
+                          _id: "$$matchedUser._id",
+                          name: "$$matchedUser.name",
+                          email: "$$matchedUser.email",
+                        },
+                      },
+                    },
+                  },
+                },
               },
-              in: { $cond: [{ $eq: ["$$a", null] }, null, { date: "$$a.date", user: { _id: "$$a.user._id", name: "$$a.user.name", email: "$$a.user.email" } }] }
-            }
-          }
-        }
+            },
+          },
+
+          { $project: { assignedUsers: 0 } },
+
+          // ==============================
+          // LAST COMMENT SAFE HANDLING
+          // ==============================
+          {
+            $lookup: {
+              from: "users",
+              localField: "lastComment.authorId",
+              foreignField: "_id",
+              as: "lastCommentAuthor",
+            },
+          },
+
+          {
+            $addFields: {
+              lastComment: {
+                $cond: [
+                  {
+                    $and: [
+                      { $ne: ["$lastComment", null] },
+                      { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
+                    ],
+                  },
+                  {
+                    $mergeObjects: [
+                      "$lastComment",
+                      {
+                        author: {
+                          $let: {
+                            vars: {
+                              authorDoc: { $arrayElemAt: ["$lastCommentAuthor", 0] },
+                            },
+                            in: {
+                              _id: "$$authorDoc._id",
+                              name: "$$authorDoc.name",
+                              email: "$$authorDoc.email",
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  "$lastComment",
+                ],
+              },
+            },
+          },
+
+          { $project: { lastCommentAuthor: 0 } },
+
+          // ==============================
+          // FINAL CLEAN PROJECTION
+          // ==============================
+          {
+            $project: {
+              _id: 1,
+              ref: 1,
+              formName: 1,
+              message: 1,
+              status: 1,
+              priority: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              specialFields: 1,
+              attachement: 1,
+              motif: 1,
+
+              creator: {
+                _id: "$creator._id",
+                name: "$creator.name",
+                email: "$creator.email",
+              },
+
+              emitterOrganization: {
+                _id: "$emitterOrganization._id",
+                name: "$emitterOrganization.name",
+              },
+
+              recipientOrganization: {
+                _id: "$recipientOrganization._id",
+                name: "$recipientOrganization.name",
+              },
+
+              associatedOrganizations: {
+                $map: {
+                  input: { $ifNull: ["$associatedOrganizations", []] },
+                  as: "o",
+                  in: { _id: "$$o._id", name: "$$o.name" },
+                },
+              },
+
+              assignedTo: 1,
+              lastComment: 1,
+            },
+          },
+        ],
+
+        // ==============================
+        // FAST TOTAL COUNT (NO LOOKUPS)
+        // ==============================
+        totalCount: [{ $count: "count" }],
       },
-
-
-
-      // Sorting
-      { $sort: { [msortField]: msortOrder } },
-
-      // Pagination + count in one request
-      {
-        $facet: {
-          data: [{ $skip: mskip }, { $limit: mlimit }],
-          totalCount: [{ $count: "count" }]
-        }
-      }
-    ];
-}
-
+    },
+  ];
+};
 
 
 
@@ -307,7 +561,7 @@ export const getTickets = async (req: Request, res: Response) => {
     // Sorting
     const sortField = sortFunction.sortBy||"createdAt";
     const sortOrder = sortFunction.sort||1;
-
+    
     // Search
     const search = req.body?.search || "";
 
@@ -337,7 +591,7 @@ if(motif){
     const searchFilter=getSearchFilter(search)
   const pipeline=getPipline({match:{ ...baseFilter,...searchFilter},limit,skip,sortField,sortOrder})
    
-
+  
     const result = await ticketModel.aggregate(pipeline as any).exec();
 
     const data = result[0].data;
