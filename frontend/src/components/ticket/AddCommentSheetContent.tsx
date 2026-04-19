@@ -339,7 +339,7 @@ if(ticket.status==="pending"){
 if(ticket.status==="open"){
   //  console.log(user._id)
   //  console.log(ticket.assignedTo?.user._id)
-   if(role==="admin"||user._id===ticket.assignedTo?.user._id){
+   if(role==="admin"||user._id===ticket.assignedTo?.user?._id){
 
 actions["subscribe"]="Ajouter une organisation";
 actions["trait"]="Traiter";
