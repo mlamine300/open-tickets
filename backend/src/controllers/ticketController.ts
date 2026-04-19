@@ -206,7 +206,7 @@ const getPipline = ({
   limit?: number;
 }) => {
   const msortField = sortField || "createdAt";
-  const msortOrder = sortOrder ?? -1;
+  const msortOrder = sortOrder ?? 1;
   const mskip = skip ?? 0;
   const mlimit = limit ?? 10;
 
@@ -217,7 +217,7 @@ const getPipline = ({
       $facet: {
         data: [
           // ==============================
-          // SORT FULL DATASET FIRST
+          // SORT + PAGINATION FIRST
           // ==============================
           { $sort: { [msortField]: msortOrder } },
           { $skip: mskip },
@@ -234,7 +234,12 @@ const getPipline = ({
                   then: "$assignedTo",
                   else: {
                     $cond: {
-                      if: { $or: [{ $eq: ["$assignedTo", null] }, { $not: ["$assignedTo"] }] },
+                      if: {
+                        $or: [
+                          { $eq: ["$assignedTo", null] },
+                          { $not: ["$assignedTo"] },
+                        ],
+                      },
                       then: [],
                       else: ["$assignedTo"],
                     },
@@ -245,7 +250,7 @@ const getPipline = ({
           },
 
           // ==============================
-          // LOOKUPS (ONLY FOR PAGINATED DOCS)
+          // LOOKUPS
           // ==============================
 
           // Creator
@@ -301,7 +306,7 @@ const getPipline = ({
             },
           },
 
-          // Merge assigned users safely
+          // Merge assigned users
           {
             $addFields: {
               assignedTo: {
@@ -311,27 +316,16 @@ const getPipline = ({
                   in: {
                     date: "$$a.date",
                     user: {
-                      $let: {
-                        vars: {
-                          matchedUser: {
-                            $arrayElemAt: [
-                              {
-                                $filter: {
-                                  input: "$assignedUsers",
-                                  as: "u",
-                                  cond: { $eq: ["$$u._id", "$$a.userId"] },
-                                },
-                              },
-                              0,
-                            ],
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$assignedUsers",
+                            as: "u",
+                            cond: { $eq: ["$$u._id", "$$a.userId"] },
                           },
                         },
-                        in: {
-                          _id: "$$matchedUser._id",
-                          name: "$$matchedUser.name",
-                          email: "$$matchedUser.email",
-                        },
-                      },
+                        0,
+                      ],
                     },
                   },
                 },
@@ -342,7 +336,7 @@ const getPipline = ({
           { $project: { assignedUsers: 0 } },
 
           // ==============================
-          // LAST COMMENT SAFE HANDLING
+          // LAST COMMENT
           // ==============================
           {
             $lookup: {
@@ -352,15 +346,14 @@ const getPipline = ({
               as: "lastCommentAuthor",
             },
           },
-
           {
             $addFields: {
               lastComment: {
                 $cond: [
                   {
-                    $and: [
-                      { $ne: ["$lastComment", null] },
-                      { $gt: [{ $size: "$lastCommentAuthor" }, 0] },
+                    $gt: [
+                      { $size: { $ifNull: ["$lastCommentAuthor", []] } },
+                      0,
                     ],
                   },
                   {
@@ -368,16 +361,7 @@ const getPipline = ({
                       "$lastComment",
                       {
                         author: {
-                          $let: {
-                            vars: {
-                              authorDoc: { $arrayElemAt: ["$lastCommentAuthor", 0] },
-                            },
-                            in: {
-                              _id: "$$authorDoc._id",
-                              name: "$$authorDoc.name",
-                              email: "$$authorDoc.email",
-                            },
-                          },
+                          $arrayElemAt: ["$lastCommentAuthor", 0],
                         },
                       },
                     ],
@@ -387,11 +371,10 @@ const getPipline = ({
               },
             },
           },
-
           { $project: { lastCommentAuthor: 0 } },
 
           // ==============================
-          // FINAL CLEAN PROJECTION
+          // FINAL PROJECTION (MATCH PIPELINE 2)
           // ==============================
           {
             $project: {
@@ -431,22 +414,60 @@ const getPipline = ({
                 },
               },
 
-              assignedTo: 1,
-              lastComment: 1,
+              // ✅ convert array → single object
+              assignedTo: {
+                $let: {
+                  vars: {
+                    a: {
+                      $cond: [
+                        { $isArray: "$assignedTo" },
+                        { $arrayElemAt: ["$assignedTo", 0] },
+                        "$assignedTo",
+                      ],
+                    },
+                  },
+                  in: {
+                    $cond: [
+                      { $eq: ["$$a", null] },
+                      null,
+                      {
+                        date: "$$a.date",
+                        user: {
+                          _id: "$$a.user._id",
+                          name: "$$a.user.name",
+                          email: "$$a.user.email",
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+
+              // ✅ clean lastComment
+              lastComment: {
+                _id: "$lastComment._id",
+                message: "$lastComment.message",
+                action: "$lastComment.action",
+                ticketRef: "$lastComment.ticketRef",
+                createdAt: "$lastComment.createdAt",
+                author: {
+                  _id: "$lastComment.author._id",
+                  name: "$lastComment.author.name",
+                  email: "$lastComment.author.email",
+                },
+              },
             },
           },
         ],
 
         // ==============================
-        // FAST TOTAL COUNT (NO LOOKUPS)
+        // TOTAL COUNT
         // ==============================
         totalCount: [{ $count: "count" }],
       },
     },
   ];
 };
-
-
 
 export const addTicket=async(req:Request,res:Response)=>{
    
