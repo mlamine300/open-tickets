@@ -9,11 +9,13 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
+    "seed": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"node --loader ts-node/esm src/seed/seed.js\"",
     "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"node --loader ts-node/esm src/app.ts\"",
     "dev:esm": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"node --loader ts-node/esm src/app.ts\"",
     "dev:tsnode-esm": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"ts-node-esm src/app.ts\""
   },
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

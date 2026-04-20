@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import path from "path";
@@ -26,6 +26,7 @@ import { Server } from "socket.io";
 import usefulLinksRouter from "./routes/usefulLinksRoutes.js";
 import { checkBiAPI } from "./middlewares/biMiddleware.js";
 import biRouter from "./routes/biRoutes.js";
+import { seedtickets } from "./seed/seedDb.js";
 
 
 
@@ -71,6 +72,10 @@ app.use("/api/info",protect,infoRouter);
 app.use("/api/motifs",protect,motifRouter)
 app.use("/api/links",protect,usefulLinksRouter)
 app.use("/api/bireporting",checkBiAPI,biRouter)
+app.use("/api/seed",(req:Request,res:Response,next:NextFunction)=>{
+  if(process.env.MODE!=="test")return res.status(404).json({message:"page not found"});
+  next();
+},seedtickets)
 app.get("/api/test",(req:Request,res:Response)=>{
   console.log("test")
   return res.status(200).json({message:"this just for cron job",client:process.env.CLIENT_URL,requiestIp:req.ip});
