@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import ticketModel from "../models/Ticket.js";
 import organisationModel from "../models/Organisation.js";
 import userModel from "../models/User.js";
+import { commentsModel } from "../models/Comment.js";
 
 
 const  getPipline=({match,sortField,sortOrder,skip,limit}:{match:any,sortField?:string,sortOrder?:number,skip?:number,limit?:number})=>{
@@ -521,4 +522,104 @@ export const getUsersBi=async(req:Request,res:Response)=>{
     } catch (error) {
         return res.status(500).json({message:"server Error"})  
     }
+}
+
+export const getCommentsBi=async(req:Request,res:Response)=>{
+  try {
+     
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    const comments = await commentsModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: tenDaysAgo }
+        }
+      },
+
+      // Join Ticket
+      {
+        $lookup: {
+          from: "tickets",
+          localField: "ticketId",
+          foreignField: "_id",
+          as: "ticket"
+        }
+      },
+      { $unwind: "$ticket" },
+
+      // Join emitter organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "ticket.emitterOrganizationId",
+          foreignField: "_id",
+          as: "emitterOrganization"
+        }
+      },
+      { $unwind: { path: "$emitterOrganization", preserveNullAndEmptyArrays: true } },
+
+      // Join recipient organization
+      {
+        $lookup: {
+          from: "organisations",
+          localField: "ticket.recipientOrganizationId",
+          foreignField: "_id",
+          as: "recipientOrganization"
+        }
+      },
+      { $unwind: { path: "$recipientOrganization", preserveNullAndEmptyArrays: true } },
+
+      // Join author (User)
+      {
+        $lookup: {
+          from: "users",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author"
+        }
+      },
+      { $unwind: { path: "$author", preserveNullAndEmptyArrays: true } },
+
+      // Final shape
+      {
+        $project: {
+          _id: 1,
+          message: 1,
+          action: 1,
+          createdAt: 1,
+
+          ticketId: "$ticket._id",
+          ticketRef: "$ticket.ref",
+
+          emitterOrganization: {
+            _id: "$emitterOrganization._id",
+            name: "$emitterOrganization.name"
+          },
+
+          recipientOrganization: {
+            _id: "$recipientOrganization._id",
+            name: "$recipientOrganization.name"
+          },
+
+          author: {
+            _id: "$author._id",
+            name: "$author.name"
+          }
+        }
+      },
+
+      
+      {
+        $sort: { createdAt: -1 }
+      }
+    ]);
+
+    return res.status(200).json({
+       comments
+    });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message:"server error",error})
+  }
 }
