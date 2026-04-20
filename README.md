@@ -1,9 +1,13 @@
 <p align="center">
   <a href="https://open-tickets-sandy.vercel.app/" target="_blank">
-    <img src="https://ik.imagekit.io/rt2d2ljwz/banner%20open%20ticket%20pour%20github%202.png" alt="OpenTickets Banner" />
+    <img src="https://ik.imagekit.io/rt2d2ljwz/20260420_1614_Int%C3%A9gration%20Logo%20PowerBI_remix_01kpnq8b8qe3prqz1bv1sep4v6.png" alt="OpenTickets Banner" />
   </a>
 </p>
-
+<p align="center">
+  <a href="https://drive.usercontent.google.com/download?id=1HUyzInhVrSoorCI2XGWv401B5rgUXdGy&export=download&authuser=0" target="_blank">
+    <img src="https://ik.imagekit.io/rt2d2ljwz/20260420_1649_Activit%C3%A9%20Utilisateur%20Power%20BI_remix_01kpns7f8eft1rd21xpfm8b7x6.png" alt="OpenTickets Banner" />
+  </a>
+</p>
 <p align="center">
   <img src="https://img.shields.io/badge/MERN-Stack-3FA037?style=for-the-badge&logo=javascript&logoColor=white" />
   <img src="https://img.shields.io/badge/React.js-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
@@ -11,6 +15,8 @@
   <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />
   <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
   <img src="https://img.shields.io/badge/JWT-Security-blue?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img src="https://img.shields.io/badge/WebSocket-Real--Time-orange?style=for-the-badge&logo=socketdotio&logoColor=white" />
+<img src="https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socketdotio&logoColor=white" />
 </p>
 
 <h2 align="center">🚀 Plateforme Complète de Gestion des Réclamations</h2>
@@ -18,6 +24,13 @@
 <p align="center">
 Une application moderne construite avec la <strong>stack MERN</strong> pour gérer efficacement les réclamations entre les agences et les services d'une entreprise.
 </p>
+<a  href="https://drive.usercontent.google.com/download?id=1HUyzInhVrSoorCI2XGWv401B5rgUXdGy&export=download&authuser=0">
+ <p align="center">
+ <strong>
+  Télécharger le fichier Power BI pour un tableau de bord BI bien défini.
+  </strong>
+  </p>
+</a>
 
 ---
 
@@ -48,6 +61,21 @@ Une application moderne construite avec la <strong>stack MERN</strong> pour gér
 * Rapports détaillés
 * Analyse des performances par service
 
+## 🔗 Page des Liens Utiles
+
+Une page dédiée regroupant toutes les ressources importantes de l’entreprise :
+
+* 📱 Liens vers les réseaux sociaux (Instagram, LinkedIn, etc.)
+* 🌐 Site officiel de l’entreprise
+* 📂 Fichiers téléchargeables (documents internes, guides, formulaires)
+* 🧭 Index centralisé pour faciliter l’accès aux ressources
+
+## 📢 Barre d’annonce interne
+* Diffusion de messages globaux à tous les utilisateurs
+* Communication des nouveautés et informations importantes
+* Affichage dynamique en haut de l’application
+* Mise à jour centralisée par l’administrateur
+
 ## 🔒 Sécurité
 
 * Authentification sécurisée avec JWT
@@ -63,6 +91,7 @@ Une application moderne construite avec la <strong>stack MERN</strong> pour gér
 | **Frontend**        | React, Context API  |
 | **Backend**         | Node.js, Express.js |
 | **Base de données** | MongoDB, Mongoose   |
+| **Notification**    | Socket.IO           |
 | **Sécurité**        | JWT, bcrypt         |
 | **UI**              | CSS moderne         |
 | **Déploiement**     | Vercel              |
@@ -173,17 +202,6 @@ https://open-tickets-sandy.vercel.app/
 
 ---
 
-# 🛣️ Roadmap
-
-Améliorations futures :
-
-* Notifications en temps réel
-* Mode sombre
-* Gestion avancée des rôles
-* Commentaires sur les tickets
-* Export des rapports
-
----
 
 # 👤 Auteur
 
