@@ -299,7 +299,10 @@ const AddCommentSheetContent = ({ticket,refresh,organisations}:{ticket:ticket,re
                 <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={organisations.map(o=>o.name)} />
                  }
                  {(action==="switch")&&
-                <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={organisations.filter(o=>user?.organisationsList?.includes(o._id||"-**")) .map(o=>o.name)} />
+                <SelectWithSearch label='Organisation' name='' onValueChange={(o)=>setorganisation(o)} value={organisation} possibleValues={
+                  user?.role==="admin"? organisations.map(o=>o.name):
+                  organisations.filter((org:Organisation)=>org._id&&user?.organisationsList?.includes(org._id)).map(organ=>organ.name)
+                } />
                  }
                  
                 <Input parentClassName='w-full' inputClassName='h-42' type='area' placeHolder='Ajouter votre commentaire ici...' label='Commentaire' onChange={(e)=>setMessage(e.target.value)} value={message} />
