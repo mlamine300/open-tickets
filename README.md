@@ -17,6 +17,7 @@
   <img src="https://img.shields.io/badge/JWT-Security-blue?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
   <img src="https://img.shields.io/badge/WebSocket-Real--Time-orange?style=for-the-badge&logo=socketdotio&logoColor=white" />
 <img src="https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socketdotio&logoColor=white" />
+ <img src="https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" />
 </p>
 
 <h2 align="center">🚀 Plateforme Complète de Gestion des Réclamations</h2>
