@@ -65,6 +65,7 @@ export default function DynamicForm({ form,disabled,motifs,organisations }:{form
   
 
   const [pending,setPending]=useState<boolean>(false);
+  const [repeate, setRepeate] = useState(false);
   // useEffect(()=>{
     
     
@@ -109,7 +110,13 @@ const onSubmit = async(data: z.infer<typeof schema>) => {
   const ticket=await addTicketAction({formName:formulaire?.name,...data,attachement:attachmentUrl});
   if(ticket){
 toast.success("ticket créé!!!!")
+if(!repeate){
 myForm.reset();
+}
+else {
+  myForm.setValue("ref","")
+  myForm.setValue("attachement","")
+}
 
   //navigate("/form")
   }
@@ -140,6 +147,20 @@ myForm.reset();
           <p className="text-muted-foreground italic">{formulaire.description}</p>
         )}
       </div>
+      <div 
+                onClick={() => setRepeate(b => !b)} 
+                onKeyDown={(e) => e.key === 'Enter' && setRepeate(b => !b)}
+                role="button"
+                tabIndex={0}
+                className="grid grid-cols-2 cursor-pointer rounded-2xl items-start gap-0 w-72 lg:max-w-72 mt-4 md:mt-0"
+              >
+                <div className={`flex items-center justify-center w-full h-full rounded-l-2xl min-h-8 transition-colors ${repeate ? "bg-gray-hot" : "bg-primary text-white"}`}>
+                  <p className='text-sm italic'>One shot</p>
+                </div>
+                <div className={`flex items-center justify-center w-full h-full rounded-r-2xl min-h-8 transition-colors ${repeate ? "bg-primary text-white" : "bg-gray-hot"}`}>
+                  <p className='text-sm italic'>Répététif</p>
+                </div>
+              </div>
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2 w-full">
 
 
@@ -316,9 +337,10 @@ return <FormField key={field.name}
       })}
 
       <div  className="flex items-center w-full justify-center lg:col-span-2">
-        <Button disabled={pending||disabled} text="Envoyer" variant="primary" type="submit" className="px-4 min-w-36 disabled:bg-gray-cold/20">
+        <Button disabled={pending||disabled} text={repeate?"Répéter":"Envoyer"} variant="primary" type="submit" className="px-4 min-w-36 disabled:bg-gray-cold/20">
         
       </Button>
+      
       </div>
       </div>
     </form>
