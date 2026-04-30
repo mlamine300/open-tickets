@@ -42,7 +42,7 @@ export const  fieldToZod=(field:FormFieldType): z.ZodTypeAny=> {
         schema = z.string().min(3,`Le ${field.label} doit obligatoirement contenir plus de 3 caractères.`);
         
       }
-      else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"){
+      else if(field.possibleValues.length===1&&field.possibleValues.at(0)==="organisations"||field.possibleValues.at(0)==="motifs"){
       schema = z.string().min(3,`Merci de choisir le ${field.label}`);
       }
       else {
