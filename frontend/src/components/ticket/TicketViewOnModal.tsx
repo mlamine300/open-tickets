@@ -9,7 +9,7 @@ import { translateStatus } from '@/data/data';
 import { SheetTrigger } from '../ui/sheet';
 import Button from '../ui/Button';
 
-const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
+const TicketViewOnModal = ({ticket,isModal}:{ticket:ticket;isModal:boolean}) => {
   const [showAllComment,setShowAllComment]=useState(false);
   const [allComment,setAllComment]=useState<Comment[]>([]);
   const TRACKING_PREFIX=import.meta.env.VITE_TRACKING_PREFIX;
@@ -126,11 +126,11 @@ const TicketViewOnModal = ({ticket}:{ticket:ticket}) => {
     </div>}
 </div>)}
     
-    <div className='flex h-20 justify-center items-center my-4  w-full col-span-2'>
+    {isModal&&(<div className='flex h-20 justify-center items-center my-4  w-full col-span-2'>
     <SheetTrigger className=''>
      <Button text='Action' variant='primary' className='px-8 py-2'  /> 
       </SheetTrigger>     
-    </div>
+    </div>)}
     </div>
   );
 };

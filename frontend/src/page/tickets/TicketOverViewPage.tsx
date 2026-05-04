@@ -23,7 +23,7 @@ const TicketOverViewPage = () => {
   return (
     
       <div className='flex lg:min-w-3xl w-full h-full layout justify-center items-center min-h-[90vh]'>
-        {ticket ?<TicketViewOnModal  ticket={ticket} />:<Spinner size='xl' />}
+        {ticket ?<TicketViewOnModal isModal={false}  ticket={ticket} />:<Spinner size='xl' />}
       </div>
     
   );

@@ -62,7 +62,7 @@ const TicketsPage = () => {
         >
          {
          (showModal==="ticket"&&selectedTicket)?
-         <TicketViewOnModal ticket={selectedTicket} />
+         <TicketViewOnModal ticket={selectedTicket} isModal={true} />
 
         //  :showModal==="confirmation"?
         //  <ConfirmTakeInCharge header='Êtes-vous sûr de vouloir prendre en charge ce ticket' action={handleTakeInChargeConfirmation} setShowModal={setShowModal}/>

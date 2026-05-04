@@ -48,7 +48,7 @@ const SearchPage = () => {
         <Modal className=" md:min-w-8/12 min-h-10/12 overflow-y-auto" showModal={showModal} close={()=>{
             setShowModal(false);
             setSelectTicket(null)}} title={selectTicket.ref||""}>
-<TicketViewOnModal ticket={selectTicket}/>
+<TicketViewOnModal isModal={false} ticket={selectTicket}/>
         </Modal>
         
         }
