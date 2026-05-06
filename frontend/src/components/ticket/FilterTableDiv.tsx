@@ -9,6 +9,7 @@ import { AccordionContent, Accordion, AccordionItem, AccordionTrigger } from '..
 import SelectWithSearch from '../ui/SelectWithSearch';
 import { FaFileExcel } from 'react-icons/fa6';
 import { donwloadExcel } from '@/actions/ticketAction'; 
+import { DropdownMenuRadio } from '../main/DropDownMenuRadio';
 
 const FilterTableDiv = ({ className, organisations,motifs }: { className?: string, organisations?: Organisation[];motifs:string[] }) => {
   const { pathname } = useLocation();
@@ -17,7 +18,7 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [motif, setMotif] = useState(searchParams.get("motif") || "");
   const [onlyMyOrganisation, setOnlyMyOrganisation] = useState(searchParams.get("notag") === "true");
-  
+  const [perPage, setPerPage] = useState<string>("10");
   // Use .find() instead of .filter().at(0) for better performance
   const emitterOrganisationName = searchParams.get("emitter_organization") 
     ? organisations?.find(o => o._id === searchParams.get("emitter_organization"))?.name || "----" 
@@ -48,6 +49,7 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
       updateParam("motif", motif);
       updateParam("priority", priority);
       updateParam("notag", onlyMyOrganisation ? "true" : "");
+      updateParam("per_page",perPage)
 
       const emitterId = organisations?.find(o => o.name === emitterOrganization)?._id;
       updateParam("emitter_organization", emitterId);
@@ -60,7 +62,7 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
 
     return () => clearTimeout(handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, motif, onlyMyOrganisation, emitterOrganization, recipientOrganization, priority]);
+  }, [search, motif, onlyMyOrganisation, emitterOrganization, recipientOrganization, priority,perPage]);
 // Sync URL Params -> State (Handles browser Back/Forward or external URL changes)
   useEffect(() => {
    
@@ -68,6 +70,7 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
     const pMotif = searchParams.get("motif") || "";
     const pPriority = searchParams.get("priority") || "";
     const pNotag = searchParams.get("notag") === "true";
+    const pPerPage = searchParams.get("per_page") || "10";
 
     const pEmitterId = searchParams.get("emitter_organization");
     const pEmitterName = pEmitterId 
@@ -86,6 +89,8 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
     setOnlyMyOrganisation(prev => prev !== pNotag ? pNotag : prev);
     setEmitterOrganization(prev => prev !== pEmitterName ? pEmitterName : prev);
     setRecipientOrganization(prev => prev !== pRecipientName ? pRecipientName : prev);
+   
+    setPerPage((prev) => prev !== pPerPage ? pPerPage : prev)
 
   }, [pathname]);
   // Handle Reset cleanly
@@ -177,14 +182,18 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
             </div>
 
             <div className='flex flex-col-reverse max-lg:self-center lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-4'>
+            <div className='flex gap-4'>
+
+            <DropdownMenuRadio buttonTitle={`Ticket Par Page : ${perPage}`} title={"Ticket Par Page"} choosen={perPage} setChoosen={setPerPage} list={["5","10","25","50"]} />
               <button
                 onClick={handleDownloadExcel}
                 disabled={pending}
                 className="flex w-fit gap-4 items-center h-fit px-4 py-1 border text-primary border-gray-hot rounded-lg hover:font-semibold hover:border-primary bg-white shadow-2xl disabled:text-gray-cold transition-all"
-              >
+                >
                 Télécharger le tableau
                 <FaFileExcel />
               </button>
+                </div>
 
               {/* Changed <form> to <div> to avoid accidental submissions, or use onSubmit={(e)=>e.preventDefault()} */}
               <div className='flex flex-row items-center gap-4'>

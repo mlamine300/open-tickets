@@ -30,7 +30,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
     const emitterOrganizationId=searchParams.get("emitter_organization")||"";
     const recipientOrganizationId=searchParams.get("recipient_organization")||"";
     const onlyMyOrganisation=searchParams.get("notag");
-    
+    const maxPerPage=Number(searchParams.get("per_page"))??10;
     const priority=searchParams.get("priority")||"";
   const {pathname}=useLocation();
   
@@ -40,7 +40,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       const getMyTickets = async () => {
         setPending(true);
         setTicket([]);
-        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation,sortFunction:{sortBy,sort} });
+        const res = await getSpecificTicketAction(pathname, { page, search,motif, emitterOrganizationId, recipientOrganizationId, priority,notag:onlyMyOrganisation,sortFunction:{sortBy,sort},maxPerPage });
         setTicket(res.data);
         setTotalTicketsSize(res.total);
         setPending(false);
@@ -66,7 +66,7 @@ const TicketsTable = ({setTriggerRerender,setShowModal,setSelectedTicket,trigger
       return () => {
         clearInterval(intervalId);
       };
-    }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender,sortBy,sort]);
+    }, [pathname, page,motif,onlyMyOrganisation, priority, emitterOrganizationId, recipientOrganizationId, search, triggerRerender,sortBy,sort,maxPerPage]);
 
 const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
           setShowModal(modalTitle);
@@ -114,19 +114,17 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
               ))}
             </tbody>
           </table>
-        </div>:<DataTable showTicket={(ticket:ticket)=>openConfirmation(ticket,"ticket")}  columns={columns({actions:{
-          addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-          // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
-          // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-         showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
-        //  handleClosing:(ticket:ticket)=>openConfirmation(ticket,"close"),
-        //  handleFormward:(ticket:ticket)=>openConfirmation(ticket,"forward"),
-        },
-         
-         
-         })} data={tickets} />}
+        </div>:<DataTable 
+          showTicket={(ticket:ticket)=>openConfirmation(ticket,"ticket")}
+          columns={columns({actions:{
+            addComment:(ticket:ticket)=>setSelectedTicket(ticket),
+            showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
+          }})}
+          data={tickets}
+          pageSize={maxPerPage}
+        />}
        
-         <TablePagination maxPages={Math.ceil(totalTicketsSize/10)} className='mt-auto ml-auto gap-2 p-5'/>
+         <TablePagination  maxPages={Math.ceil(totalTicketsSize/maxPerPage)} className='mt-auto ml-auto gap-2 p-5'/>
     </>
   )
 }
