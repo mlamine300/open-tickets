@@ -9,7 +9,7 @@ import { AccordionContent, Accordion, AccordionItem, AccordionTrigger } from '..
 import SelectWithSearch from '../ui/SelectWithSearch';
 import { FaFileExcel } from 'react-icons/fa6';
 import { donwloadExcel } from '@/actions/ticketAction'; 
-import { DropdownMenuRadio } from '../main/DropDownMenuRadio';
+//import { DropdownMenuRadio } from '../main/DropDownMenuRadio';
 
 const FilterTableDiv = ({ className, organisations,motifs }: { className?: string, organisations?: Organisation[];motifs:string[] }) => {
   const { pathname } = useLocation();
@@ -184,7 +184,7 @@ const FilterTableDiv = ({ className, organisations,motifs }: { className?: strin
             <div className='flex flex-col-reverse max-lg:self-center lg:flex-row lg:justify-between gap-4 lg:gap-8 lg:items-center px-8 mt-4'>
             <div className='flex gap-4'>
 
-            <DropdownMenuRadio buttonTitle={`Ticket Par Page : ${perPage}`} title={"Ticket Par Page"} choosen={perPage} setChoosen={setPerPage} list={["5","10","25","50"]} />
+            {/* <DropdownMenuRadio buttonTitle={`Ticket Par Page : ${perPage}`} title={"Ticket Par Page"} choosen={perPage} setChoosen={setPerPage} list={["5","10","25","50"]} /> */}
               <button
                 onClick={handleDownloadExcel}
                 disabled={pending}

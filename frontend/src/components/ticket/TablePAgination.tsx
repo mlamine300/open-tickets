@@ -19,9 +19,9 @@ const TablePagination = ({className,maxPages}:{className?:string;maxPages?:numbe
     }
   return (
     <div className={cn(className,"flex flex-row")}>
-      <Button className="px-4 py-1 text-sm bg-background-base border border-gray-hot/50 font-semibold text-primary shadow-black shadow-2xl" disabled={page===1} text="Previous" variant="shadow"
+      <Button className="px-4 py-1 text-sm bg-background-base border border-gray-hot/50 font-semibold text-primary shadow-black shadow-2xl" disabled={page===1} text="Précédent" variant="shadow"
        onClick={()=>handlePrevPageButton()}  />
-        <Button className="px-4 py-1 text-sm bg-background-base border border-gray-hot/50 font-semibold text-primary shadow-black shadow-2xl" disabled={maxPages?page===maxPages:false} text="Next" variant="primary"
+        <Button className="px-4 py-1 text-sm bg-background-base border border-gray-hot/50 font-semibold text-primary shadow-black shadow-2xl" disabled={maxPages?page===maxPages:false} text="Suivant" variant="primary"
          onClick={()=>handleNextPageButton()}  />
     </div>
   );

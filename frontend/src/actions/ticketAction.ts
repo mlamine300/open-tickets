@@ -13,8 +13,13 @@ try {
     const priority=PRIORITY_DATA.filter(x=>x.label===ticket.priority).at(0)?.value||"low";
     const newTicket={...ticket,priority}
  const res=await axiosInstance.post(API_PATH.TICKETS.ADD_TICKET,newTicket);
+
  if(res.status!==200){
+    console.log(res.status)
     console.log("Error Adding ticket",res.data.message);
+    if(res.status===409){
+        toast.error("Un ticket a déjà été créé avec les mêmes informations (organisation émettrice, destinataire, motif). Il est impossible de dupliquer la même réclamation.")
+    }
 return null; 
 }
     return res.data.data;

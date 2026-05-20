@@ -114,15 +114,17 @@ const openConfirmation=(selectedticket:ticket,modalTitle:string)=>{
               ))}
             </tbody>
           </table>
-        </div>:<DataTable 
-          showTicket={(ticket:ticket)=>openConfirmation(ticket,"ticket")}
-          columns={columns({actions:{
-            addComment:(ticket:ticket)=>setSelectedTicket(ticket),
-            showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
-          }})}
-          data={tickets}
-          pageSize={maxPerPage}
-        />}
+        </div>:<DataTable showTicket={(ticket:ticket)=>openConfirmation(ticket,"ticket")}  columns={columns({actions:{
+          addComment:(ticket:ticket)=>setSelectedTicket(ticket),
+          // handleTakeInCharge:(ticket:ticket)=>openConfirmation(ticket,"confirmation"),
+          // addComment:(ticket:ticket)=>setSelectedTicket(ticket),
+         showTicket:(ticket:ticket)=>openConfirmation(ticket,"ticket"),
+        //  handleClosing:(ticket:ticket)=>openConfirmation(ticket,"close"),
+        //  handleFormward:(ticket:ticket)=>openConfirmation(ticket,"forward"),
+        },
+         
+         
+         })} data={tickets} />}
        
          <TablePagination  maxPages={Math.ceil(totalTicketsSize/maxPerPage)} className='mt-auto ml-auto gap-2 p-5'/>
     </>

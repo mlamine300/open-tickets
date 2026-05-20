@@ -510,11 +510,16 @@ export const addTicket=async(req:Request,res:Response)=>{
          const motif=req.body?.motif||"standart";
         const commentsId:any[]=[];
         
-       
+       const foundTicket=await ticketModel.find({ref:ref.trim().toUpperCase(),motif,
+           emitterOrganizationId, recipientOrganizationId}).lean().exec();
+
+         if(foundTicket&&foundTicket.length>0){
+          return res.status(409).json({message:"there is a ticket with the same information",foundTicket})
+         }  
        
         const ticket=await ticketModel.create({creator:userId,attachement,motif,
            emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,
-           formName,message,specialFields,priority,commentsId,ref:ref.toUpperCase()
+           formName,message,specialFields,priority,commentsId,ref:ref.trim().toUpperCase()
         });
           const comment=await commentsModel.create({
       ticketId:ticket._id,

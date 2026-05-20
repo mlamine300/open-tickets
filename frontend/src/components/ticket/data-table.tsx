@@ -23,18 +23,15 @@ import { useUserContext } from "@/context/user/userContext"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[],
-  showTicket: (t: ticket) => void
-  pageSize?: number
+  showTicket:(t:ticket)=>void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  showTicket,
-  pageSize = 10
+  showTicket
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
-  const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const table = useReactTable({
     data,
     columns,
@@ -44,26 +41,14 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
-      pagination: {
-        pageSize: currentPageSize,
-        pageIndex: 0,
-      },
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
-        setCurrentPageSize(updater({ pageSize: currentPageSize, pageIndex: 0 }).pageSize);
-      } else if (typeof updater === 'object') {
-        setCurrentPageSize(updater.pageSize);
-      }
     },
   });
 const {user}=useUserContext();
 const userOrganisation=user?.organisation;
 const role=user?.role;
-
   return (
     <div className="overflow-hidden rounded-md border flex items-center justify-center w-full  border-gray-hot">
-      <Table  className="bg-background-base border border-gray-hot">
+      <Table className="bg-background-base border border-gray-hot">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="border border-gray-hot bg-gray-hot/50 text-primary" key={headerGroup.id}>
@@ -86,7 +71,6 @@ const role=user?.role;
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => 
             {
-              
               const ticket=row.original as ticket;
               const emitterOrganization=ticket.emitterOrganization?._id;
               const receiptionORganisation=ticket.recipientOrganization?._id;
