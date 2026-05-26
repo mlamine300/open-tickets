@@ -896,7 +896,7 @@ export const getMytickets = async (req: Request, res: Response) => {
       ...getResponsablitiesFilterFromRole(user,notag),
       ...getFilterFromType(type, userId),
       //creator:  new mongoose.Types.ObjectId(userId) 
-      emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation) ,
+      $or:[{emitterOrganizationId: new mongoose.Types.ObjectId(user.organisation)},{creator:  new mongoose.Types.ObjectId(userId) }],
     };
     if(status){
       baseFilter.status=status;
