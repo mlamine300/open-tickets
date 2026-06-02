@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import { Paperclip } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { LuTrash, LuUpload } from "react-icons/lu";
-
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      
 const AddAttachement = ({
   image,
   label,
@@ -21,6 +22,7 @@ const AddAttachement = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string|null>("");
+  const [error, setError] = useState<string>("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -30,7 +32,16 @@ const AddAttachement = ({
 
     const file = files[0] ?? null;
     if (file) {
-     // console.log(file);
+      
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`la taille de fichier Image devrait etre < ${MAX_FILE_SIZE/1024/1024}MB la taille de votre fichier est ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+        setImage(null);
+        setPreviewUrl(null);
+        if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
+      
+      setError("");
       setImage(file);
 
       const url = URL.createObjectURL(file);
@@ -50,13 +61,14 @@ const AddAttachement = ({
         <label className={labelClassName} htmlFor={`add-attachement${label}`}>
             {label}
         </label>
+        {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
       <input
         
         id={`add-attachement${label}`}
         ref={inputRef}
         onChange={handleImageChange}
         type="file"
-        accept="image/*"
+        accept=".jpg,.jpeg,.png"
         className="hidden"
       />
       {!image ? (

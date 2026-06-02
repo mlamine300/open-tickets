@@ -24,4 +24,9 @@ const fileFilter = (
     return callback(new Error("Only image files are allowed"), false);
   callback(null, true);
 };
-export const configurationStorage = () => multer({ storage, fileFilter });
+export const configurationStorage = () => 
+  multer({ 
+    storage, 
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 } // 10 MB limit
+  });
