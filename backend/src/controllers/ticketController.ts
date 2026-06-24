@@ -516,6 +516,10 @@ export const addTicket=async(req:Request,res:Response)=>{
          if(foundTicket&&foundTicket.length>0){
           return res.status(409).json({message:"there is a ticket with the same information",foundTicket})
          }  
+       if(!recipientOrganizationId||emitterOrganizationId===recipientOrganizationId.toString()){
+        return res.status(410).json({message:"You cannot create ticket where the recipient organisation equals emitter organisation"})
+       }
+       
        
         const ticket=await ticketModel.create({creator:userId,attachement,motif,
            emitterOrganizationId, recipientOrganizationId,associatedOrganizations:associatedOrganizationsString,
