@@ -2425,7 +2425,7 @@ export const searchTicketWithRef=async(req:Request,res:Response)=>{
   try {
     const ref=req.params.ref.toUpperCase();
     if(!ref)return res.status(409).json({message:"Ref is required!!!"});
-    const pipeline:any[]=getPipline({match:{ref},limit:100})
+    const pipeline:any[]=getPipline({match:{ref: { $regex: "^\\s*" + ref + "\\s*$", $options: "i" }},limit:100})
     const tickets= await ticketModel.aggregate(pipeline).exec();
     if(!tickets||!Array.isArray(tickets)||tickets.length<1)return res.status(404).json({message:"there are no ticket with such ref"});
     return res.status(200).json({message:"success",data:tickets})
