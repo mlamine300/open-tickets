@@ -14,7 +14,9 @@ export const signAccessToken = (user: any) => {
 
 export const signRefreshToken = (user: any) => {
   return jwt.sign(
-   { userId: user._id, role: user.role,organisation:user.organisation,organisationsList:user.organisationsList,activeStatus:user.activeStatus },
+   { userId: user._id, role: user.role,organisation:user.organisation,
+    //organisationsList:user.organisationsList,
+    activeStatus:user.activeStatus },
     process.env.REFRESH_TOKEN_SECRET || "your_default_refresh_secret",
     {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || "1y",
