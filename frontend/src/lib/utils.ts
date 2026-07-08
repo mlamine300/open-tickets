@@ -25,7 +25,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
     // Extract columns from the first row of data 
 
    if (pending.length > 0) {
-       const pendingSheet = workbook.addWorksheet('en attente');
+       const pendingSheet = workbook.addWorksheet('Non Ouvert');
       // Dynamically define columns based on the keys in the first data object
          const columns = [
        {
@@ -123,7 +123,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
 
     // Extract columns from the first row of data 
     if (open.length > 0) {
-      const openSheet = workbook.addWorksheet('ouvert');
+      const openSheet = workbook.addWorksheet('Non Traité');
       // Dynamically define columns based on the keys in the first data object
       // const columns = Object.keys(open[0]).map(key => ({
       //   header: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize header
@@ -234,7 +234,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
       //   key: key,
       //   width: 20 // Adjust width as needed
       // }));
-        const traitedSheet = workbook.addWorksheet('traité');
+        const traitedSheet = workbook.addWorksheet('Non Cloturé');
       const columns = [
        {
         header:"Date",
