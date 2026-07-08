@@ -203,7 +203,7 @@ export const getTicketReportForBi = async (req: Request, res: Response) => {
     
     const pipeline:any[]=getPipline({match: {
           ...dateFilter,
-        },limit:10000})
+        },limit:100000})
 
     
     //   // ===== match =====
@@ -491,7 +491,7 @@ export const getNotCompleteReportBi = async (req: Request, res: Response) => {
     { ...notCompleteFilter } // this also includes $or
   ]
         }
-      ,limit:1000
+      ,limit:100000
       })
    
       const result = await ticketModel.aggregate(pipeline).exec();
