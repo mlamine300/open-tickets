@@ -3,7 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { logEvents } from "./logger.js";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "node:url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     

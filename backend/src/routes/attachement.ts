@@ -7,6 +7,8 @@ attachementRouter.post("/upload",
 
   multer.single("attachement"),
   (req: Request, res: Response) => {
+   try {
+    
    
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
@@ -16,6 +18,11 @@ attachementRouter.post("/upload",
       req.file.filename
     }`;
     return res.status(200).json({ fileUrl });
+    
+  } catch (error) {
+    console.log("----------------")
+    console.log(error)
+   }
   }
 );
 
