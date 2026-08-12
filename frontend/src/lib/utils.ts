@@ -526,17 +526,7 @@ export const exportNotCompletReport = async (tickets:ticket[]) => {
     saveAs(blob, `${new Date().toISOString()}-Utilisateurs Report.xlsx`);
   };
 
-/**
- * {
-            "_id": "695bb0b3fe75b58ef8910830",
-            "name": "STATION LAGHOUAT",
-            "wilaya": "Laghouat",
-            "address": "Cite Bouameur Maamourah",
-            "phone": "0770953193",
-            "__v": 0,
-            "active": false
-        },
- */
+
      export const exportOrganisationReport = async (organisations:Organisation[]) => {
     // Create a new workbook and worksheet
     
