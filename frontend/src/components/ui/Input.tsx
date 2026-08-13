@@ -4,7 +4,7 @@ import { FaEyeLowVision } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 type inputProps = {
   label: string;
-  value: string;
+  value: string|Date;
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   type: string;
   placeHolder: string;
@@ -49,7 +49,7 @@ const Input = ({
           <textarea
             disabled={disabled}
             id={key}
-            value={value}
+            value={value+""}
             onChange={onChange}
             placeholder={placeHolder}
             className={twMerge(
@@ -69,7 +69,7 @@ const Input = ({
                     : "password"
                   : type
               }
-              value={value}
+              value={value+""}
               onChange={onChange}
               placeholder={placeHolder}
               id={key}

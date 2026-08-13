@@ -74,6 +74,12 @@ export const API_PATH = {
     DELETE_USEFUL_LINK:(id:string)=>`/api/links/delete/${id}`,
     DEACTIVATE_USEFUL_LINK:(id:string)=>`/api/links/deactivate/${id}`,
     
+  },
+  NAVETTE:{
+    ADD_NAVETTE:"/api/navette",
+    GET_NAVETTE:"/api/navette",
+    GET_NAVETTE_BY_ID:(id:string)=>`/api/navette/${id}`,
+    SEARCH_NAVETTE:"/api/navette/search/list"
   }
 };
 

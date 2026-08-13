@@ -26,6 +26,7 @@ import { socket } from './utils/socket';
 import ManageUsefulLinksPage from './page/usefulLinks/ManageUsefulLinksPage';
 import AddUsefulLinkPage from './page/usefulLinks/AddUsefulLinkPage';
 import UsefulLinksPage from './page/usefulLinks/UsefulLinksPage';
+import NavettePage from './page/navette/NavettePage';
 
 function App() {
    const favicon = document.querySelector("link[rel='icon']") as any;
@@ -85,6 +86,7 @@ const showNotification = (title: string, body: string,url:string) => {
           <Route path="/search" element={<SearchPage />} />
         <Route path="/ticket/:id" element={<TicketOverViewPage />} />
         <Route path="/links" element={<UsefulLinksPage />} />
+        <Route path="/navette" element={<NavettePage />} />
          <Route path="*" element={<NotFound />} />
        </Route>
        <Route element={<PrivateRoute allowedRoles={[ "admin"]} />}>

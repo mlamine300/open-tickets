@@ -7,13 +7,13 @@ import {
 import { BsHouseAdd , BsHouses, BsHouseDoor   } from "react-icons/bs";
 import type { FormType, FormFieldType } from "@/types";
 
-import { BookmarkCheck, Check, CheckCheck, LayoutList, Link, Loader, Megaphone, MessageCircleMore, Plus, Search, Settings, UserRoundPen, Users } from "lucide-react";
+import { BookmarkCheck, Check, CheckCheck, LayoutList, Link, Loader, Megaphone, MessageCircleMore, Plus, Search, Settings, Truck, UserRoundPen, Users } from "lucide-react";
 import { FaTools, FaWpforms } from "react-icons/fa";
 
 
 export const SIDE_MENU_ADMIN_DATA = [
   {
-    id: "01",
+    id: "00",
     label: "Tableau de bord",
     icon: LuLayoutDashboard,
     path: "/",
@@ -106,14 +106,25 @@ export const SIDE_MENU_ADMIN_DATA = [
     ]
 
     },
-    {id:"04",
+   {id:"04",
+     
+      label:"Gestion Navette",
+      icon: Truck,
+      path:"/navette",
+      hasChilds:false,
+     
+
+    },
+
+
+    {id:"05",
       label:"Utilisateurs",
       icon: Users,
       path:"/users",
       hasChilds:true,
       childs:[
         {
-          id:"41",
+          id:"51",
       label:"Modifier Utilisateur",
       icon:UserRoundPen,
       path:"/users/list",
@@ -128,20 +139,20 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
-    {id:"05",
+    {id:"06",
       label:"Organisations",
       icon: BsHouseDoor ,
       path:"/organisations",
       hasChilds:true,
       childs:[
         {
-          id:"51",
+          id:"61",
       label:"Modifier Organisation",
       icon:BsHouses,
       path:"/organisations/list",
         },
         {
-          id:"52",
+          id:"62",
       label:"Ajouter Organisation",
       icon:BsHouseAdd,
       path:"/organisations/new",
@@ -150,20 +161,21 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
-    {id:"06",
+
+    {id:"07",
       label:"Formulaires",
       icon: FaWpforms,
       path:"/forms",
       hasChilds:true,
       childs:[
         {
-          id:"61",
+          id:"71",
       label:"Formulaires",
       icon:FaWpforms,
       path:"/forms/list",
         },
         {
-          id:"62",
+          id:"72",
       label:"Ajouter Formulaires",
       icon:LuPlus,
       path:"/forms/new",
@@ -172,7 +184,7 @@ export const SIDE_MENU_ADMIN_DATA = [
       ]
 
     },
-    {id:"07",
+    {id:"08",
       label:"Motifs",
       icon: MessageCircleMore,
       path:"/motifs",
@@ -180,7 +192,7 @@ export const SIDE_MENU_ADMIN_DATA = [
      
 
     },
-      {id:"08",
+      {id:"09",
       label:"Annonce",
       icon: Megaphone,
       path:"/alert",
@@ -190,7 +202,7 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
  
 
-    {id:"09",
+    {id:"10",
       
       label:"Recherche par Référence",
       icon: Search ,
@@ -201,14 +213,14 @@ export const SIDE_MENU_ADMIN_DATA = [
     },
 
          {
-    id: "10",
+    id: "11",
     label: "Gestion des Liens Utiles",
     icon: Link,
     path: "/links0",
     hasChilds:true,
     childs:[
       {
-    id: "101",
+    id: "111",
     label: "Liens Utiles (utilisateur)",
     icon: Link,
     path: "/links",
@@ -216,7 +228,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 
   },
     {
-    id: "102",
+    id: "112",
     label: "Ajouter un liens Utile",
     icon: Plus,
     path: "/links/new",
@@ -224,7 +236,7 @@ export const SIDE_MENU_ADMIN_DATA = [
 
   },
   {
-    id: "103",
+    id: "113",
     label: "Liens Utiles (Admin)",
     icon: Settings,
     path: "/links/list",
@@ -236,7 +248,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   },
 
 
-    {   id:"11",
+    {   id:"12",
       isSearch:true,
       label:"Recherche",
       icon: null,
@@ -249,7 +261,7 @@ export const SIDE_MENU_ADMIN_DATA = [
   
      
   {
-    id: "12",
+    id: "13",
     label: "Déconnecter",
     icon: LuLogOut,
     path: "/logout",
@@ -355,7 +367,15 @@ export const SIDE_MENU_USER_DATA = [
 
     },
 
-    
+    {id:"05",
+     
+      label:"Gestion Navette",
+      icon: Truck,
+      path:"/navette",
+      hasChilds:false,
+     
+
+    },
     {id:"06",
      
       label:"Recherche par Référence",

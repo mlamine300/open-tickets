@@ -145,3 +145,22 @@ link:string;
 imageLink?:string
 }
 
+export type Navette={
+  id:string;
+  authorId:string;
+  authorName:string;
+  organisationId:string;
+  organisationName:string;
+  nevetteRef?:string;
+  arrivalTime:Date;
+  departureTime:Date;
+  attachement:Date;
+  createdAt:Date
+}
+
+export type NavetteForm={
+  navetteRef?:string;
+  arrivalTime?:Date;
+  departureTime?:Date;
+  attachement?:string
+}
