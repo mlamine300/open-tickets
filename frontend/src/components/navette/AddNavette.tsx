@@ -5,18 +5,28 @@ import AddAttachement from "../ticket/AddAttachement";
 import Button from "../ui/Button";
 import toast from "react-hot-toast";
 import { formatDate, parse } from "date-fns";
+import { addNavetteAction } from "@/actions/navetteAction";
+import { uploadFile } from "@/utils/UploadAttachement";
+import { useNavigate } from "react-router";
 
 
-const AddNavette = () => {
+const AddNavette = ({closeModal}:{closeModal:any}) => {
         const [navetteRef, setNavetteRef] = useState<string>("");
+        const navigate=useNavigate();
         const hour=new Date().getHours()+"";
         const minute=new Date().getMinutes()+"";
     const [dateStart, setDateStart] = useState<string>(`${hour}:${minute}`);
     const [dateEnd, setDateEnd] = useState<string>(`${hour}:${minute}`);
-    const [attachement, setAttachement] = useState<string>("");
+    const [attachementFile, setAttachementFile] = useState<File|null>(null);
+const reset=()=>{
+  setDateStart(`${hour}:${minute}`);
+  setDateEnd(`${hour}:${minute}`);
+  setAttachementFile(null);
+  setNavetteRef("");
+  close();
+}
 
-
-    const handleSubmit=()=>{
+    const handleSubmit=async()=>{
          const today=formatDate(new Date(),"dd-MM-yyyy");
          console.log(`${today} ${dateStart}:00`)
          
@@ -26,7 +36,19 @@ const AddNavette = () => {
            
             toast.error("Merci de bien choisir la date d'arrivée et de départ")
         }
-        console.log({mDateStart,mDateEnd,navetteRef,attachement})
+        let attachmentUrl;
+            
+            if (attachementFile) {
+              const attachmentResponse = await uploadFile(attachementFile);
+              //console.log(attachmentResponse);
+              attachmentUrl = attachmentResponse.fileUrl ?? "";
+              console.log(attachmentUrl);
+            }
+
+        await addNavetteAction({arrivalTime:mDateStart,departureTime:mDateEnd,navetteRef,attachement:attachmentUrl})
+        reset();
+        closeModal();
+        navigate("")
     }
 
   return (
@@ -37,7 +59,7 @@ const AddNavette = () => {
          placeHolder="Hamza" type="text" value={navetteRef}
          parentClassName="gap-0 items-start my-px" labelClassName="text-sm font-medium italic underline"  />
 
-         <AddAttachement className=" flex flex-col items-start"  labelClassName={"text-sm font-medium italic underline"}  label="Image" image={attachement} setImage={(image:string)=>setAttachement(image)}/>
+         <AddAttachement className=" flex flex-col items-start"  labelClassName={"text-sm font-medium italic underline"}  label="Image" image={attachementFile} setImage={(image:File)=>setAttachementFile(image)}/>
         
         <div className="col-span-2 flex items-center justify-center">
         <Button className="px-8 py-1" text="Ajouter" variant="primary" onClick={handleSubmit} />

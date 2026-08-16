@@ -14,8 +14,8 @@ const NavetteHeader = ({organisations}:{organisations:Organisation[]}) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShowModal] = useState(false);
     const params = new URLSearchParams(searchParams);
-    const [filterDateStart, setFilterDateStart] = useState<string>(searchParams.get("start_date") ||"01-01-2026");
-    const [filterDateEnd, setFilterDateEnd] = useState<string>(searchParams.get("end_date") ||formatDate(new Date(),"dd-MM-yyyy"));
+    const [filterDateStart, setFilterDateStart] = useState<string>(searchParams.get("start_date") ||"2026-01-01");
+    const [filterDateEnd, setFilterDateEnd] = useState<string>(searchParams.get("end_date") ||formatDate(new Date(),"yyyy-MM-dd"));
     const [choosenOrganisationId, setChoosenOrganisationId] = useState<string>(searchParams.get("organiastion") ||"");
 
 
@@ -53,8 +53,8 @@ const NavetteHeader = ({organisations}:{organisations:Organisation[]}) => {
         labelClassName={"capitalize w-full flex text-xs italic "}
         type='date' label='navette arrivéé le (date de début)'
         onChange={(e)=>setFilterDateStart(e.target.value)}
-        value={filterDateStart||"01/01/2026"}
-        placeHolder='01/01/2000'  />
+        value={filterDateStart||"2026-01-01"}
+        placeHolder='2000-01-01'  />
          
           <Input
            parentClassName="bg-background-base flex flex-col items-start gap-0"
@@ -63,9 +63,9 @@ const NavetteHeader = ({organisations}:{organisations:Organisation[]}) => {
            label='navette arrivéé le (date de fin)'
            onChange={(e)=>setFilterDateEnd(e.target.value)}
            value={filterDateEnd||""}
-           placeHolder='01/01/2100'  />
+           placeHolder='2100-01-01'  />
        
-            {role==="admin"&&(
+            {role!=="standard"&&(
                 <div className={"bg-background-base flex flex-col items-start gap-2 justify-center"}>
                 <label className={'capitalize w-full flex text-xs italic '} htmlFor={`select-organisation`}>Organisation / Station </label>
              <SelectWithSearch label='Organisation' possibleValues={organisations.map(o=>o.name)} name='organisation'
@@ -86,7 +86,7 @@ const NavetteHeader = ({organisations}:{organisations:Organisation[]}) => {
      <Modal 
             className="flex flex-col justify-between py-10"
             close={()=>setShowModal(false)} showModal={showModal} title="Ajouter la navette de jour" >
-             <AddNavette/>
+             <AddNavette closeModal={()=>setShowModal(false)}/>
                 </Modal>
     </div>
   )

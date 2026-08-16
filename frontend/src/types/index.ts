@@ -149,12 +149,12 @@ export type Navette={
   id:string;
   authorId:string;
   authorName:string;
-  organisationId:string;
+  organisationId?:string;
   organisationName:string;
-  nevetteRef?:string;
+  navetteRef?:string;
   arrivalTime:Date;
   departureTime:Date;
-  attachement:Date;
+  attachement?:String;
   createdAt:Date
 }
 

@@ -2,7 +2,36 @@ import { Request, Response } from 'express';
 import jwt from "jsonwebtoken"
 import { TokenPayload } from '../types/index.js';
 import { navetteModel } from '../models/Navette.js';
-import { endOfDay, startOfDay } from 'date-fns';
+import userModel from '../models/User.js';
+import organisationModel from '../models/Organisation.js';
+import { endOfDay, format, parse, startOfDay } from 'date-fns';
+import mongoose from 'mongoose';
+
+const normalizeId = (value: any) => {
+  if (!value) return undefined;
+  return typeof value === 'string' ? value : value.toString();
+};
+
+const serializeNavette = async (navette: any) => {
+  const authorId = normalizeId(navette?.authorId);
+  const organisationId = normalizeId(navette?.organisation);
+
+  const [author, organisation] = await Promise.all([
+    authorId ? userModel.findById(authorId).select('name').lean() : null,
+    organisationId ? organisationModel.findById(organisationId).select('name').lean() : null,
+  ]);
+
+  return {
+    ...navette,
+    id: normalizeId(navette?._id) ?? navette?.id,
+    authorId,
+    authorName: author?.name || 'Unknown author',
+    organisationId,
+    organisationName: organisation?.name || 'Unknown organisation',
+    organisation: organisationId,
+  };
+};
+
 export const createNavette = async (req: Request, res: Response): Promise<Response> => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -71,12 +100,11 @@ export const getNavettes = async (req: Request, res: Response): Promise<Response
 
 
             const filter=role==="admin"?{}:{organisation   }
-           
 
-             
-                const navettes=await navetteModel.find(filter).sort({ arrivalTime: -1 }).skip(skip).limit(limit);;
+            const navettes = await navetteModel.find(filter).sort({ arrivalTime: -1 }).skip(skip).limit(limit).lean();
+            const serializedNavettes = await Promise.all(navettes.map((navette) => serializeNavette(navette)));
 
-                return res.status(200).json({message:"success",data:navettes})
+            return res.status(200).json({message:"success",data:serializedNavettes})
             
             
    
@@ -94,8 +122,12 @@ export const getNavetteById = async (req: Request, res: Response): Promise<Respo
             if (!userId||!activeStatus) return res.status(409).json({ message: "not autorized" });
             const id=req.params.id;
             if(!id)return res.status(400).json({message:"id is required for this request!!"});
-            const navette=await navetteModel.findById(id);
-            if(role==="admin"||navette?.organisation===organisation)return res.status(200).json({message:"success",data:navette});
+            const navette=await navetteModel.findById(id).lean();
+            if(!navette) return res.status(404).json({message:"Navette not found"});
+            if(role==="admin"||navette?.organisation===organisation){
+              const serializedNavette = await serializeNavette(navette);
+              return res.status(200).json({message:"success",data:serializedNavette});
+            }
 
              
            
@@ -110,27 +142,31 @@ export const searchNavette=async (req:Request,res:Response):Promise<Response>=>{
     try {
      const token = req.headers.authorization?.split(" ")[1];
             if (!token) return res.status(409).json({ message: "not autorized" });
-            const { userId,userOrganisation,activeStatus,role } = (await jwt.decode(token)) as TokenPayload;
+            const { userId,organisation:userOrganisation,activeStatus,role,organisationsList } = (await jwt.decode(token)) as TokenPayload;
             if (!userId||!activeStatus) return res.status(409).json({ message: "not autorized" });
             
             let filter:any={   }
             
-            if(role!=="admin")filter["organisation"]=userOrganisation
-             
+            if(role==="standard")filter["organisation"]=userOrganisation
+             else if(role==="supervisor"){
+           filter["organisation"]={ $in: [userOrganisation,...organisationsList] }      
+             }
              
               const timeStart=req.body?.timeStart||null;
               const timeEnd=req.body?.timeEnd||null;
               const organisation=req.body?.organisation||null;
               if(organisation)filter["organisation"]=organisation;
               if(timeStart&&timeEnd){
-                const timeStartDate=startOfDay(new Date(timeStart))
-                const timeEndDate=endOfDay(new Date(timeEnd))
+                console.log({timeStart,timeEnd})
+                const timeStartDate=startOfDay(parse(timeStart,"yyyy-MM-dd",new Date()))
+                const timeEndDate=endOfDay(parse(timeEnd,"yyyy-MM-dd",new Date()))
+                
                 if(!timeEndDate||!timeStartDate)return res.status(400).json({message:"Date Format is incorrect",timeStartDate,timeEndDate})
                 filter["arrivalTime"]={
                 $gte: timeStartDate,
-                $lte: timeEndDate
+                $lte: timeEndDate,
                     }
-                    console.log({timeStartDate,timeEndDate})
+                   
                              }
               
 
@@ -139,13 +175,14 @@ export const searchNavette=async (req:Request,res:Response):Promise<Response>=>{
               const limit=req.body?.limit||10;
               const skip=(page-1)*limit;
             
-             
-
-             
+         console.log("---------------------------")    
+console.log(filter)
+  console.log("---------------------------")            
          
-                const navettes=await navetteModel.find(filter).sort({ arrivalTime: -1 }).skip(skip).limit(limit);
+const navettes=await navetteModel.find(filter).sort({ arrivalTime: -1 }).skip(skip).limit(limit).lean();
+                const serializedNavettes = await Promise.all(navettes.map((navette) => serializeNavette(navette)));
 
-                return res.status(200).json({message:"success",data:navettes})
+                return res.status(200).json({message:"success",data:serializedNavettes})
     
     } catch (error) {
         console.log(error)
