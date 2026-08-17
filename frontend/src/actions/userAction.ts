@@ -9,10 +9,13 @@ export const addUserAction:(u:Omit<userFormType,"rePassword">)=>Promise<User>=as
  const res=await axiosInstance.post(API_PATH.USERS.CREATE_USER,user);
  if(res.status!==200){
     console.log("Error Adding User",res.data.message);
+     toast.error("erreur, agent n'a pas été ajouté") 
 return null; 
 }
     return res.data.data;
-} catch (error) {
+} catch (error:any) {
+    if(error&&error.response)toast.error(error.response)
+    else toast.error("erreur, agent n'a pas été ajouté") 
     console.log(error);
     
 }
@@ -45,9 +48,31 @@ export const getUserByidAction:(id:string)=>Promise<any>=async(id)=>{
 export const updateUserAction:(id:string,values:any)=>Promise<User>=async(id,values)=>{
     try {
         const res=await axiosInstance.put(API_PATH.USERS.UPDATE_USER(id),{...values});
-        if(res.status===200)return res.data.data;
+        if(res.status===200){
+            toast.success("Agent modifié avec success")
+            return res.data.data;
+        }
+        else toast.error(`erreur updating user erreur : ${res.status}`)
         
-    } catch (error) {
+    } catch (error:any) {
+        if(error&&error.response)toast.error(error.response)
+           else toast.error("erreur, agent n'a pas été modifié") 
+        console.log(error)
+    }
+}
+
+export const deleteUserAction:(id:string)=>Promise<User>=async(id)=>{
+    try {
+        const res=await axiosInstance.delete(API_PATH.USERS.DELETE_USER(id));
+        if(res.status===200){
+            toast.success("compte d'agent désactivée")
+            return res.data.data;
+        }
+        else toast.error(`erreur updating user erreur : ${res.status}`)
+        
+    } catch (error:any) {
+        if(error&&error.response)toast.error(error.response)
+           else toast.error("erreur, agent n'a pas été modifié") 
         console.log(error)
     }
 }
