@@ -62,6 +62,11 @@ const Login = () => {
           navigate("/");
         
       }
+      else {
+         setError((err: any) => {
+        return { ...err, login: response.data.message };
+      });
+      }
     } catch (error: any) {
       console.log(error);
       let errResponse = "error dans le serveur";

@@ -27,7 +27,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { useNavigate, useParams } from "react-router"
 import { UserSchema, type Organisation, type userFormType } from "@/types"
-import { addUserAction, getUserByidAction, updateUserAction } from "@/actions/userAction"
+import { addUserAction, deleteUserAction, getUserByidAction, updateUserAction } from "@/actions/userAction"
 import Input from "@/components/ui/Input"
 import Button from "@/components/ui/Button"
 import SelectWithSearch from "@/components/ui/SelectWithSearch"
@@ -126,6 +126,14 @@ export default function UserFormPage() {
    // console.log("FORM VALUES", values)
     // create or update action here
   }
+
+  const handleDelete=async(id:string)=>{
+    setLoading(true);
+    await deleteUserAction(id);
+    setLoading(false);
+
+  }
+  
 
   return (
     <div className="w-full h-full flex justify-start">
@@ -270,7 +278,7 @@ export default function UserFormPage() {
             {/* Submit */}
             <div className="flex justify-center gap-3 col-span-2">
               <Button className="px-4" variant="primary" text={id === "new" ? "Ajouter Utilisateur" : "Modifier Utilisateur"}  type="submit" disabled={loading}/>
-                
+                {id!=="new"&&  <Button onClick={()=>handleDelete(id)} className="px-4 bg-red-500" variant="primary" text="Désactiver le compte" type="button" disabled={loading} />}
               
             </div>
           </form>

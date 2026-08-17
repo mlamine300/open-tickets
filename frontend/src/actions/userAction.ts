@@ -60,6 +60,22 @@ export const updateUserAction:(id:string,values:any)=>Promise<User>=async(id,val
         console.log(error)
     }
 }
+
+export const deleteUserAction:(id:string)=>Promise<User>=async(id)=>{
+    try {
+        const res=await axiosInstance.delete(API_PATH.USERS.DELETE_USER(id));
+        if(res.status===200){
+            toast.success("compte d'agent désactivée")
+            return res.data.data;
+        }
+        else toast.error(`erreur updating user erreur : ${res.status}`)
+        
+    } catch (error:any) {
+        if(error&&error.response)toast.error(error.response)
+           else toast.error("erreur, agent n'a pas été modifié") 
+        console.log(error)
+    }
+}
 /**
  * onst page=Number(req.body?.page)||1;
             const maxPerPage:number=Number(req.body?.maxPerPage)||10;
