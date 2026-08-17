@@ -9,10 +9,13 @@ export const addUserAction:(u:Omit<userFormType,"rePassword">)=>Promise<User>=as
  const res=await axiosInstance.post(API_PATH.USERS.CREATE_USER,user);
  if(res.status!==200){
     console.log("Error Adding User",res.data.message);
+     toast.error("erreur, agent n'a pas été ajouté") 
 return null; 
 }
     return res.data.data;
-} catch (error) {
+} catch (error:any) {
+    if(error&&error.response)toast.error(error.response)
+    else toast.error("erreur, agent n'a pas été ajouté") 
     console.log(error);
     
 }
