@@ -45,9 +45,15 @@ export const getUserByidAction:(id:string)=>Promise<any>=async(id)=>{
 export const updateUserAction:(id:string,values:any)=>Promise<User>=async(id,values)=>{
     try {
         const res=await axiosInstance.put(API_PATH.USERS.UPDATE_USER(id),{...values});
-        if(res.status===200)return res.data.data;
+        if(res.status===200){
+            toast.success("Agent modifié avec success")
+            return res.data.data;
+        }
+        else toast.error(`erreur updating user erreur : ${res.status}`)
         
-    } catch (error) {
+    } catch (error:any) {
+        if(error&&error.response)toast.error(error.response)
+           else toast.error("erreur, agent n'a pas été modifié") 
         console.log(error)
     }
 }
