@@ -41,16 +41,19 @@ const FilterTableDiv = ({className}:{className?:string,organisations?:Organisati
         // Search
         if (search) {
           params.set("search", search);
+          params.delete("page")
         } else if(!search) {
           params.delete("search");
         }
         if (wilaya) {
           params.set("wilaya", wilaya);
+          params.delete("page")
         } else if(!wilaya) {
           params.delete("wilaya");
         }
        if (active) {
           params.set("active", active+"");
+          params.delete("page")
         } else if(!active) {
           params.delete("active");
         }

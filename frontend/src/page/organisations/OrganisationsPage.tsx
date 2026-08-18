@@ -32,7 +32,8 @@ const OrganisationsPage = () => {
             const fetchOrganisation=async()=>{
                 setPending(true);
                 const organisationsRes=await fetchOrganisationsAction({page,search,wilaya,active:active+""});
-                if(organisationsRes)setOrganisations(organisationsRes);
+                setOrganisations(organisationsRes);
+               
                 setPending(false);
             }
         

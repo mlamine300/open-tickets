@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem,  FormMessage } from "@/components/ui/form";
 import Input from "@/components/ui/Input";
 import SelectWithSearch from "@/components/ui/SelectWithSearch";
+import { getWilayas } from "@/data/data";
 import { organisationSchema, type Organisation, type organisationFormType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -16,7 +17,7 @@ import { useNavigate, useParams } from "react-router";
 const AddOrganisation = () => {
   const params = useParams()
   const id = (params?.id as string) || "new"
-
+  const wilayas=getWilayas();
   const [loading, setLoading] = useState(false)
   const navigate=useNavigate();
   useEffect(() => {
@@ -29,17 +30,18 @@ const AddOrganisation = () => {
                 ...organisation
             })
         }
-        // if (organisation) {
-        //   reset({
-        //     ...userRes,
-        //     organisation:userRes.organisation.name,
-        //     organisationsList:userRes.organisationsList?.map((o:any)=>o.name),
-        //     password: "",
-        //     rePassword: "",
-        //      } as Organisation)
-         
-        // }
+   
         setLoading(false)
+      }else {
+        reset({
+          name:"",
+          address:"",
+          description:"",
+          head:"",
+          wilaya:"",
+          phone:"",
+          active:false
+        })
       }
     }
   
@@ -156,7 +158,12 @@ const AddOrganisation = () => {
                 <FormItem>
                   
                   <FormControl>
-                    <Input  parentClassName="gap-1 items-start"  label="Wilaya" type="text" placeHolder="Alger" {...field} />
+                    {/* <Input  parentClassName="gap-1 items-start"  label="Wilaya" type="select-filter"  placeHolder="Alger" {...field} /> */}
+                  <div className={"bg-background-base flex flex-col items-start gap-2"}>
+                <label className={' text-sm'} htmlFor={`select-${field.name}`}>Wilaya </label>
+           
+                  <SelectWithSearch  label="Wilaya" name={field.name} value={field.value} onValueChange={(v)=>form.setValue("wilaya",v)} possibleValues={wilayas}  />
+                 </div>
                   </FormControl>
                   <FormMessage />
                   
@@ -176,19 +183,23 @@ const AddOrganisation = () => {
                 </FormItem>
               )}
             />
-           <FormField
+           {id!=="new"&&<FormField
               control={form.control}
               name="active"
               render={({ field }) => (
                 <FormItem>
                   
                   <FormControl>
-                    <SelectWithSearch  possibleValues={["true","false"]} label="Active"  name={field.name} value={form.watch("active")+""} onValueChange={(s:string)=>form.setValue("active",s==='true')} />
+                    <div className={"bg-background-base flex flex-col items-start gap-2"}>
+                <label className={' text-sm'} htmlFor={`select-${field.name}`}>Active </label>
+                    <SelectWithSearch  possibleValues={["Oui","Non"]} label="Active"  name={field.name} value={form.watch("active")?"Oui":"Non"} onValueChange={(s:string)=>form.setValue("active",s==='Oui')} />
+                         </div>
                          </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
-            /> 
+            /> }
 
 
             {/* Submit */}

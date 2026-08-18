@@ -23,7 +23,7 @@ const UsefulLinksPage = () => {
 
   return (
     <main className="bg-background-base w-full h-full min-h-[90vh] p-8">
-      <h3 className="text-5xl italic text-primary underline uppercase mt-2 mb-4">Lien Utiles</h3>
+      <h3 className="text-5xl italic text-primary underline uppercase mt-2 mb-4">Liens Utiles</h3>
       <p className="bg-background p-4 rounded-xl text-lg">Cette page regroupe l’ensemble des liens essentiels et ressources utiles destinés aux employés.
 Elle constitue un guide centralisé permettant d’accéder rapidement aux différentes plateformes et supports nécessaires au bon fonctionnement quotidien.</p>
      {loading?  

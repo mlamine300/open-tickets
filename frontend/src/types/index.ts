@@ -139,7 +139,8 @@ export type organisationFormType=z.infer<typeof organisationSchema>
 export type usefulLinksFormType=z.infer<typeof usefulLinksSchema>
 
 export type UsefulLinkType={
-name:string;
+_id?:string;
+  name:string;
 description?:string;
 link:string;
 imageLink?:string

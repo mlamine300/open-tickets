@@ -2,11 +2,35 @@ import type { UsefulLinkType } from "@/types"
 import { cn } from "@/lib/utils";
 import { getColorFromName } from "@/utils/helper";
 import { Link } from "react-router";
+import { Pen, Trash } from "lucide-react";
 
 
-const UsefulLinksCard = ({usefulLink,cardClassName,textClassName,imageClassName}:{usefulLink:UsefulLinkType;cardClassName?:string;textClassName?:string;imageClassName?:string}) => {
+
+const UsefulLinksCard = ({usefulLink,cardClassName,textClassName,imageClassName,editable=false,handleEdit,handleDelete}:{usefulLink:UsefulLinkType;
+  cardClassName?:string;textClassName?:string;imageClassName?:string;editable?:boolean,handleEdit?:(ul:UsefulLinkType)=>any;handleDelete?:(ul:UsefulLinkType)=>any}) => {
+  
+  const handleDeleteClick=()=>{
+    if(handleDelete){
+      handleDelete(usefulLink)
+    }
+  }
+
+  const handleEditClick=()=>{
+if(handleEdit&&usefulLink){
+  handleEdit(usefulLink);
+}
+  }
+  
+  
   return (
-    <Link   target="_blank" to={usefulLink.link} className={cn(cardClassName,"border-b-2 border-primary flex items-center gap-2 p-2 shadow-2xl min-h-50 max-h-50")} >
+    <div className="relative">
+ {editable&&<div className="flex gap-2 absolute right-1 top-1 z-10 px-2 py-px cursor-pointer">
+        <Pen size={35} onClick={()=>handleEditClick()} className="hover:scale-110 hover:bg-black/20 px-2 py-px  rounded-full "/>
+        <Trash  size={35}  onClick={()=>handleDeleteClick()} color="red" className="hover:scale-110 hover:bg-red-600/20 px-2 py-px  rounded-full"/>
+        </div>}
+    
+    <Link   target="_blank" to={usefulLink.link} className={cn(cardClassName,"relative border-b-2 border-primary flex items-center gap-2 p-2 shadow-2xl min-h-50 max-h-50")} >
+     
       {usefulLink.imageLink?
       ( <img src={usefulLink.imageLink||""} className={cn(imageClassName,"rounded-full bg-cover w-30 h-30 ")} /> )
        :
@@ -27,6 +51,7 @@ const UsefulLinksCard = ({usefulLink,cardClassName,textClassName,imageClassName}
       </div>
       
     </Link>
+    </div>
   )
 }
 

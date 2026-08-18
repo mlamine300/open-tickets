@@ -9,12 +9,14 @@ export const fetchOrganisationsAction:({page,search,wilaya}:{page:number,search:
   try {
     const res=await axiosInstance.post(API_PATH.ORGANISATIONS.GET_ORGANISATIONS,{page,search,wilaya,active});
   if(res.status===200){
+   
   return res.data.data;
 } 
-  return null;
+  return [];
   }
   catch (error) {
-    console.log(error)
+    console.log({error})
+    return []
   }
 }
 
