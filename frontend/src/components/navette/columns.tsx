@@ -24,10 +24,10 @@ export const columns:(setSelectedNavette:(x:Navette)=>any)=> ColumnDef<Navette>[
     },
     cell:({row})=>{
 
-      const date=row.original.arrivalTime;
+      const date=row.original.createdAt;
       if(date)
-      return <p className="text-start px-4 italic font-light text-text-primary/60">
-        {format(date,"dd/MM/yyyy")}
+      return <p className="text-sm text-start px-4 italic font-light text-text-primary/60">
+        {format(date,"dd/MM/yyyy HH:mm:ss")}
       </p>
     return ""
     }
