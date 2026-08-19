@@ -6,7 +6,7 @@ import type{ ColumnDef } from "@tanstack/react-table"
 import { format, formatDate } from 'date-fns'
 
 import type { Navette } from "@/types";
-import { ArrowLeftRight, Image } from "lucide-react";
+import { ArrowDown,  Image, Pen } from "lucide-react";
 import { fr } from "date-fns/locale";
 import { Link } from "react-router";
 
@@ -14,12 +14,12 @@ import { Link } from "react-router";
 // You can use a Zod schema here if you want.
 
 
-export const columns:()=> ColumnDef<Navette>[] =()=> [
+export const columns:(setSelectedNavette:(x:Navette)=>any)=> ColumnDef<Navette>[] =(setSelectedNavette)=> [
  
   {accessorKey:"date",
    header: () => {
       return (
-       <p>Date</p>
+       <p className="text-xs">Créé le (la date de l'action)</p>
       )
     },
     cell:({row})=>{
@@ -64,25 +64,34 @@ export const columns:()=> ColumnDef<Navette>[] =()=> [
   },
    {
     accessorKey: "time",
-    header: "Temps",
+    header:()=> <p className="text-xs">Date de Navette (date saisie par l'agent)</p>,
      cell: ({ row }) => {
        const arrival=row.original.arrivalTime
        const départure=row.original.departureTime
    
-      return <div className="flex flex-col gap-1 items-start ">
-        <p className="font-semibold text-sm">{formatDate(arrival, 'eeee d MMMM', { locale: fr })} </p>
-        <div className="flex justify-center items-center gap-2">
+      return <div className="flex flex-col justify-center items-center gap-2"> 
 
-        <p className="font-semibold text-xs">{`arrivé : ${formatDate(arrival,"HH:mm")}`} </p>
-        <ArrowLeftRight className="text-primary"/>
-        <p className="font-semibold text-xs">{`départ : ${formatDate(départure,"HH:mm")}`} </p>
+        <p className="font-semibold text-xs">{`arrivé : ${formatDate(arrival,"eeee d MMMM HH:mm",{locale:fr})}`} </p>
+        <ArrowDown className="text-primary"/>
+        <p className="font-semibold text-xs">{`départ : ${formatDate(départure,"eeee d MMMM HH:mm",{locale:fr})}`} </p>
         </div>
+        
+      
+     }
+  },
+ 
+{
+    accessorKey: "comment",
+    header: "Commentaire",
+     cell: ({ row }) => {
+       const comment=row.original.comment||"..."
+   
+      return <div className="flex flex-col gap-1 items-start ">
+        <p className="font-semibold text-xs overflow-hidden">{comment} </p>
         
       </div>
      }
   },
- 
-
 
      
   
@@ -106,6 +115,20 @@ export const columns:()=> ColumnDef<Navette>[] =()=> [
       );
      }
   },
-  
+  {
+    
+    header: "edit",
+     cell: ({ row }) => {
+        
+        const navette=row.original;
+       
+       
+       
+      
+      return(
+     <Pen className="hover:scale-110" onClick={()=>setSelectedNavette(navette)} />
+      );
+     }
+  },
   
 ]

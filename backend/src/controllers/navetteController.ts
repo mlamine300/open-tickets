@@ -4,7 +4,7 @@ import { TokenPayload } from '../types/index.js';
 import { navetteModel } from '../models/Navette.js';
 import userModel from '../models/User.js';
 import organisationModel from '../models/Organisation.js';
-import { endOfDay, format, parse, startOfDay } from 'date-fns';
+import { differenceInHours, endOfDay, format, parse, startOfDay } from 'date-fns';
 import mongoose from 'mongoose';
 
 const normalizeId = (value: any) => {
@@ -66,12 +66,42 @@ export const createNavette = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-export const updateNavette = async (req: Request, res: Response): Promise<void> => {
+export const updateNavette = async (req: Request, res: Response): Promise<Response> => {
   try {
-    res.status(200).json({ message: 'Navette updated successfully' });
+    const id=req.params.id;
+    if(!id)return res.status(400).json({message:"id is required for this request!!!"})
+     const token = req.headers.authorization?.split(" ")[1];
+            if (!token) return res.status(409).json({ message: "not autorized" });
+            const { role } = (await jwt.decode(token)) as TokenPayload;
+            
+    const foundNavette=await navetteModel.findById(id).exec();
+    if(!foundNavette||!foundNavette._id)return res.status(404).json({message:"there is no navette with such id"})
+    const createdAt=foundNavette.createdAt;
+  if(differenceInHours(new Date(),createdAt)>=24&&role!=="admin"){
+    return res.status(400).json({message:"too late to edit this navette, please contact admin"});
+  }
+    
+      if(!req.body)return res.status(400).json({message:"please provide a data to update"})
+    
+      const arrivalTime=req.body.arrivalTime||null;
+    const departureTime=req.body.departureTime||null;
+    const attachement=req.body.attachement||null;
+    const comment=req.body.comment||null;
+    let data:any={};
+    if(arrivalTime)data["arrivalTime"]=arrivalTime
+    if(departureTime)data["departureTime"]=departureTime
+    if(attachement)data["attachement"]=attachement
+    if(comment)data["comment"]=comment
+    
+    if(Object.keys(data).length>0){
+      const updatedNavette=await navetteModel.findByIdAndUpdate(id,data);
+      return  res.status(200).json({ message: 'Navette updated successfully',data:updateNavette });
+    }
+    
+   return res.status(400).json({message:"unable to edit navette"})
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to update Navette' });
+  return  res.status(500).json({ error: 'Failed to update Navette' });
   }
 };
 

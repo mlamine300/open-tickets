@@ -84,9 +84,9 @@ const NavetteHeader = ({organisations}:{organisations:Organisation[]}) => {
                </AccordionItem>
      </Accordion>
      <Modal 
-            className="flex flex-col justify-between py-10"
+            className="flex flex-col justify-between py-10 overflow-y-auto max-h-9/12 h-fit min-h-6/12"
             close={()=>setShowModal(false)} showModal={showModal} title="Ajouter la navette de jour" >
-             <AddNavette closeModal={()=>setShowModal(false)}/>
+             <AddNavette navette={null} closeModal={()=>setShowModal(false)}/>
                 </Modal>
     </div>
   )

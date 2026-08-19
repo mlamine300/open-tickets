@@ -7,6 +7,7 @@ export const NavetteSchema=new mongoose.Schema({
     navetteRef:{type:String,required:false},
     arrivalTime:{type:Date,require:true},
     departureTime:{type:Date,require:true},
-    attachement:{type:String,required:false}
+    attachement:{type:String,required:false},
+    comment:{type:String,required:false}
 },{timestamps:true})
 export const navetteModel=mongoose.model("Navette",NavetteSchema);

@@ -155,6 +155,7 @@ export type Navette={
   navetteRef?:string;
   arrivalTime:Date;
   departureTime:Date;
+  comment?:string;
   attachement?:String;
   createdAt:Date
 }
@@ -163,5 +164,6 @@ export type NavetteForm={
   navetteRef?:string;
   arrivalTime?:Date;
   departureTime?:Date;
-  attachement?:string
+  attachement?:string;
+  comment?:string;
 }
